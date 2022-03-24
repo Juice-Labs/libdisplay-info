@@ -2,6 +2,13 @@
 
 EDID and DisplayID library.
 
+Goals:
+
+- Provide a set of high-level, easy-to-use, opinionated functions as well as
+  low-level functions to access detailed information.
+- Simplicity and correctness over performance and resource usage.
+- Well-tested and fuzzed.
+
 ## Contributing
 
 Open issues and merge requests on the [GitLab project].
