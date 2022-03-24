@@ -22,3 +22,23 @@ add_project_arguments(cc.get_supported_arguments([
 	'-Wno-unused-parameter',
 	'-Wno-missing-field-initializers',
 ]), language: 'c')
+
+di_lib = library(
+	'display-info',
+	[
+		'edid.c',
+	],
+	include_directories: include_directories('include'),
+	install: true,
+)
+
+install_subdir(
+	'include/libdisplay-info',
+	install_dir: get_option('includedir'),
+)
+
+pkgconfig = import('pkgconfig')
+pkgconfig.generate(
+	di_lib,
+	description: 'EDID and DisplayID library',
+)
