@@ -1,0 +1,18 @@
+include:
+  - project: 'freedesktop/ci-templates'
+    ref: 3e66ea37e5672bb8f48e3056ba92915b5fc5b888
+    file: '/templates/ci-fairy.yml'
+
+stages:
+  - "Contribution checks"
+
+check-mr:
+  extends: .fdo.ci-fairy
+  stage: "Contribution checks"
+  script:
+   - ci-fairy check-commits --signed-off-by
+   - ci-fairy check-merge-request --require-allow-collaboration
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+      when: always
+    - when: never
