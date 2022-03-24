@@ -9,3 +9,15 @@ project(
 		'warning_level=3',
 	],
 )
+
+cc = meson.get_compiler('c')
+
+add_project_arguments(cc.get_supported_arguments([
+	'-Wundef',
+	'-Wmissing-prototypes',
+	'-Walloca',
+	'-Wdeclaration-after-statement',
+
+	'-Wno-unused-parameter',
+	'-Wno-missing-field-initializers',
+]), language: 'c')
