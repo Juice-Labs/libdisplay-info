@@ -43,3 +43,15 @@ pkgconfig.generate(
 	di_lib,
 	description: 'EDID and DisplayID library',
 )
+
+di_dep = declare_dependency(
+	link_with: di_lib,
+	include_directories: include_directories('include'),
+)
+
+executable(
+	'di-edid-decode',
+	'di-edid-decode.c',
+	dependencies: di_dep,
+	install: true,
+)
