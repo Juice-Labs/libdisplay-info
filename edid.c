@@ -41,6 +41,40 @@ validate_block_checksum(const uint8_t data[static EDID_BLOCK_SIZE])
 	return sum == 0;
 }
 
+static void
+parse_vendor_product(const uint8_t data[static EDID_BLOCK_SIZE],
+		     struct di_edid_vendor_product *out)
+{
+	uint16_t man;
+	int year = 0;
+
+	/* The ASCII 3-letter manufacturer code is encoded in 5-bit codes. */
+	man = (uint16_t) ((data[8] << 8) | data[9]);
+	out->manufacturer[0] = ((man >> 10) & 0x1F) + '@';
+	out->manufacturer[1] = ((man >> 5) & 0x1F) + '@';
+	out->manufacturer[2] = ((man >> 0) & 0x1F) + '@';
+
+	out->product = (uint16_t) (data[10] | (data[11] << 8));
+	out->serial = (uint32_t) (data[12] |
+				  (data[13] << 8) |
+				  (data[14] << 16) |
+				  (data[15] << 24));
+
+	if (data[17] >= 0x10) {
+		year = data[17] + 1990;
+	}
+
+	if (data[16] == 0xFF) {
+		/* Special flag for model year */
+		out->model_year = year;
+	} else {
+		out->manufacture_year = year;
+		if (data[16] > 0 && data[16] <= 54) {
+			out->manufacture_week = data[16];
+		}
+	}
+}
+
 struct di_edid *
 di_edid_parse(const void *data, size_t size)
 {
@@ -79,6 +113,8 @@ di_edid_parse(const void *data, size_t size)
 	edid->version = version;
 	edid->revision = revision;
 
+	parse_vendor_product(data, &edid->vendor_product);
+
 	return edid;
 }
 
@@ -98,4 +134,10 @@ int
 di_edid_get_revision(const struct di_edid *edid)
 {
 	return edid->revision;
+}
+
+const struct di_edid_vendor_product *
+di_edid_get_vendor_product(const struct di_edid *edid)
+{
+	return &edid->vendor_product;
 }

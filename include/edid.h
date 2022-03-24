@@ -10,6 +10,7 @@
 #include <libdisplay-info/edid.h>
 
 struct di_edid {
+	struct di_edid_vendor_product vendor_product;
 	int version, revision;
 };
 

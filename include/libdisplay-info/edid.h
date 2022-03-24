@@ -10,6 +10,7 @@
  */
 
 #include <stddef.h>
+#include <stdint.h>
 
 /**
  * EDID data structure.
@@ -27,5 +28,22 @@ di_edid_get_version(const struct di_edid *edid);
  */
 int
 di_edid_get_revision(const struct di_edid *edid);
+
+/**
+ * EDID vendor & product identification.
+ */
+struct di_edid_vendor_product {
+	char manufacturer[3];
+	uint16_t product;
+	uint32_t serial;
+
+	/* These fields are zero if unset */
+	int manufacture_week;
+	int manufacture_year;
+	int model_year;
+};
+
+const struct di_edid_vendor_product *
+di_edid_get_vendor_product(const struct di_edid *edid);
 
 #endif
