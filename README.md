@@ -18,7 +18,16 @@ particular, each commit must carry a Signed-off-by tag to denote that the
 submitter adheres to the [Developer Certificate of Origin 1.1]. This project
 follows the [freedesktop.org Contributor Covenant].
 
+## Testing
+
+The low-level EDID library is tested against [edid-decode]. `test/data/`
+contains a small collection of EDID blobs and diffs between upstream
+`edid-decode` and our `di-edid-decode` clone. Our CI ensures the diffs are
+up-to-date. A patch should never make the diffs grow larger. To add a new EDID
+blob or update a diff, use `test/edid-decode-diff.sh test/data/<edid>`.
+
 [GitLab project]: https://gitlab.freedesktop.org/emersion/libdisplay-info
 [Wayland contribution guidelines]: https://gitlab.freedesktop.org/wayland/wayland/-/blob/main/CONTRIBUTING.md
 [Developer Certificate of Origin 1.1]: https://developercertificate.org/
 [freedesktop.org Contributor Covenant]: https://www.freedesktop.org/wiki/CodeOfConduct/
+[edid-decode]: https://git.linuxtv.org/edid-decode.git/

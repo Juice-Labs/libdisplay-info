@@ -3,7 +3,7 @@ project(
 	'c',
 	version: '0.0.0',
 	license: 'MIT',
-	meson_version: '>= 0.52.1',
+	meson_version: '>= 0.55.0',
 	default_options: [
 		'c_std=c11',
 		'warning_level=3',
@@ -51,9 +51,11 @@ di_dep = declare_dependency(
 	include_directories: include_directories('include'),
 )
 
-executable(
+di_edid_decode = executable(
 	'di-edid-decode',
 	'di-edid-decode.c',
 	dependencies: di_dep,
 	install: true,
 )
+
+subdir('test')

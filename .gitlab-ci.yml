@@ -1,4 +1,4 @@
-.templates_sha: &templates_sha 3e66ea37e5672bb8f48e3056ba92915b5fc5b888
+.templates_sha: &templates_sha 3f37cc0e461f5b0c815409bf6f55759f26a74e9c
 
 include:
   - project: 'freedesktop/ci-templates'
@@ -8,9 +8,13 @@ include:
     ref: *templates_sha
     file: '/templates/alpine.yml'
 
+# When updating the prepare-container step, make sure to bump
+# FDO_DISTRIBUTION_TAG, otherwise the container won't get rebuilt.
+# FDO_FORCE_REBUILD can be used when testing container changes.
 variables:
   FDO_UPSTREAM_REPO: 'emersion/libdisplay-info'
-  FDO_DISTRIBUTION_TAG: '2022-03-24.2'
+  FDO_DISTRIBUTION_TAG: '2022-03-28.0'
+  #FDO_FORCE_REBUILD: 1
 
 stages:
   - "Contribution checks"
@@ -32,7 +36,15 @@ prepare-container:
   extends: .fdo.container-build@alpine@x86_64
   stage: "Prepare container"
   variables:
-    FDO_DISTRIBUTION_PACKAGES: 'build-base meson'
+    FDO_DISTRIBUTION_PACKAGES: 'build-base meson make git'
+    FDO_DISTRIBUTION_EXEC: |
+      git clone git://linuxtv.org/edid-decode.git
+      cd edid-decode
+      git checkout 8a8d673d738ce010ca32a179032e8f6c0bb5dfb4
+      make
+      make install
+      cd ..
+      rm -rf edid-decode
   rules:
     - when: on_success
 

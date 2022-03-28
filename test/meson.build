@@ -1,0 +1,24 @@
+ref_edid_decode = find_program('edid-decode', native: true, required: false)
+if not ref_edid_decode.found()
+	test('edid-decode-not-found', find_program('false'))
+	subdir_done()
+endif
+
+test_harness = find_program('./edid-decode-check.sh', native: true)
+
+test_cases = [
+	'dell-2408wfp-dp',
+]
+
+foreach tc : test_cases
+	test(
+		tc,
+		test_harness,
+		args: [files('data/' + tc)],
+		env: [
+			'REF_EDID_DECODE=' + ref_edid_decode.full_path(),
+			'DI_EDID_DECODE=' + di_edid_decode.full_path(),
+		],
+		depends: [di_edid_decode],
+	)
+endforeach
