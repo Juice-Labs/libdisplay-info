@@ -33,6 +33,8 @@ prepare-container:
   stage: "Prepare container"
   variables:
     FDO_DISTRIBUTION_PACKAGES: 'build-base meson'
+  rules:
+    - when: on_success
 
 build:
   extends: .fdo.distribution-image@alpine
@@ -44,3 +46,5 @@ build:
   artifacts:
     paths:
       - build/meson-logs/
+  rules:
+    - when: on_success
