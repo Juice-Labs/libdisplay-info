@@ -27,6 +27,7 @@ di_lib = library(
 	'display-info',
 	[
 		'edid.c',
+		'info.c',
 	],
 	include_directories: include_directories('include'),
 	install: true,
