@@ -30,3 +30,9 @@ di_info_destroy(struct di_info *info)
 	di_edid_destroy(info->edid);
 	free(info);
 }
+
+const struct di_edid *
+di_info_get_edid(const struct di_info *info)
+{
+	return info->edid;
+}

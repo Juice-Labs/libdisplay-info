@@ -31,4 +31,17 @@ di_info_parse_edid(const void *data, size_t size);
 void
 di_info_destroy(struct di_info *info);
 
+/**
+ * Returns the EDID the display device information was constructed with.
+ *
+ * The returned struct di_edid can be used to query low-level EDID information,
+ * see <libdisplay-info/edid.h>. Users should prefer the high-level API if
+ * possible.
+ *
+ * NULL is returned if the struct di_info doesn't contain an EDID. The returned
+ * struct di_edid is valid until di_info_destroy().
+ */
+const struct di_edid *
+di_info_get_edid(const struct di_info *info);
+
 #endif
