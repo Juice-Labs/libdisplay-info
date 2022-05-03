@@ -12,6 +12,12 @@
 struct di_edid {
 	struct di_edid_vendor_product vendor_product;
 	int version, revision;
+	/* NULL-terminated, doesn't include the base block */
+	struct di_edid_ext **exts;
+};
+
+struct di_edid_ext {
+	enum di_edid_ext_tag tag;
 };
 
 /**

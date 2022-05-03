@@ -75,11 +75,33 @@ parse_vendor_product(const uint8_t data[static EDID_BLOCK_SIZE],
 	}
 }
 
+static struct di_edid_ext *
+parse_ext(const uint8_t data[static EDID_BLOCK_SIZE])
+{
+	struct di_edid_ext *ext;
+
+	if (!validate_block_checksum(data)) {
+		errno = EINVAL;
+		return NULL;
+	}
+
+	ext = calloc(1, sizeof(*ext));
+	if (!ext) {
+		return NULL;
+	}
+
+	ext->tag = data[0];
+
+	return ext;
+}
+
 struct di_edid *
 di_edid_parse(const void *data, size_t size)
 {
 	struct di_edid *edid;
 	int version, revision;
+	size_t exts_len, i;
+	const uint8_t *ext_data;
 
 	if (size < EDID_BLOCK_SIZE ||
 	    size > EDID_MAX_BLOCK_COUNT * EDID_BLOCK_SIZE) {
@@ -115,12 +137,35 @@ di_edid_parse(const void *data, size_t size)
 
 	parse_vendor_product(data, &edid->vendor_product);
 
+	exts_len = size / EDID_BLOCK_SIZE - 1;
+	edid->exts = calloc(exts_len + 1, sizeof(struct di_edid_ext *));
+	if (!edid->exts) {
+		di_edid_destroy(edid);
+		return NULL;
+	}
+
+	for (i = 0; i < exts_len; i++) {
+		ext_data = (const uint8_t *) data + (i + 1) * EDID_BLOCK_SIZE;
+		edid->exts[i] = parse_ext(ext_data);
+		if (!edid->exts[i]) {
+			di_edid_destroy(edid);
+			return NULL;
+		}
+	}
+
 	return edid;
 }
 
 void
 di_edid_destroy(struct di_edid *edid)
 {
+	size_t i;
+
+	for (i = 0; edid->exts[i] != NULL; i++) {
+		free(edid->exts[i]);
+	}
+
+	free(edid->exts);
 	free(edid);
 }
 
@@ -140,4 +185,16 @@ const struct di_edid_vendor_product *
 di_edid_get_vendor_product(const struct di_edid *edid)
 {
 	return &edid->vendor_product;
+}
+
+const struct di_edid_ext *const *
+di_edid_get_extensions(const struct di_edid *edid)
+{
+	return (const struct di_edid_ext *const *) edid->exts;
+}
+
+enum di_edid_ext_tag
+di_edid_ext_get_tag(const struct di_edid_ext *ext)
+{
+	return ext->tag;
 }

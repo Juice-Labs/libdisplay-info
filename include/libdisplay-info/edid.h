@@ -46,4 +46,43 @@ struct di_edid_vendor_product {
 const struct di_edid_vendor_product *
 di_edid_get_vendor_product(const struct di_edid *edid);
 
+/**
+ * Get a list of EDID extensions.
+ *
+ * The returned array is NULL-terminated.
+ */
+const struct di_edid_ext *const *
+di_edid_get_extensions(const struct di_edid *edid);
+
+/**
+ * EDID extension block tags.
+ */
+enum di_edid_ext_tag {
+	/* CEA 861 Series Extension */
+	DI_EDID_EXT_CEA = 0x02,
+	/* Video Timing Block Extension */
+	DI_EDID_EXT_VTB = 0x10,
+	/* Display Information Extension */
+	DI_EDID_EXT_DI = 0x40,
+	/* Localized String Extension */
+	DI_EDID_EXT_LS = 0x50,
+	/* Digital Packet Video Link Extension */
+	DI_EDID_EXT_DPVL = 0x60,
+	/* Extension Block Map */
+	DI_EDID_EXT_BLOCK_MAP = 0xF0,
+	/* Extension defined by the display manufacturer */
+	DI_EDID_EXT_VENDOR = 0xFF,
+};
+
+/**
+ * EDID extension block.
+ */
+struct di_edid_ext;
+
+/**
+ * Get the tag of an EDID extension block.
+ */
+enum di_edid_ext_tag
+di_edid_ext_get_tag(const struct di_edid_ext *ext);
+
 #endif
