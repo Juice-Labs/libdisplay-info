@@ -1,10 +1,9 @@
 --- ref
 +++ di
-@@ -7,36 +7,8 @@
-     Made in: week 12 of 2019
+@@ -8,35 +8,8 @@
    Basic Display Parameters & Features:
      Digital display
--    Maximum image size: 60 cm x 34 cm
+     Maximum image size: 60 cm x 34 cm
 -    Gamma: 2.20
 -    DPMS levels: Off
 -    RGB color display
@@ -37,7 +36,7 @@
      Display Product Name: 'HP 27 QD'
      Display Product Serial Number: 'CN49120J6N'
    Extension blocks: 1
-@@ -45,63 +17,4 @@
+@@ -45,63 +18,4 @@
  ----------------
  
  Block 1, CTA-861 Extension Block:

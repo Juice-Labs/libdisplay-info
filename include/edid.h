@@ -26,6 +26,7 @@ struct di_edid {
 
 	bool is_digital;
 	struct di_edid_video_input_digital video_input_digital;
+	struct di_edid_screen_size screen_size;
 
 	/* NULL-terminated */
 	struct di_edid_display_descriptor *display_descriptors[EDID_BYTE_DESCRIPTOR_COUNT + 1];

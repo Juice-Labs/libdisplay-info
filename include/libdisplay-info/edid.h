@@ -131,6 +131,19 @@ struct di_edid_video_input_digital {
 const struct di_edid_video_input_digital *
 di_edid_get_video_input_digital(const struct di_edid *edid);
 
+struct di_edid_screen_size {
+	/* Physical size in centimeters, zero if unset */
+	int width_cm, height_cm;
+	/* Aspect ratio rounded to the hundredth decimal place, zero if unset. */
+	float landscape_aspect_ratio, portait_aspect_ratio;
+};
+
+/**
+ * Get the screen size.
+ */
+const struct di_edid_screen_size *
+di_edid_get_screen_size(const struct di_edid *edid);
+
 /**
  * Get a list of EDID extensions.
  *

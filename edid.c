@@ -109,18 +109,13 @@ parse_vendor_product(const uint8_t data[static EDID_BLOCK_SIZE],
 }
 
 static bool
-parse_basic_params_features(struct di_edid *edid,
-			    const uint8_t data[static EDID_BLOCK_SIZE])
+parse_video_input_digital(struct di_edid *edid, uint8_t video_input)
 {
-	uint8_t video_input, color_bit_depth, interface;
+	uint8_t color_bit_depth, interface;
 	struct di_edid_video_input_digital *digital = &edid->video_input_digital;
 
-	video_input = data[0x14];
-	edid->is_digital = has_bit(video_input, 7);
-
-	if (!edid->is_digital || edid->revision < 4) {
+	if (edid->revision < 4) {
 		/* TODO: parse EDID 1.3- fields */
-		/* TODO: parse analog fields */
 		return true;
 	}
 
@@ -152,6 +147,42 @@ parse_basic_params_features(struct di_edid *edid,
 			return false;
 		}
 		digital->interface = DI_EDID_VIDEO_INPUT_DIGITAL_UNDEFINED;
+	}
+
+	return true;
+}
+
+static bool
+parse_basic_params_features(struct di_edid *edid,
+			    const uint8_t data[static EDID_BLOCK_SIZE])
+{
+	uint8_t video_input, width, height;
+	struct di_edid_screen_size *screen_size = &edid->screen_size;
+
+	video_input = data[0x14];
+	edid->is_digital = has_bit(video_input, 7);
+
+	/* TODO: parse analog fields */
+	if (edid->is_digital) {
+		if (!parse_video_input_digital(edid, video_input)) {
+			return false;
+		}
+	}
+
+	/* v1.3 says screen size is undefined if either byte is zero, v1.4 says
+	 * screen size and aspect ratio are undefined if both bytes are zero and
+	 * encodes the aspect ratio if either byte is zero. */
+	width = data[0x15];
+	height = data[0x16];
+	if (width > 0 && height > 0) {
+		screen_size->width_cm = width;
+		screen_size->height_cm = height;
+	} else if (edid->revision >= 4) {
+		if (width > 0) {
+			screen_size->landscape_aspect_ratio = ((float) width + 99) / 100;
+		} else if (height > 0) {
+			screen_size->portait_aspect_ratio = ((float) height + 99) / 100;
+		}
 	}
 
 	return true;
@@ -378,6 +409,12 @@ const struct di_edid_video_input_digital *
 di_edid_get_video_input_digital(const struct di_edid *edid)
 {
 	return edid->is_digital ? &edid->video_input_digital : NULL;
+}
+
+const struct di_edid_screen_size *
+di_edid_get_screen_size(const struct di_edid *edid)
+{
+	return &edid->screen_size;
 }
 
 const struct di_edid_display_descriptor *const *

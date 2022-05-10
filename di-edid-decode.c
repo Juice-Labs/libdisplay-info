@@ -134,6 +134,7 @@ main(void)
 	struct di_info *info;
 	const struct di_edid_vendor_product *vendor_product;
 	const struct di_edid_video_input_digital *video_input_digital;
+	const struct di_edid_screen_size *screen_size;
 	const struct di_edid_display_descriptor *const *display_descs;
 	const struct di_edid_ext *const *exts;
 	size_t i;
@@ -185,6 +186,19 @@ main(void)
 			printf("    %s\n",
 			       digital_interface_name(video_input_digital->interface));
 		}
+	}
+	screen_size = di_edid_get_screen_size(edid);
+	if (screen_size->width_cm > 0) {
+		printf("    Maximum image size: %d cm x %d cm\n",
+		       screen_size->width_cm, screen_size->height_cm);
+	} else if (screen_size->landscape_aspect_ratio > 0) {
+		printf("    Aspect ratio: %.2f (landscape)\n",
+		       screen_size->landscape_aspect_ratio);
+	} else if (screen_size->portait_aspect_ratio > 0) {
+		printf("    Aspect ratio: %.2f (portrait)\n",
+		       screen_size->portait_aspect_ratio);
+	} else {
+		printf("    Image size is variable\n");
 	}
 
 	printf("  Detailed Timing Descriptors:\n");
