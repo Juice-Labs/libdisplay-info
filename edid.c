@@ -109,6 +109,55 @@ parse_vendor_product(const uint8_t data[static EDID_BLOCK_SIZE],
 }
 
 static bool
+parse_basic_params_features(struct di_edid *edid,
+			    const uint8_t data[static EDID_BLOCK_SIZE])
+{
+	uint8_t video_input, color_bit_depth, interface;
+	struct di_edid_video_input_digital *digital = &edid->video_input_digital;
+
+	video_input = data[0x14];
+	edid->is_digital = has_bit(video_input, 7);
+
+	if (!edid->is_digital || edid->revision < 4) {
+		/* TODO: parse EDID 1.3- fields */
+		/* TODO: parse analog fields */
+		return true;
+	}
+
+	color_bit_depth = get_bit_range(video_input, 6, 4);
+	if (color_bit_depth == 0x07) {
+		/* Reserved */
+		if (edid->revision <= 4) {
+			errno = EINVAL;
+			return false;
+		}
+	} else if (color_bit_depth != 0) {
+		digital->color_bit_depth = 2 * color_bit_depth + 4;
+	}
+
+	interface = get_bit_range(video_input, 3, 0);
+	switch (interface) {
+	case DI_EDID_VIDEO_INPUT_DIGITAL_UNDEFINED:
+	case DI_EDID_VIDEO_INPUT_DIGITAL_DVI:
+	case DI_EDID_VIDEO_INPUT_DIGITAL_HDMI_A:
+	case DI_EDID_VIDEO_INPUT_DIGITAL_HDMI_B:
+	case DI_EDID_VIDEO_INPUT_DIGITAL_MDDI:
+	case DI_EDID_VIDEO_INPUT_DIGITAL_DISPLAYPORT:
+		digital->interface = interface;
+		break;
+	default:
+		/* Reserved */
+		if (edid->revision <= 4) {
+			errno = EINVAL;
+			return false;
+		}
+		digital->interface = DI_EDID_VIDEO_INPUT_DIGITAL_UNDEFINED;
+	}
+
+	return true;
+}
+
+static bool
 parse_byte_descriptor(struct di_edid *edid,
 		      const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
 {
@@ -175,7 +224,6 @@ parse_byte_descriptor(struct di_edid *edid,
 
 	desc->tag = tag;
 	edid->display_descriptors[edid->display_descriptors_len++] = desc;
-
 	return true;
 }
 
@@ -266,6 +314,11 @@ di_edid_parse(const void *data, size_t size)
 
 	parse_vendor_product(data, &edid->vendor_product);
 
+	if (!parse_basic_params_features(edid, data)) {
+		di_edid_destroy(edid);
+		return NULL;
+	}
+
 	for (i = 0; i < EDID_BYTE_DESCRIPTOR_COUNT; i++) {
 		byte_desc_data = (const uint8_t *) data
 			       + 0x36 + i * EDID_BYTE_DESCRIPTOR_SIZE;
@@ -319,6 +372,12 @@ const struct di_edid_vendor_product *
 di_edid_get_vendor_product(const struct di_edid *edid)
 {
 	return &edid->vendor_product;
+}
+
+const struct di_edid_video_input_digital *
+di_edid_get_video_input_digital(const struct di_edid *edid)
+{
+	return edid->is_digital ? &edid->video_input_digital : NULL;
 }
 
 const struct di_edid_display_descriptor *const *

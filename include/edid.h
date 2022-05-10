@@ -5,6 +5,7 @@
  * Private header for the low-level EDID API.
  */
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include <libdisplay-info/edid.h>
@@ -22,9 +23,14 @@
 struct di_edid {
 	struct di_edid_vendor_product vendor_product;
 	int version, revision;
+
+	bool is_digital;
+	struct di_edid_video_input_digital video_input_digital;
+
 	/* NULL-terminated */
 	struct di_edid_display_descriptor *display_descriptors[EDID_BYTE_DESCRIPTOR_COUNT + 1];
 	size_t display_descriptors_len;
+
 	/* NULL-terminated, doesn't include the base block */
 	struct di_edid_ext *exts[EDID_MAX_BLOCK_COUNT];
 	size_t exts_len;

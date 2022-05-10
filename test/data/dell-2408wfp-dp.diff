@@ -1,13 +1,9 @@
 --- ref
 +++ di
-@@ -5,39 +5,8 @@
-     Model: 41003
-     Serial Number: 842091859
-     Made in: week 47 of 2008
--  Basic Display Parameters & Features:
--    Digital display
--    Bits per primary color channel: 8
--    DisplayPort interface
+@@ -9,35 +9,8 @@
+     Digital display
+     Bits per primary color channel: 8
+     DisplayPort interface
 -    Maximum image size: 52 cm x 32 cm
 -    Gamma: 2.20
 -    DPMS levels: Off

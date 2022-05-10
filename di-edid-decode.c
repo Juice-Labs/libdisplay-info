@@ -86,6 +86,30 @@ ext_tag_name(enum di_edid_ext_tag tag)
 	}
 }
 
+static const char *
+digital_interface_name(enum di_edid_video_input_digital_interface interface)
+{
+	static char name[256];
+	switch (interface) {
+	case DI_EDID_VIDEO_INPUT_DIGITAL_UNDEFINED:
+		return "Digital interface is not defined";
+	case DI_EDID_VIDEO_INPUT_DIGITAL_DVI:
+		return "DVI interface";
+	case DI_EDID_VIDEO_INPUT_DIGITAL_HDMI_A:
+		return "HDMI-a interface";
+	case DI_EDID_VIDEO_INPUT_DIGITAL_HDMI_B:
+		return "HDMI-b interface";
+	case DI_EDID_VIDEO_INPUT_DIGITAL_MDDI:
+		return "MDDI interface";
+	case DI_EDID_VIDEO_INPUT_DIGITAL_DISPLAYPORT:
+		return "DisplayPort interface";
+	default:
+		snprintf(name, sizeof(name), "Unknown interface: 0x%02x",
+			 interface);
+		return name;
+	}
+}
+
 static void
 print_ext(const struct di_edid_ext *ext, size_t ext_index)
 {
@@ -109,6 +133,7 @@ main(void)
 	const struct di_edid *edid;
 	struct di_info *info;
 	const struct di_edid_vendor_product *vendor_product;
+	const struct di_edid_video_input_digital *video_input_digital;
 	const struct di_edid_display_descriptor *const *display_descs;
 	const struct di_edid_ext *const *exts;
 	size_t i;
@@ -144,6 +169,22 @@ main(void)
 		printf("    Made in: week %d of %d\n",
 		       vendor_product->manufacture_week,
 		       vendor_product->manufacture_year);
+	}
+
+	printf("  Basic Display Parameters & Features:\n");
+	video_input_digital = di_edid_get_video_input_digital(edid);
+	if (video_input_digital) {
+		printf("    Digital display\n");
+		if (di_edid_get_revision(edid) >= 4) {
+			if (video_input_digital->color_bit_depth == 0) {
+				printf("    Color depth is undefined\n");
+			} else {
+				printf("    Bits per primary color channel: %d\n",
+				       video_input_digital->color_bit_depth);
+			}
+			printf("    %s\n",
+			       digital_interface_name(video_input_digital->interface));
+		}
 	}
 
 	printf("  Detailed Timing Descriptors:\n");

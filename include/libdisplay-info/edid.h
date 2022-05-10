@@ -104,6 +104,34 @@ const char *
 di_edid_display_descriptor_get_string(const struct di_edid_display_descriptor *desc);
 
 /**
+ * Digital video input interface standard.
+ */
+enum di_edid_video_input_digital_interface {
+	DI_EDID_VIDEO_INPUT_DIGITAL_UNDEFINED = 0x00,
+	DI_EDID_VIDEO_INPUT_DIGITAL_DVI = 0x01,
+	DI_EDID_VIDEO_INPUT_DIGITAL_HDMI_A = 0x02,
+	DI_EDID_VIDEO_INPUT_DIGITAL_HDMI_B = 0x03,
+	DI_EDID_VIDEO_INPUT_DIGITAL_MDDI = 0x04,
+	DI_EDID_VIDEO_INPUT_DIGITAL_DISPLAYPORT = 0x05,
+};
+
+/**
+ * EDID digital video input basic information, defined in section 3.6.1.
+ */
+struct di_edid_video_input_digital {
+	int color_bit_depth; /* zero if undefined */
+	enum di_edid_video_input_digital_interface interface;
+};
+
+/**
+ * Get the digital video input basic information.
+ *
+ * Returns NULL if this isn't a digital display.
+ */
+const struct di_edid_video_input_digital *
+di_edid_get_video_input_digital(const struct di_edid *edid);
+
+/**
  * Get a list of EDID extensions.
  *
  * The returned array is NULL-terminated.
