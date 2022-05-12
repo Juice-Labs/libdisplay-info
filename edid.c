@@ -156,7 +156,7 @@ static bool
 parse_basic_params_features(struct di_edid *edid,
 			    const uint8_t data[static EDID_BLOCK_SIZE])
 {
-	uint8_t video_input, width, height;
+	uint8_t video_input, width, height, features;
 	struct di_edid_screen_size *screen_size = &edid->screen_size;
 
 	video_input = data[0x14];
@@ -190,6 +190,12 @@ parse_basic_params_features(struct di_edid *edid,
 	} else {
 		edid->gamma = 0;
 	}
+
+	features = data[0x18];
+
+	edid->dpms.standby = has_bit(features, 7);
+	edid->dpms.suspend = has_bit(features, 6);
+	edid->dpms.off = has_bit(features, 5);
 
 	return true;
 }
@@ -427,6 +433,12 @@ float
 di_edid_get_basic_gamma(const struct di_edid *edid)
 {
 	return edid->gamma;
+}
+
+const struct di_edid_dpms *
+di_edid_get_dpms(const struct di_edid *edid)
+{
+	return &edid->dpms;
 }
 
 const struct di_edid_display_descriptor *const *

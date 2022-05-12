@@ -136,6 +136,7 @@ main(void)
 	const struct di_edid_video_input_digital *video_input_digital;
 	const struct di_edid_screen_size *screen_size;
 	float gamma;
+	const struct di_edid_dpms *dpms;
 	const struct di_edid_display_descriptor *const *display_descs;
 	const struct di_edid_ext *const *exts;
 	size_t i;
@@ -207,6 +208,21 @@ main(void)
 		printf("    Gamma: %.2f\n", gamma);
 	} else {
 		printf("    Gamma is defined in an extension block\n");
+	}
+
+	dpms = di_edid_get_dpms(edid);
+	if (dpms->standby || dpms->suspend || dpms->off) {
+		printf("    DPMS levels:");
+		if (dpms->standby) {
+			printf(" Standby");
+		}
+		if (dpms->suspend) {
+			printf(" Suspend");
+		}
+		if (dpms->off) {
+			printf(" Off");
+		}
+		printf("\n");
 	}
 
 	printf("  Detailed Timing Descriptors:\n");

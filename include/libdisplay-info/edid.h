@@ -9,6 +9,7 @@
  * Standard release A revision 2.
  */
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -152,6 +153,24 @@ di_edid_get_screen_size(const struct di_edid *edid);
  */
 float
 di_edid_get_basic_gamma(const struct di_edid *edid);
+
+/**
+ * Supported legacy Display Power Management Signaling (DPMS) states, defined in
+ * section 3.6.4.
+ *
+ * Display Power Management (DPM) compliant displays only support "off".
+ */
+struct di_edid_dpms {
+	bool standby;
+	bool suspend;
+	bool off;
+};
+
+/**
+ * Get the set of supported legacy DPMS states.
+ */
+const struct di_edid_dpms *
+di_edid_get_dpms(const struct di_edid *edid);
 
 /**
  * Get a list of EDID extensions.

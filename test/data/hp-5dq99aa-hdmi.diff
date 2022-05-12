@@ -1,10 +1,9 @@
 --- ref
 +++ di
-@@ -9,34 +9,8 @@
-     Digital display
+@@ -10,33 +10,8 @@
      Maximum image size: 60 cm x 34 cm
      Gamma: 2.20
--    DPMS levels: Off
+     DPMS levels: Off
 -    RGB color display
 -    First detailed timing is the preferred timing
 -  Color Characteristics:
@@ -35,7 +34,7 @@
      Display Product Name: 'HP 27 QD'
      Display Product Serial Number: 'CN49120J6N'
    Extension blocks: 1
-@@ -45,63 +19,4 @@
+@@ -45,63 +20,4 @@
  ----------------
  
  Block 1, CTA-861 Extension Block:
