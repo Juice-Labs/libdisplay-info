@@ -24,8 +24,8 @@ static void
 parse_version_revision(const uint8_t data[static EDID_BLOCK_SIZE],
 		       int *version, int *revision)
 {
-	*version = (int) data[18];
-	*revision = (int) data[19];
+	*version = (int) data[0x12];
+	*revision = (int) data[0x13];
 }
 
 static bool
@@ -49,28 +49,28 @@ parse_vendor_product(const uint8_t data[static EDID_BLOCK_SIZE],
 	int year = 0;
 
 	/* The ASCII 3-letter manufacturer code is encoded in 5-bit codes. */
-	man = (uint16_t) ((data[8] << 8) | data[9]);
+	man = (uint16_t) ((data[0x08] << 8) | data[0x09]);
 	out->manufacturer[0] = ((man >> 10) & 0x1F) + '@';
 	out->manufacturer[1] = ((man >> 5) & 0x1F) + '@';
 	out->manufacturer[2] = ((man >> 0) & 0x1F) + '@';
 
-	out->product = (uint16_t) (data[10] | (data[11] << 8));
-	out->serial = (uint32_t) (data[12] |
-				  (data[13] << 8) |
-				  (data[14] << 16) |
-				  (data[15] << 24));
+	out->product = (uint16_t) (data[0x0A] | (data[0x0B] << 8));
+	out->serial = (uint32_t) (data[0x0C] |
+				  (data[0x0D] << 8) |
+				  (data[0x0E] << 16) |
+				  (data[0x0F] << 24));
 
-	if (data[17] >= 0x10) {
-		year = data[17] + 1990;
+	if (data[0x11] >= 0x10) {
+		year = data[0x11] + 1990;
 	}
 
-	if (data[16] == 0xFF) {
+	if (data[0x10] == 0xFF) {
 		/* Special flag for model year */
 		out->model_year = year;
 	} else {
 		out->manufacture_year = year;
-		if (data[16] > 0 && data[16] <= 54) {
-			out->manufacture_week = data[16];
+		if (data[0x10] > 0 && data[0x10] <= 54) {
+			out->manufacture_week = data[0x10];
 		}
 	}
 }
@@ -90,7 +90,7 @@ parse_ext(const uint8_t data[static EDID_BLOCK_SIZE])
 		return NULL;
 	}
 
-	ext->tag = data[0];
+	ext->tag = data[0x00];
 
 	return ext;
 }
