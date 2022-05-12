@@ -1,10 +1,9 @@
 --- ref
 +++ di
-@@ -10,34 +10,8 @@
-     Bits per primary color channel: 8
+@@ -11,33 +11,8 @@
      DisplayPort interface
      Maximum image size: 52 cm x 32 cm
--    Gamma: 2.20
+     Gamma: 2.20
 -    DPMS levels: Off
 -    Supported color formats: RGB 4:4:4
 -    First detailed timing includes the native pixel format and preferred refresh rate

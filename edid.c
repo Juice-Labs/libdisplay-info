@@ -185,6 +185,12 @@ parse_basic_params_features(struct di_edid *edid,
 		}
 	}
 
+	if (data[0x17] != 0xFF) {
+		edid->gamma = ((float) data[0x17] + 100) / 100;
+	} else {
+		edid->gamma = 0;
+	}
+
 	return true;
 }
 
@@ -415,6 +421,12 @@ const struct di_edid_screen_size *
 di_edid_get_screen_size(const struct di_edid *edid)
 {
 	return &edid->screen_size;
+}
+
+float
+di_edid_get_basic_gamma(const struct di_edid *edid)
+{
+	return edid->gamma;
 }
 
 const struct di_edid_display_descriptor *const *

@@ -135,6 +135,7 @@ main(void)
 	const struct di_edid_vendor_product *vendor_product;
 	const struct di_edid_video_input_digital *video_input_digital;
 	const struct di_edid_screen_size *screen_size;
+	float gamma;
 	const struct di_edid_display_descriptor *const *display_descs;
 	const struct di_edid_ext *const *exts;
 	size_t i;
@@ -199,6 +200,13 @@ main(void)
 		       screen_size->portait_aspect_ratio);
 	} else {
 		printf("    Image size is variable\n");
+	}
+
+	gamma = di_edid_get_basic_gamma(edid);
+	if (gamma != 0) {
+		printf("    Gamma: %.2f\n", gamma);
+	} else {
+		printf("    Gamma is defined in an extension block\n");
 	}
 
 	printf("  Detailed Timing Descriptors:\n");

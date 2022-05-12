@@ -145,6 +145,15 @@ const struct di_edid_screen_size *
 di_edid_get_screen_size(const struct di_edid *edid);
 
 /**
+ * Get the display transfer characteristics from the basic EDID parameters, also
+ * known as "gamma".
+ *
+ * Returns 0 if unset (ie, stored in an extension block).
+ */
+float
+di_edid_get_basic_gamma(const struct di_edid *edid);
+
+/**
  * Get a list of EDID extensions.
  *
  * The returned array is NULL-terminated.
