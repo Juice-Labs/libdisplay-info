@@ -173,6 +173,24 @@ const struct di_edid_dpms *
 di_edid_get_dpms(const struct di_edid *edid);
 
 /**
+ * Basic color encoding formats, defined in section 3.6.4.
+ */
+struct di_edid_color_encoding_formats {
+	bool rgb444; /* RGB 4:4:4 */
+	bool ycrcb444; /* YCrCb 4:4:4 */
+	bool ycrcb422; /* YCrCb 4:2:2 */
+};
+
+/**
+ * Get the set of supported color encoding formats.
+ *
+ * Returns NULL if the display is analog or if the color encoding formats are
+ * not specified.
+ */
+const struct di_edid_color_encoding_formats *
+di_edid_get_color_encoding_formats(const struct di_edid *edid);
+
+/**
  * Get a list of EDID extensions.
  *
  * The returned array is NULL-terminated.

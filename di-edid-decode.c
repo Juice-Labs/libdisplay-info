@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <inttypes.h>
 #include <stdio.h>
 
@@ -137,6 +138,7 @@ main(void)
 	const struct di_edid_screen_size *screen_size;
 	float gamma;
 	const struct di_edid_dpms *dpms;
+	const struct di_edid_color_encoding_formats *color_encoding_formats;
 	const struct di_edid_display_descriptor *const *display_descs;
 	const struct di_edid_ext *const *exts;
 	size_t i;
@@ -221,6 +223,19 @@ main(void)
 		}
 		if (dpms->off) {
 			printf(" Off");
+		}
+		printf("\n");
+	}
+
+	color_encoding_formats = di_edid_get_color_encoding_formats(edid);
+	if (color_encoding_formats) {
+		assert(color_encoding_formats->rgb444);
+		printf("    Supported color formats: RGB 4:4:4");
+		if (color_encoding_formats->ycrcb444) {
+			printf(", YCrCb 4:4:4");
+		}
+		if (color_encoding_formats->ycrcb422) {
+			printf(", YCrCb 4:2:2");
 		}
 		printf("\n");
 	}

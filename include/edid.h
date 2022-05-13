@@ -29,6 +29,7 @@ struct di_edid {
 	struct di_edid_screen_size screen_size;
 	float gamma;
 	struct di_edid_dpms dpms;
+	struct di_edid_color_encoding_formats color_encoding_formats;
 
 	/* NULL-terminated */
 	struct di_edid_display_descriptor *display_descriptors[EDID_BYTE_DESCRIPTOR_COUNT + 1];
