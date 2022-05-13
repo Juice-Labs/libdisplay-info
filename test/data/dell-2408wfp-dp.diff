@@ -1,10 +1,9 @@
 --- ref
 +++ di
-@@ -13,31 +13,8 @@
-     Gamma: 2.20
+@@ -14,30 +14,8 @@
      DPMS levels: Off
      Supported color formats: RGB 4:4:4
--    First detailed timing includes the native pixel format and preferred refresh rate
+     First detailed timing includes the native pixel format and preferred refresh rate
 -  Color Characteristics:
 -    Red  : 0.6738, 0.3193
 -    Green: 0.1875, 0.7060

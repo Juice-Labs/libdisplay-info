@@ -191,6 +191,49 @@ const struct di_edid_color_encoding_formats *
 di_edid_get_color_encoding_formats(const struct di_edid *edid);
 
 /**
+ * Miscellaneous basic features, defined in section 3.6.4.
+ *
+ * Note, the enum values don't match the specification.
+ */
+struct di_edid_misc_features {
+	/**
+	 * First detailed timing is the preferred timing.
+	 *
+	 * Always set for EDID 1.4 and later.
+	 */
+	bool has_preferred_timing;
+	/**
+	 * GTF using the default parameters is supported.
+	 *
+	 * Never set for EDID 1.4 and later.
+	 */
+	bool default_gtf;
+	/**
+	 * sRGB standard default color space is primary color space.
+	 */
+	bool srgb_is_primary;
+	/**
+	 * Preferred timing mode includes native pixel format and rate.
+	 *
+	 * Never set for EDID 1.3 and earlier.
+	 */
+	bool preferred_timing_is_native;
+	/**
+	 * GTF or CVT generated timings within the display's range limits are
+	 * accepted.
+	 *
+	 * Never set for EDID 1.3 and earlier.
+	 */
+	bool continuous_freq;
+};
+
+/**
+ * Get the set of miscellaneous basic features.
+ */
+const struct di_edid_misc_features *
+di_edid_get_misc_features(const struct di_edid *edid);
+
+/**
  * Get a list of EDID extensions.
  *
  * The returned array is NULL-terminated.

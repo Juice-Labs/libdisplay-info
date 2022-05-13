@@ -203,6 +203,16 @@ parse_basic_params_features(struct di_edid *edid,
 		edid->color_encoding_formats.ycrcb422 = has_bit(features, 4);
 	}
 
+	if (edid->revision >= 4) {
+		edid->misc_features.has_preferred_timing = true;
+		edid->misc_features.continuous_freq = has_bit(features, 0);
+		edid->misc_features.preferred_timing_is_native = has_bit(features, 1);
+	} else {
+		edid->misc_features.default_gtf = has_bit(features, 0);
+		edid->misc_features.has_preferred_timing = has_bit(features, 1);
+	}
+	edid->misc_features.srgb_is_primary = has_bit(features, 2);
+
 	return true;
 }
 
@@ -453,6 +463,12 @@ di_edid_get_color_encoding_formats(const struct di_edid *edid)
 	/* If color encoding formats are specified, RGB 4:4:4 is always
 	 * supported. */
 	return edid->color_encoding_formats.rgb444 ? &edid->color_encoding_formats : NULL;
+}
+
+const struct di_edid_misc_features *
+di_edid_get_misc_features(const struct di_edid *edid)
+{
+	return &edid->misc_features;
 }
 
 const struct di_edid_display_descriptor *const *

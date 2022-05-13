@@ -139,6 +139,7 @@ main(void)
 	float gamma;
 	const struct di_edid_dpms *dpms;
 	const struct di_edid_color_encoding_formats *color_encoding_formats;
+	const struct di_edid_misc_features *misc_features;
 	const struct di_edid_display_descriptor *const *display_descs;
 	const struct di_edid_ext *const *exts;
 	size_t i;
@@ -238,6 +239,31 @@ main(void)
 			printf(", YCrCb 4:2:2");
 		}
 		printf("\n");
+	}
+
+	misc_features = di_edid_get_misc_features(edid);
+	if (misc_features->srgb_is_primary) {
+		printf("    Default (sRGB) color space is primary color space\n");
+	}
+	if (di_edid_get_revision(edid) >= 4) {
+		assert(misc_features->has_preferred_timing);
+		if (misc_features->preferred_timing_is_native) {
+			printf("    First detailed timing includes the native "
+			       "pixel format and preferred refresh rate\n");
+		} else {
+			printf("    First detailed timing does not include the "
+			       "native pixel format and preferred refresh rate\n");
+		}
+	} else {
+		if (misc_features->has_preferred_timing) {
+			printf("    First detailed timing is the preferred timing\n");
+		}
+	}
+	if (misc_features->continuous_freq) {
+		printf("    Display is continuous frequency\n");
+	}
+	if (misc_features->default_gtf) {
+		printf("    Supports GTF timings within operating range\n");
 	}
 
 	printf("  Detailed Timing Descriptors:\n");

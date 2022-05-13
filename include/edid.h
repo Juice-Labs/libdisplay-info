@@ -30,6 +30,7 @@ struct di_edid {
 	float gamma;
 	struct di_edid_dpms dpms;
 	struct di_edid_color_encoding_formats color_encoding_formats;
+	struct di_edid_misc_features misc_features;
 
 	/* NULL-terminated */
 	struct di_edid_display_descriptor *display_descriptors[EDID_BYTE_DESCRIPTOR_COUNT + 1];
