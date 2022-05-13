@@ -104,7 +104,8 @@ di_edid_parse(const void *data, size_t size)
 	const uint8_t *ext_data;
 
 	if (size < EDID_BLOCK_SIZE ||
-	    size > EDID_MAX_BLOCK_COUNT * EDID_BLOCK_SIZE) {
+	    size > EDID_MAX_BLOCK_COUNT * EDID_BLOCK_SIZE ||
+	    size % EDID_BLOCK_SIZE != 0) {
 		errno = EINVAL;
 		return NULL;
 	}
