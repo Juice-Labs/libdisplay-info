@@ -55,7 +55,7 @@ const struct di_edid_ext *const *
 di_edid_get_extensions(const struct di_edid *edid);
 
 /**
- * EDID extension block tags.
+ * EDID extension block tags, defined in section 2.2.4.
  */
 enum di_edid_ext_tag {
 	/* CEA 861 Series Extension */
