@@ -13,7 +13,7 @@ include:
 # FDO_FORCE_REBUILD can be used when testing container changes.
 variables:
   FDO_UPSTREAM_REPO: 'emersion/libdisplay-info'
-  FDO_DISTRIBUTION_TAG: '2022-03-28.0'
+  FDO_DISTRIBUTION_TAG: '2022-05-24.0'
   #FDO_FORCE_REBUILD: 1
 
 stages:
