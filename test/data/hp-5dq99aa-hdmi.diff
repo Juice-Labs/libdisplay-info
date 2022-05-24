@@ -36,10 +36,8 @@
 -                 Vfront    3 Vsync   5 Vback   33 Vpol N
      Display Range Limits:
 -      Monitor ranges (GTF): 46-75 Hz V, 30-112 kHz H, max dotclock 310 MHz
--    Display Product Name: 'HP 27 QD'
--    Display Product Serial Number: 'CN49120J6N'
-+    Display Product Name:
-+    Display Product Serial Number:
+     Display Product Name: 'HP 27 QD'
+     Display Product Serial Number: 'CN49120J6N'
    Extension blocks: 1
  Checksum: 0x20
  

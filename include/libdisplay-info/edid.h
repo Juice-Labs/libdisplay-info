@@ -92,6 +92,18 @@ enum di_edid_display_descriptor_tag
 di_edid_display_descriptor_get_tag(const struct di_edid_display_descriptor *desc);
 
 /**
+ * Get the contents of a product serial number, a data string, or a product name
+ * display descriptor.
+ *
+ * Returns NULL if the display descriptor tag isn't either
+ * DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_SERIAL_NUMBER,
+ * DI_EDID_DISPLAY_DESCRIPTOR_DATA_STRING or
+ * DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME.
+ */
+const char *
+di_edid_display_descriptor_get_string(const struct di_edid_display_descriptor *desc);
+
+/**
  * Get a list of EDID extensions.
  *
  * The returned array is NULL-terminated.

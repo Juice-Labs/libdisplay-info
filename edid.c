@@ -86,6 +86,7 @@ parse_byte_descriptor(struct di_edid *edid,
 {
 	struct di_edid_display_descriptor *desc;
 	uint8_t tag;
+	char *newline;
 
 	if (data[0] || data[1]) {
 		if (edid->display_descriptors_len > 0) {
@@ -111,8 +112,16 @@ parse_byte_descriptor(struct di_edid *edid,
 	switch (tag) {
 	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_SERIAL:
 	case DI_EDID_DISPLAY_DESCRIPTOR_DATA_STRING:
-	case DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS:
 	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME:
+		memcpy(desc->str, &data[5], 13);
+
+		/* A newline (if any) indicates the end of the string. */
+		newline = strchr(desc->str, '\n');
+		if (newline) {
+			newline[0] = '\0';
+		}
+		break;
+	case DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS:
 	case DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT:
 	case DI_EDID_DISPLAY_DESCRIPTOR_STD_TIMING_IDS:
 	case DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA:
@@ -294,6 +303,19 @@ enum di_edid_display_descriptor_tag
 di_edid_display_descriptor_get_tag(const struct di_edid_display_descriptor *desc)
 {
 	return desc->tag;
+}
+
+const char *
+di_edid_display_descriptor_get_string(const struct di_edid_display_descriptor *desc)
+{
+	switch (desc->tag) {
+	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_SERIAL:
+	case DI_EDID_DISPLAY_DESCRIPTOR_DATA_STRING:
+	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME:
+		return desc->str;
+	default:
+		return NULL;
+	}
 }
 
 const struct di_edid_ext *const *

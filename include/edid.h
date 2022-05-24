@@ -32,6 +32,9 @@ struct di_edid {
 
 struct di_edid_display_descriptor {
 	enum di_edid_display_descriptor_tag tag;
+	/* Used for PRODUCT_SERIAL, DATA_STRING and PRODUCT_NAME,
+	 * zero-terminated */
+	char str[14];
 };
 
 struct di_edid_ext {

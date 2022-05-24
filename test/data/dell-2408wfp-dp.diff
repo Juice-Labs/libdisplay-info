@@ -35,10 +35,8 @@
 -    DTD 1:  1920x1200   59.950171 Hz   8:5     74.038 kHz    154.000000 MHz (519 mm x 320 mm)
 -                 Hfront   48 Hsync  32 Hback   80 Hpol P
 -                 Vfront    3 Vsync   6 Vback   26 Vpol N
--    Display Product Serial Number: 'G283H8BI21MS'
--    Display Product Name: 'DELL 2408WFP'
-+    Display Product Serial Number:
-+    Display Product Name:
+     Display Product Serial Number: 'G283H8BI21MS'
+     Display Product Name: 'DELL 2408WFP'
      Display Range Limits:
 -      Monitor ranges (Bare Limits): 56-76 Hz V, 30-83 kHz H, max dotclock 170 MHz
  Checksum: 0x92

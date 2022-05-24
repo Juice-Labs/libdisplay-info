@@ -41,12 +41,25 @@ static void
 print_display_desc(const struct di_edid_display_descriptor *desc)
 {
 	enum di_edid_display_descriptor_tag tag;
-	const char *tag_name;
+	const char *tag_name, *str;
 
 	tag = di_edid_display_descriptor_get_tag(desc);
 	tag_name = display_desc_tag_name(tag);
 
-	printf("    %s:\n", tag_name);
+	printf("    %s:", tag_name);
+
+	switch (tag) {
+	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_SERIAL:
+	case DI_EDID_DISPLAY_DESCRIPTOR_DATA_STRING:
+	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME:
+		str = di_edid_display_descriptor_get_string(desc);
+		printf(" '%s'", str);
+		break;
+	default:
+		break; /* TODO: print other tags */
+	}
+
+	printf("\n");
 }
 
 static const char *
