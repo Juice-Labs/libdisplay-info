@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -5,103 +5,10 @@
+@@ -5,103 +5,14 @@
      Model: 13847
      Serial Number: 16843009
      Made in: week 12 of 2019
@@ -30,14 +30,16 @@
 -    DMT 0x2f:  1440x900    59.887445 Hz  16:10    55.935 kHz    106.500000 MHz
 -    DMT 0x33:  1600x1200   60.000000 Hz   4:3     75.000 kHz    162.000000 MHz
 -    DMT 0x23:  1280x1024   60.019740 Hz   5:4     63.981 kHz    108.000000 MHz
--  Detailed Timing Descriptors:
+   Detailed Timing Descriptors:
 -    DTD 1:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (597 mm x 339 mm)
 -                 Hfront   48 Hsync  32 Hback   80 Hpol P
 -                 Vfront    3 Vsync   5 Vback   33 Vpol N
--    Display Range Limits:
+     Display Range Limits:
 -      Monitor ranges (GTF): 46-75 Hz V, 30-112 kHz H, max dotclock 310 MHz
 -    Display Product Name: 'HP 27 QD'
 -    Display Product Serial Number: 'CN49120J6N'
++    Display Product Name:
++    Display Product Serial Number:
    Extension blocks: 1
  Checksum: 0x20
  

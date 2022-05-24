@@ -9,6 +9,10 @@
  * The size of an EDID block, defined in section 2.2.
  */
 #define EDID_BLOCK_SIZE 128
+/**
+ * The size of an EDID byte descriptor, defined in section 3.10.
+ */
+#define EDID_BYTE_DESCRIPTOR_SIZE 18
 
 /**
  * Fixed EDID header, defined in section 3.1.
@@ -77,6 +81,68 @@ parse_vendor_product(const uint8_t data[static EDID_BLOCK_SIZE],
 }
 
 static bool
+parse_byte_descriptor(struct di_edid *edid,
+		      const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
+{
+	struct di_edid_display_descriptor *desc;
+	uint8_t tag;
+
+	if (data[0] || data[1]) {
+		if (edid->display_descriptors_len > 0) {
+			/* A detailed timing descriptor is not allowed after a
+			 * display descriptor per note 3 of table 3.20. */
+			errno = EINVAL;
+			return false;
+		}
+
+		/* TODO: parse detailed timing descriptor */
+		return true;
+	}
+
+	/* TODO: check we got at least one detailed timing descriptor, per note
+	 * 4 of table 3.20. */
+
+	desc = calloc(1, sizeof(*desc));
+	if (!desc) {
+		return false;
+	}
+
+	tag = data[3];
+	switch (tag) {
+	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_SERIAL:
+	case DI_EDID_DISPLAY_DESCRIPTOR_DATA_STRING:
+	case DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS:
+	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME:
+	case DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT:
+	case DI_EDID_DISPLAY_DESCRIPTOR_STD_TIMING_IDS:
+	case DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA:
+	case DI_EDID_DISPLAY_DESCRIPTOR_CVT_TIMING_CODES:
+	case DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III:
+	case DI_EDID_DISPLAY_DESCRIPTOR_DUMMY:
+		break; /* Ignore */
+	default:
+		free(desc);
+		if (tag <= 0x0F) {
+			/* Manufacturer-specific */
+			errno = ENOTSUP;
+		} else {
+			/* Reserved */
+			if (edid->revision > 4) {
+				errno = ENOTSUP;
+			} else {
+				errno = EINVAL;
+			}
+		}
+		return false;
+	}
+
+	desc->tag = tag;
+	edid->display_descriptors[edid->display_descriptors_len++] = desc;
+
+	return true;
+}
+
+static bool
 parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 {
 	struct di_edid_ext *ext;
@@ -120,7 +186,7 @@ di_edid_parse(const void *data, size_t size)
 	struct di_edid *edid;
 	int version, revision;
 	size_t exts_len, i;
-	const uint8_t *ext_data;
+	const uint8_t *byte_desc_data, *ext_data;
 
 	if (size < EDID_BLOCK_SIZE ||
 	    size > EDID_MAX_BLOCK_COUNT * EDID_BLOCK_SIZE ||
@@ -163,6 +229,16 @@ di_edid_parse(const void *data, size_t size)
 
 	parse_vendor_product(data, &edid->vendor_product);
 
+	for (i = 0; i < EDID_BYTE_DESCRIPTOR_COUNT; i++) {
+		byte_desc_data = (const uint8_t *) data
+			       + 0x36 + i * EDID_BYTE_DESCRIPTOR_SIZE;
+		if (!parse_byte_descriptor(edid, byte_desc_data)
+		    && errno != ENOTSUP) {
+			di_edid_destroy(edid);
+			return NULL;
+		}
+	}
+
 	for (i = 0; i < exts_len; i++) {
 		ext_data = (const uint8_t *) data + (i + 1) * EDID_BLOCK_SIZE;
 		if (!parse_ext(edid, ext_data) && errno != ENOTSUP) {
@@ -178,6 +254,10 @@ void
 di_edid_destroy(struct di_edid *edid)
 {
 	size_t i;
+
+	for (i = 0; i < edid->display_descriptors_len; i++) {
+		free(edid->display_descriptors[i]);
+	}
 
 	for (i = 0; edid->exts[i] != NULL; i++) {
 		free(edid->exts[i]);
@@ -202,6 +282,18 @@ const struct di_edid_vendor_product *
 di_edid_get_vendor_product(const struct di_edid *edid)
 {
 	return &edid->vendor_product;
+}
+
+const struct di_edid_display_descriptor *const *
+di_edid_get_display_descriptors(const struct di_edid *edid)
+{
+	return (const struct di_edid_display_descriptor *const *) &edid->display_descriptors;
+}
+
+enum di_edid_display_descriptor_tag
+di_edid_display_descriptor_get_tag(const struct di_edid_display_descriptor *desc)
+{
+	return desc->tag;
 }
 
 const struct di_edid_ext *const *

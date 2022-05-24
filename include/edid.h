@@ -14,13 +14,24 @@
  * section 2.2.1.
  */
 #define EDID_MAX_BLOCK_COUNT 256
+/**
+ * The number of EDID byte descriptors, defined in section 3.10.
+ */
+#define EDID_BYTE_DESCRIPTOR_COUNT 4
 
 struct di_edid {
 	struct di_edid_vendor_product vendor_product;
 	int version, revision;
+	/* NULL-terminated */
+	struct di_edid_display_descriptor *display_descriptors[EDID_BYTE_DESCRIPTOR_COUNT + 1];
+	size_t display_descriptors_len;
 	/* NULL-terminated, doesn't include the base block */
 	struct di_edid_ext *exts[EDID_MAX_BLOCK_COUNT];
 	size_t exts_len;
+};
+
+struct di_edid_display_descriptor {
+	enum di_edid_display_descriptor_tag tag;
 };
 
 struct di_edid_ext {

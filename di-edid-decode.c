@@ -5,6 +5,51 @@
 #include <libdisplay-info/info.h>
 
 static const char *
+display_desc_tag_name(enum di_edid_display_descriptor_tag tag)
+{
+	static char name[256];
+	switch (tag) {
+	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_SERIAL:
+		return "Display Product Serial Number";
+	case DI_EDID_DISPLAY_DESCRIPTOR_DATA_STRING:
+		return "Alphanumeric Data String";
+	case DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS:
+		return "Display Range Limits";
+	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME:
+		return "Display Product Name";
+	case DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT:
+		return "Color Point Data";
+	case DI_EDID_DISPLAY_DESCRIPTOR_STD_TIMING_IDS:
+		return "Standard Timing Identifications";
+	case DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA:
+		return "Display Color Management Data";
+	case DI_EDID_DISPLAY_DESCRIPTOR_CVT_TIMING_CODES:
+		return "CVT 3 Byte Timing Codes";
+	case DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III:
+		return "Established timings III";
+	case DI_EDID_DISPLAY_DESCRIPTOR_DUMMY:
+		return "Dummy Descriptor";
+	default:
+		snprintf(name, sizeof(name), "%s Display Descriptor (0x%02hhx)",
+			 tag <= 0x0F ? "Manufacturer-Specified" : "Unknown",
+			 tag);
+		return name;
+	}
+}
+
+static void
+print_display_desc(const struct di_edid_display_descriptor *desc)
+{
+	enum di_edid_display_descriptor_tag tag;
+	const char *tag_name;
+
+	tag = di_edid_display_descriptor_get_tag(desc);
+	tag_name = display_desc_tag_name(tag);
+
+	printf("    %s:\n", tag_name);
+}
+
+static const char *
 ext_tag_name(enum di_edid_ext_tag tag)
 {
 	static char name[256];
@@ -51,6 +96,7 @@ main(void)
 	const struct di_edid *edid;
 	struct di_info *info;
 	const struct di_edid_vendor_product *vendor_product;
+	const struct di_edid_display_descriptor *const *display_descs;
 	const struct di_edid_ext *const *exts;
 	size_t i;
 
@@ -85,6 +131,12 @@ main(void)
 		printf("    Made in: week %d of %d\n",
 		       vendor_product->manufacture_week,
 		       vendor_product->manufacture_year);
+	}
+
+	printf("  Detailed Timing Descriptors:\n");
+	display_descs = di_edid_get_display_descriptors(edid);
+	for (i = 0; display_descs[i] != NULL; i++) {
+		print_display_desc(display_descs[i]);
 	}
 
 	exts = di_edid_get_extensions(edid);
