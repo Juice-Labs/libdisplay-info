@@ -14,6 +14,7 @@ struct di_edid {
 	int version, revision;
 	/* NULL-terminated, doesn't include the base block */
 	struct di_edid_ext **exts;
+	size_t exts_len;
 };
 
 struct di_edid_ext {

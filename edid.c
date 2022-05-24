@@ -75,24 +75,42 @@ parse_vendor_product(const uint8_t data[static EDID_BLOCK_SIZE],
 	}
 }
 
-static struct di_edid_ext *
-parse_ext(const uint8_t data[static EDID_BLOCK_SIZE])
+static bool
+parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 {
 	struct di_edid_ext *ext;
+	uint8_t tag;
 
 	if (!validate_block_checksum(data)) {
 		errno = EINVAL;
-		return NULL;
+		return false;
+	}
+
+	tag = data[0x00];
+	switch (tag) {
+	case DI_EDID_EXT_CEA:
+	case DI_EDID_EXT_VTB:
+	case DI_EDID_EXT_DI:
+	case DI_EDID_EXT_LS:
+	case DI_EDID_EXT_DPVL:
+	case DI_EDID_EXT_BLOCK_MAP:
+	case DI_EDID_EXT_VENDOR:
+		/* Supported */
+		break;
+	default:
+		/* Unsupported */
+		errno = ENOTSUP;
+		return false;
 	}
 
 	ext = calloc(1, sizeof(*ext));
 	if (!ext) {
-		return NULL;
+		return false;
 	}
+	ext->tag = tag;
+	edid->exts[edid->exts_len++] = ext;
 
-	ext->tag = data[0x00];
-
-	return ext;
+	return true;
 }
 
 struct di_edid *
@@ -147,8 +165,7 @@ di_edid_parse(const void *data, size_t size)
 
 	for (i = 0; i < exts_len; i++) {
 		ext_data = (const uint8_t *) data + (i + 1) * EDID_BLOCK_SIZE;
-		edid->exts[i] = parse_ext(ext_data);
-		if (!edid->exts[i]) {
+		if (!parse_ext(edid, ext_data) && errno != ENOTSUP) {
 			di_edid_destroy(edid);
 			return NULL;
 		}
