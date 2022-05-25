@@ -9,11 +9,6 @@
  * The size of an EDID block, defined in section 2.2.
  */
 #define EDID_BLOCK_SIZE 128
-/**
- * The maximum number of EDID blocks (including the base block), defined in
- * section 2.2.1.
- */
-#define EDID_MAX_BLOCK_COUNT 256
 
 /**
  * Fixed EDID header, defined in section 3.1.
@@ -168,12 +163,6 @@ di_edid_parse(const void *data, size_t size)
 
 	parse_vendor_product(data, &edid->vendor_product);
 
-	edid->exts = calloc(exts_len + 1, sizeof(struct di_edid_ext *));
-	if (!edid->exts) {
-		di_edid_destroy(edid);
-		return NULL;
-	}
-
 	for (i = 0; i < exts_len; i++) {
 		ext_data = (const uint8_t *) data + (i + 1) * EDID_BLOCK_SIZE;
 		if (!parse_ext(edid, ext_data) && errno != ENOTSUP) {
@@ -194,7 +183,6 @@ di_edid_destroy(struct di_edid *edid)
 		free(edid->exts[i]);
 	}
 
-	free(edid->exts);
 	free(edid);
 }
 

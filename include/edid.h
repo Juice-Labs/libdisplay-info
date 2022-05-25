@@ -9,11 +9,17 @@
 
 #include <libdisplay-info/edid.h>
 
+/**
+ * The maximum number of EDID blocks (including the base block), defined in
+ * section 2.2.1.
+ */
+#define EDID_MAX_BLOCK_COUNT 256
+
 struct di_edid {
 	struct di_edid_vendor_product vendor_product;
 	int version, revision;
 	/* NULL-terminated, doesn't include the base block */
-	struct di_edid_ext **exts;
+	struct di_edid_ext *exts[EDID_MAX_BLOCK_COUNT];
 	size_t exts_len;
 };
 
