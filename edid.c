@@ -28,6 +28,12 @@ parse_version_revision(const uint8_t data[static EDID_BLOCK_SIZE],
 	*revision = (int) data[0x13];
 }
 
+static size_t
+parse_ext_count(const uint8_t data[static EDID_BLOCK_SIZE])
+{
+	return data[0x7E];
+}
+
 static bool
 validate_block_checksum(const uint8_t data[static EDID_BLOCK_SIZE])
 {
@@ -146,6 +152,12 @@ di_edid_parse(const void *data, size_t size)
 		return NULL;
 	}
 
+	exts_len = size / EDID_BLOCK_SIZE - 1;
+	if (exts_len != parse_ext_count(data)) {
+		errno = -EINVAL;
+		return NULL;
+	}
+
 	edid = calloc(1, sizeof(*edid));
 	if (!edid) {
 		return NULL;
@@ -156,7 +168,6 @@ di_edid_parse(const void *data, size_t size)
 
 	parse_vendor_product(data, &edid->vendor_product);
 
-	exts_len = size / EDID_BLOCK_SIZE - 1;
 	edid->exts = calloc(exts_len + 1, sizeof(struct di_edid_ext *));
 	if (!edid->exts) {
 		di_edid_destroy(edid);
