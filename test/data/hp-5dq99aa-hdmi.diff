@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -5,103 +5,7 @@
+@@ -5,103 +5,8 @@
      Model: 13847
      Serial Number: 16843009
      Made in: week 12 of 2019
@@ -38,7 +38,7 @@
 -      Monitor ranges (GTF): 46-75 Hz V, 30-112 kHz H, max dotclock 310 MHz
 -    Display Product Name: 'HP 27 QD'
 -    Display Product Serial Number: 'CN49120J6N'
--  Extension blocks: 1
+   Extension blocks: 1
 -Checksum: 0x20
  
  ----------------

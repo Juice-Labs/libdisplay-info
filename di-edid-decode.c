@@ -82,6 +82,12 @@ main(void)
 	}
 
 	exts = di_edid_get_extensions(edid);
+
+	for (i = 0; exts[i] != NULL; i++);
+	if (i > 0) {
+		printf("  Extension blocks: %zu\n", i);
+	}
+
 	for (i = 0; exts[i] != NULL; i++) {
 		print_ext(exts[i], i);
 	}
