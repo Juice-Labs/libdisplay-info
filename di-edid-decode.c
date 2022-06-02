@@ -37,10 +37,16 @@ print_ext(const struct di_edid_ext *ext, size_t ext_index)
 	printf("Block %zu, %s:\n", ext_index + 1, tag_name);
 }
 
+static size_t
+edid_checksum_index(size_t block_index)
+{
+	return 128 * (block_index + 1) - 1;
+}
+
 int
 main(void)
 {
-	static char raw[32 * 1024];
+	static uint8_t raw[32 * 1024];
 	size_t size = 0;
 	const struct di_edid *edid;
 	struct di_info *info;
@@ -87,9 +93,11 @@ main(void)
 	if (i > 0) {
 		printf("  Extension blocks: %zu\n", i);
 	}
+	printf("Checksum: 0x%02hhx\n", raw[edid_checksum_index(0)]);
 
 	for (i = 0; exts[i] != NULL; i++) {
 		print_ext(exts[i], i);
+		printf("Checksum: 0x%02hhx\n", raw[edid_checksum_index(i + 1)]);
 	}
 
 	di_info_destroy(info);

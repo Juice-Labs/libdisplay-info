@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -5,39 +5,3 @@
+@@ -5,39 +5,4 @@
      Model: 41003
      Serial Number: 842091859
      Made in: week 47 of 2008
@@ -39,4 +39,4 @@
 -    Display Product Name: 'DELL 2408WFP'
 -    Display Range Limits:
 -      Monitor ranges (Bare Limits): 56-76 Hz V, 30-83 kHz H, max dotclock 170 MHz
--Checksum: 0x92
+ Checksum: 0x92

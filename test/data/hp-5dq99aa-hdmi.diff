@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -5,103 +5,8 @@
+@@ -5,103 +5,10 @@
      Model: 13847
      Serial Number: 16843009
      Made in: week 12 of 2019
@@ -39,7 +39,7 @@
 -    Display Product Name: 'HP 27 QD'
 -    Display Product Serial Number: 'CN49120J6N'
    Extension blocks: 1
--Checksum: 0x20
+ Checksum: 0x20
  
  ----------------
  
@@ -104,3 +104,4 @@
 -                 Hfront   48 Hsync  32 Hback   80 Hpol P
 -                 Vfront    3 Vsync   5 Vback   31 Vpol N
 -Checksum: 0xa3  Unused space in Extension Block: 10 bytes
++Checksum: 0xa3
