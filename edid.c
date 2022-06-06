@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <errno.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -26,6 +27,24 @@ static bool
 has_bit(uint8_t val, size_t index)
 {
 	return val & (1 << index);
+}
+
+/**
+ * Extract a bit range from a byte.
+ *
+ * Both offsets are inclusive, start from zero, and high must be greater than low.
+ */
+static uint8_t
+get_bit_range(uint8_t val, size_t high, size_t low)
+{
+	size_t n;
+	uint8_t bitmask;
+
+	assert(high <= 7 && high >= low);
+
+	n = high - low + 1;
+	bitmask = (uint8_t) ((1 << n) - 1);
+	return (uint8_t) (val >> low) & bitmask;
 }
 
 static void
