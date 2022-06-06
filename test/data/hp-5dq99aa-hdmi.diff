@@ -1,14 +1,9 @@
 --- ref
 +++ di
-@@ -12,31 +12,21 @@
-     DPMS levels: Off
-     RGB color display
-     First detailed timing is the preferred timing
--  Color Characteristics:
--    Red  : 0.6650, 0.3261
--    Green: 0.2890, 0.6435
--    Blue : 0.1494, 0.0507
--    White: 0.3134, 0.3291
+@@ -17,26 +17,21 @@
+     Green: 0.2890, 0.6435
+     Blue : 0.1494, 0.0507
+     White: 0.3134, 0.3291
 -  Established Timings I & II:
 -    IBM     :   720x400    70.081663 Hz   9:5     31.467 kHz     28.320000 MHz
 -    DMT 0x04:   640x480    59.940476 Hz   4:3     31.469 kHz     25.175000 MHz
@@ -43,7 +38,7 @@
      Display Product Name: 'HP 27 QD'
      Display Product Serial Number: 'CN49120J6N'
    Extension blocks: 1
-@@ -45,63 +35,4 @@
+@@ -45,63 +40,4 @@
  ----------------
  
  Block 1, CTA-861 Extension Block:

@@ -12,6 +12,8 @@ project(
 
 cc = meson.get_compiler('c')
 
+math = cc.find_library('m', required: false)
+
 add_project_arguments(['-D_POSIX_C_SOURCE=200809L'], language: 'c')
 
 add_project_arguments(cc.get_supported_arguments([
@@ -61,7 +63,7 @@ di_dep = declare_dependency(
 di_edid_decode = executable(
 	'di-edid-decode',
 	'di-edid-decode.c',
-	dependencies: di_dep,
+	dependencies: [di_dep, math],
 	install: true,
 )
 

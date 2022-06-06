@@ -37,6 +37,8 @@ struct di_edid {
 	struct di_edid_color_encoding_formats color_encoding_formats;
 	struct di_edid_misc_features misc_features;
 
+	struct di_edid_chromaticity_coords chromaticity_coords;
+
 	/* NULL-terminated */
 	struct di_edid_standard_timing *standard_timings[EDID_MAX_STANDARD_TIMING_COUNT + 1];
 	size_t standard_timings_len;

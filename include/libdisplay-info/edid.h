@@ -200,6 +200,25 @@ const struct di_edid_misc_features *
 di_edid_get_misc_features(const struct di_edid *edid);
 
 /**
+ * EDID display chromaticity coordinates, defined in section 3.7.
+ *
+ * The values are accurate to the thousandth place. The red, green and blue
+ * values are zero for monochrome displays.
+ */
+struct di_edid_chromaticity_coords {
+	float red_x, red_y;
+	float green_x, green_y;
+	float blue_x, blue_y;
+	float white_x, white_y;
+};
+
+/**
+ * Get chromaticity coordinates.
+ */
+const struct di_edid_chromaticity_coords *
+di_edid_get_chromaticity_coords(const struct di_edid *edid);
+
+/**
  * Aspect ratio for an EDID standard timing.
  */
 enum di_edid_standard_timing_aspect_ratio {

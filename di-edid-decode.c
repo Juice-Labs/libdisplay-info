@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <inttypes.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -316,6 +317,12 @@ edid_checksum_index(size_t block_index)
 	return 128 * (block_index + 1) - 1;
 }
 
+static float
+truncate_chromaticity_coord(float coord)
+{
+	return floorf(coord * 10000) / 10000;
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -332,6 +339,7 @@ main(int argc, char *argv[])
 	enum di_edid_display_color_type display_color_type;
 	const struct di_edid_color_encoding_formats *color_encoding_formats;
 	const struct di_edid_misc_features *misc_features;
+	const struct di_edid_chromaticity_coords *chromaticity_coords;
 	const struct di_edid_standard_timing *const *standard_timings;
 	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;
 	const struct di_edid_display_descriptor *const *display_descs;
@@ -480,6 +488,22 @@ main(int argc, char *argv[])
 	if (misc_features->default_gtf) {
 		printf("    Supports GTF timings within operating range\n");
 	}
+
+	/* edid-decode truncates the result, but %f rounds it */
+	chromaticity_coords = di_edid_get_chromaticity_coords(edid);
+	printf("  Color Characteristics:\n");
+	printf("    Red  : %.4f, %.4f\n",
+	       truncate_chromaticity_coord(chromaticity_coords->red_x),
+	       truncate_chromaticity_coord(chromaticity_coords->red_y));
+	printf("    Green: %.4f, %.4f\n",
+	       truncate_chromaticity_coord(chromaticity_coords->green_x),
+	       truncate_chromaticity_coord(chromaticity_coords->green_y));
+	printf("    Blue : %.4f, %.4f\n",
+	       truncate_chromaticity_coord(chromaticity_coords->blue_x),
+	       truncate_chromaticity_coord(chromaticity_coords->blue_y));
+	printf("    White: %.4f, %.4f\n",
+	       truncate_chromaticity_coord(chromaticity_coords->white_x),
+	       truncate_chromaticity_coord(chromaticity_coords->white_y));
 
 	printf("  Standard Timings:");
 	standard_timings = di_edid_get_standard_timings(edid);

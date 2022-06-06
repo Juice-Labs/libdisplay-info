@@ -223,6 +223,55 @@ parse_basic_params_features(struct di_edid *edid,
 	return true;
 }
 
+static float
+decode_chromaticity_coord(uint8_t hi, uint8_t lo)
+{
+	uint16_t raw; /* only 10 bits are used */
+
+	raw = (uint16_t) (hi << 2) | lo;
+	return (float) raw / 1024;
+}
+
+static bool
+parse_chromaticity_coords(const uint8_t data[static EDID_BLOCK_SIZE],
+			  struct di_edid_chromaticity_coords *coords)
+{
+	uint8_t lo;
+	bool all_set, any_set;
+
+	lo = data[0x19];
+	coords->red_x = decode_chromaticity_coord(data[0x1B], get_bit_range(lo, 7, 6));
+	coords->red_y = decode_chromaticity_coord(data[0x1C], get_bit_range(lo, 5, 4));
+	coords->green_x = decode_chromaticity_coord(data[0x1D], get_bit_range(lo, 3, 2));
+	coords->green_y = decode_chromaticity_coord(data[0x1E], get_bit_range(lo, 1, 0));
+
+	lo = data[0x1A];
+	coords->blue_x = decode_chromaticity_coord(data[0x1F], get_bit_range(lo, 7, 6));
+	coords->blue_y = decode_chromaticity_coord(data[0x20], get_bit_range(lo, 5, 4));
+	coords->white_x = decode_chromaticity_coord(data[0x21], get_bit_range(lo, 3, 2));
+	coords->white_y = decode_chromaticity_coord(data[0x22], get_bit_range(lo, 1, 0));
+
+	/* Either all primaries coords must be set, either none must be set */
+	any_set = coords->red_x != 0 || coords->red_y != 0
+		  || coords->green_x != 0 || coords->green_y != 0
+		  || coords->blue_x != 0 || coords->blue_y != 0;
+	all_set = coords->red_x != 0 && coords->red_y != 0
+		  && coords->green_x != 0 && coords->green_y != 0
+		  && coords->blue_x != 0 && coords->blue_y != 0;
+	if (any_set && !all_set) {
+		errno = EINVAL;
+		return false;
+	}
+
+	/* Both white-point coords must be set */
+	if (coords->white_x == 0 || coords->white_y == 0) {
+		errno = EINVAL;
+		return false;
+	}
+
+	return true;
+}
+
 static bool
 parse_standard_timing(struct di_edid *edid,
 		      const uint8_t data[static EDID_STANDARD_TIMING_SIZE])
@@ -599,6 +648,11 @@ _di_edid_parse(const void *data, size_t size)
 		return NULL;
 	}
 
+	if (!parse_chromaticity_coords(data, &edid->chromaticity_coords)) {
+		_di_edid_destroy(edid);
+		return NULL;
+	}
+
 	for (i = 0; i < EDID_MAX_STANDARD_TIMING_COUNT; i++) {
 		standard_timing_data = (const uint8_t *) data
 				       + 0x26 + i * EDID_STANDARD_TIMING_SIZE;
@@ -714,6 +768,12 @@ const struct di_edid_misc_features *
 di_edid_get_misc_features(const struct di_edid *edid)
 {
 	return &edid->misc_features;
+}
+
+const struct di_edid_chromaticity_coords *
+di_edid_get_chromaticity_coords(const struct di_edid *edid)
+{
+	return &edid->chromaticity_coords;
 }
 
 int32_t

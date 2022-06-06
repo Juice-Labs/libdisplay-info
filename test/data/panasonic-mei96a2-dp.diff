@@ -1,14 +1,9 @@
 --- ref
 +++ di
-@@ -12,21 +12,15 @@
-     Gamma: 2.20
-     Supported color formats: RGB 4:4:4
-     First detailed timing includes the native pixel format and preferred refresh rate
--  Color Characteristics:
--    Red  : 0.6416, 0.3183
--    Green: 0.2949, 0.6083
--    Blue : 0.1533, 0.0605
--    White: 0.3134, 0.3291
+@@ -17,16 +17,15 @@
+     Green: 0.2949, 0.6083
+     Blue : 0.1533, 0.0605
+     White: 0.3134, 0.3291
 -  Established Timings I & II: none
    Standard Timings: none
    Detailed Timing Descriptors:

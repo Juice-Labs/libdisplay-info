@@ -1,14 +1,9 @@
 --- ref
 +++ di
-@@ -14,30 +14,16 @@
-     DPMS levels: Off
-     Supported color formats: RGB 4:4:4
-     First detailed timing includes the native pixel format and preferred refresh rate
--  Color Characteristics:
--    Red  : 0.6738, 0.3193
--    Green: 0.1875, 0.7060
--    Blue : 0.1484, 0.0644
--    White: 0.3134, 0.3291
+@@ -19,25 +19,16 @@
+     Green: 0.1875, 0.7060
+     Blue : 0.1484, 0.0644
+     White: 0.3134, 0.3291
 -  Established Timings I & II:
 -    IBM     :   720x400    70.081663 Hz   9:5     31.467 kHz     28.320000 MHz
 -    DMT 0x04:   640x480    59.940476 Hz   4:3     31.469 kHz     25.175000 MHz
