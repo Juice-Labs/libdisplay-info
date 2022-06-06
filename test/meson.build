@@ -9,6 +9,7 @@ test_harness = find_program('./edid-decode-check.sh', native: true)
 test_cases = [
 	'dell-2408wfp-dp',
 	'hp-5dq99aa-hdmi',
+	'panasonic-mei96a2-dp',
 ]
 
 foreach tc : test_cases
