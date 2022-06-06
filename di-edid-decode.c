@@ -168,7 +168,9 @@ main(void)
 	printf("  Vendor & Product Identification:\n");
 	printf("    Manufacturer: %.3s\n", vendor_product->manufacturer);
 	printf("    Model: %" PRIu16 "\n", vendor_product->product);
-	printf("    Serial Number: %" PRIu32 "\n", vendor_product->serial);
+	if (vendor_product->serial != 0) {
+		printf("    Serial Number: %" PRIu32 "\n", vendor_product->serial);
+	}
 	if (vendor_product->model_year != 0) {
 		printf("    Model year: %d\n", vendor_product->model_year);
 	} else {

@@ -36,7 +36,7 @@ di_edid_get_revision(const struct di_edid *edid);
 struct di_edid_vendor_product {
 	char manufacturer[3];
 	uint16_t product;
-	uint32_t serial;
+	uint32_t serial; /* zero if unset */
 
 	/* These fields are zero if unset */
 	int manufacture_week;
