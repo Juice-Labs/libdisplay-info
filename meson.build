@@ -27,6 +27,9 @@ add_project_arguments(cc.get_supported_arguments([
 	'-Werror=implicit',
 ]), language: 'c')
 
+symbols_file = 'libdisplay-info.map'
+symbols_flag = '-Wl,--version-script,@0@'.format(meson.current_source_dir() / symbols_file)
+
 di_lib = library(
 	'display-info',
 	[
@@ -34,6 +37,8 @@ di_lib = library(
 		'info.c',
 	],
 	include_directories: include_directories('include'),
+	link_args: symbols_flag,
+	link_depends: symbols_file,
 	install: true,
 )
 
