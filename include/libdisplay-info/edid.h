@@ -262,6 +262,30 @@ const char *
 di_edid_display_descriptor_get_string(const struct di_edid_display_descriptor *desc);
 
 /**
+ * EDID display range limits, defined in section 3.10.3.3.1.
+ */
+struct di_edid_display_range_limits {
+	/* Vertical rate limits in Hz, from 1 Hz to 510 Hz */
+	int32_t min_vert_rate_hz, max_vert_rate_hz;
+	/* Horizontal rate limits in Hz, from 1 KHz to 510 KHz, rounded to the
+	 * nearest multiple of 1 KHz */
+	int32_t min_horiz_rate_hz, max_horiz_rate_hz;
+
+	/* Maximum pixel clock in Hz, zero if unset, rounded to the nearest
+	 * multiple of 10 MHz */
+	int32_t max_pixel_clock_hz;
+};
+
+/**
+ * Get the contents of a display range limits descriptor.
+ *
+ * Returns NULL if the display descriptor tag isn't
+ * DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS.
+ */
+const struct di_edid_display_range_limits *
+di_edid_display_descriptor_get_range_limits(const struct di_edid_display_descriptor *desc);
+
+/**
  * Get a list of EDID extensions.
  *
  * The returned array is NULL-terminated.

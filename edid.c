@@ -257,6 +257,102 @@ parse_detailed_timing_def(struct di_edid *edid,
 }
 
 static bool
+decode_display_range_limits_offset(const struct di_edid *edid, uint8_t flags,
+				  int *max_offset, int *min_offset)
+{
+	switch (flags) {
+	case 0x00:
+		/* No offset */
+		break;
+	case 0x02:
+		*max_offset = 255;
+		break;
+	case 0x03:
+		*max_offset = 255;
+		*min_offset = 255;
+		break;
+	default:
+		/* Reserved */
+		if (edid->revision <= 4) {
+			errno = EINVAL;
+			return false;
+		}
+		break;
+	}
+
+	return true;
+}
+
+static bool
+parse_display_range_limits(const struct di_edid *edid,
+			   const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
+			   struct di_edid_display_range_limits *out)
+{
+	uint8_t offset_flags, vert_offset_flags, horiz_offset_flags;
+	int max_vert_offset = 0, min_vert_offset = 0;
+	int max_horiz_offset = 0, min_horiz_offset = 0;
+
+	offset_flags = data[4];
+	if (edid->revision >= 4) {
+		vert_offset_flags = get_bit_range(offset_flags, 1, 0);
+		horiz_offset_flags = get_bit_range(offset_flags, 3, 2);
+
+		if (!decode_display_range_limits_offset(edid,
+							vert_offset_flags,
+							&max_vert_offset,
+							&min_vert_offset)) {
+			return false;
+		}
+		if (!decode_display_range_limits_offset(edid,
+							horiz_offset_flags,
+							&max_horiz_offset,
+							&min_horiz_offset)) {
+			return false;
+		}
+
+		if (edid->revision <= 4 &&
+		    get_bit_range(offset_flags, 7, 4) != 0) {
+			/* Reserved */
+			errno = EINVAL;
+			return false;
+		}
+	} else if (offset_flags != 0) {
+		/* Reserved */
+		errno = EINVAL;
+		return false;
+	}
+
+	if (edid->revision <= 4 && (data[5] == 0 || data[6] == 0 ||
+				    data[7] == 0 || data[8] == 0)) {
+		/* Reserved */
+		errno = EINVAL;
+		return false;
+	}
+
+	out->min_vert_rate_hz = data[5] + min_vert_offset;
+	out->max_vert_rate_hz = data[6] + max_vert_offset;
+	out->min_horiz_rate_hz = (data[7] + min_horiz_offset) * 1000;
+	out->max_horiz_rate_hz = (data[8] + max_horiz_offset) * 1000;
+
+	if (out->min_vert_rate_hz > out->max_vert_rate_hz ||
+	    out->min_horiz_rate_hz > out->max_horiz_rate_hz) {
+		errno = EINVAL;
+		return false;
+	}
+
+	out->max_pixel_clock_hz = (int32_t) data[9] * 10 * 1000 * 1000;
+	if (edid->revision == 4 && out->max_pixel_clock_hz == 0) {
+		/* Reserved */
+		errno = EINVAL;
+		return false;
+	}
+
+	/* TODO: parse video timing support flags */
+
+	return true;
+}
+
+static bool
 parse_byte_descriptor(struct di_edid *edid,
 		      const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
 {
@@ -297,6 +393,11 @@ parse_byte_descriptor(struct di_edid *edid,
 		}
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS:
+		if (!parse_display_range_limits(edid, data, &desc->range_limits)) {
+			free(desc);
+			return false;
+		}
+		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT:
 	case DI_EDID_DISPLAY_DESCRIPTOR_STD_TIMING_IDS:
 	case DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA:
@@ -543,6 +644,15 @@ di_edid_display_descriptor_get_string(const struct di_edid_display_descriptor *d
 	default:
 		return NULL;
 	}
+}
+
+const struct di_edid_display_range_limits *
+di_edid_display_descriptor_get_range_limits(const struct di_edid_display_descriptor *desc)
+{
+	if (desc->tag != DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS) {
+		return NULL;
+	}
+	return &desc->range_limits;
 }
 
 const struct di_edid_ext *const *

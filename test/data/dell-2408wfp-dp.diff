@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -14,30 +14,11 @@
+@@ -14,30 +14,12 @@
      DPMS levels: Off
      Supported color formats: RGB 4:4:4
      First detailed timing includes the native pixel format and preferred refresh rate
@@ -32,4 +32,5 @@
      Display Product Name: 'DELL 2408WFP'
      Display Range Limits:
 -      Monitor ranges (Bare Limits): 56-76 Hz V, 30-83 kHz H, max dotclock 170 MHz
++      Monitor ranges: 56-76 Hz V, 30-83 kHz H, max dotclock 170 MHz
  Checksum: 0x92

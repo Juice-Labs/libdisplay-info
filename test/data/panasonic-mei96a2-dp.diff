@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -12,21 +12,13 @@
+@@ -12,21 +12,14 @@
      Gamma: 2.20
      Supported color formats: RGB 4:4:4
      First detailed timing includes the native pixel format and preferred refresh rate
@@ -24,5 +24,6 @@
 +                 Vfront   28 Vsync   5 Vback  443
      Display Range Limits:
 -      Monitor ranges (Bare Limits): 46-62 Hz V, 89-94 kHz H, max dotclock 260 MHz
++      Monitor ranges: 46-62 Hz V, 89-94 kHz H, max dotclock 260 MHz
      Alphanumeric Data String: 'VVX14T058J10'
  Checksum: 0x09

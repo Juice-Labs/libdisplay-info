@@ -50,6 +50,8 @@ struct di_edid_display_descriptor {
 	/* Used for PRODUCT_SERIAL, DATA_STRING and PRODUCT_NAME,
 	 * zero-terminated */
 	char str[14];
+	/* Used for RANGE_LIMITS */
+	struct di_edid_display_range_limits range_limits;
 };
 
 struct di_edid_ext {

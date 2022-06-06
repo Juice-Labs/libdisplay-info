@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -10,33 +10,12 @@
+@@ -10,33 +10,13 @@
      Maximum image size: 60 cm x 34 cm
      Gamma: 2.20
      DPMS levels: Off
@@ -33,10 +33,11 @@
 +                 Vfront    3 Vsync   5 Vback   33
      Display Range Limits:
 -      Monitor ranges (GTF): 46-75 Hz V, 30-112 kHz H, max dotclock 310 MHz
++      Monitor ranges: 46-75 Hz V, 30-112 kHz H, max dotclock 310 MHz
      Display Product Name: 'HP 27 QD'
      Display Product Serial Number: 'CN49120J6N'
    Extension blocks: 1
-@@ -45,63 +24,4 @@
+@@ -45,63 +25,4 @@
  ----------------
  
  Block 1, CTA-861 Extension Block:

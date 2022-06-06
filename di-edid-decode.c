@@ -115,6 +115,7 @@ print_display_desc(const struct di_edid_display_descriptor *desc)
 {
 	enum di_edid_display_descriptor_tag tag;
 	const char *tag_name, *str;
+	const struct di_edid_display_range_limits *range_limits;
 
 	tag = di_edid_display_descriptor_get_tag(desc);
 	tag_name = display_desc_tag_name(tag);
@@ -127,6 +128,18 @@ print_display_desc(const struct di_edid_display_descriptor *desc)
 	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME:
 		str = di_edid_display_descriptor_get_string(desc);
 		printf(" '%s'", str);
+		break;
+	case DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS:
+		range_limits = di_edid_display_descriptor_get_range_limits(desc);
+		printf("\n      Monitor ranges: %d-%d Hz V, %d-%d kHz H",
+		       range_limits->min_vert_rate_hz,
+		       range_limits->max_vert_rate_hz,
+		       range_limits->min_horiz_rate_hz / 1000,
+		       range_limits->max_horiz_rate_hz / 1000);
+		if (range_limits->max_pixel_clock_hz != 0) {
+			printf(", max dotclock %d MHz",
+			       range_limits->max_pixel_clock_hz / (1000 * 1000));
+		}
 		break;
 	default:
 		break; /* TODO: print other tags */
