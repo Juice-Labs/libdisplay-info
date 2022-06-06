@@ -52,7 +52,7 @@ build:
   extends: .fdo.distribution-image@alpine
   stage: "Build and test"
   script:
-    - meson build/ -Dwerror=true
+    - meson build/ --fatal-meson-warnings -Dwerror=true
     - ninja -C build/
     - ninja -C build/ test
   artifacts:
