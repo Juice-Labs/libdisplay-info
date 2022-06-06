@@ -13,7 +13,7 @@ include:
 # FDO_FORCE_REBUILD can be used when testing container changes.
 variables:
   FDO_UPSTREAM_REPO: 'emersion/libdisplay-info'
-  FDO_DISTRIBUTION_TAG: '2022-05-24.0'
+  FDO_DISTRIBUTION_TAG: '2022-06-08.0'
   #FDO_FORCE_REBUILD: 1
 
 stages:
@@ -36,7 +36,7 @@ prepare-container:
   extends: .fdo.container-build@alpine@x86_64
   stage: "Prepare container"
   variables:
-    FDO_DISTRIBUTION_PACKAGES: 'build-base meson make git'
+    FDO_DISTRIBUTION_PACKAGES: 'build-base meson make git gcovr py3-pygments'
     FDO_DISTRIBUTION_EXEC: |
       git clone git://linuxtv.org/edid-decode.git
       cd edid-decode
@@ -52,14 +52,18 @@ build:
   extends: .fdo.distribution-image@alpine
   stage: "Build and test"
   script:
-    - meson build/ --fatal-meson-warnings -Dwerror=true
+    - meson build/ --fatal-meson-warnings -Dwerror=true -Db_coverage=true
     - ninja -C build/
     - ninja -C build/ test
+    - ninja -C build/ coverage-xml coverage-html
   artifacts:
     when: always
     paths:
       - build/meson-logs/
     reports:
       junit: build/meson-logs/testlog.junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: build/meson-logs/coverage.xml
   rules:
     - when: on_success
