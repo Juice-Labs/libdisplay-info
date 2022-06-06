@@ -59,5 +59,7 @@ build:
     when: always
     paths:
       - build/meson-logs/
+    reports:
+      junit: build/meson-logs/testlog.junit.xml
   rules:
     - when: on_success
