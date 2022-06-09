@@ -19,6 +19,15 @@
  */
 static const uint8_t header[] = { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
 
+/**
+ * Check whether a byte has a bit set.
+ */
+static bool
+has_bit(uint8_t val, size_t index)
+{
+	return val & (1 << index);
+}
+
 static void
 parse_version_revision(const uint8_t data[static EDID_BLOCK_SIZE],
 		       int *version, int *revision)
