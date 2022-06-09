@@ -23,6 +23,8 @@ add_project_arguments(cc.get_supported_arguments([
 
 	'-Wno-unused-parameter',
 	'-Wno-missing-field-initializers',
+
+	'-Werror=implicit',
 ]), language: 'c')
 
 di_lib = library(
