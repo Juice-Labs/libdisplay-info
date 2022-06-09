@@ -60,12 +60,12 @@ struct di_edid_ext {
  * di_edid_destroy().
  */
 struct di_edid *
-di_edid_parse(const void *data, size_t size);
+_di_edid_parse(const void *data, size_t size);
 
 /**
  * Destroy an EDID data structure.
  */
 void
-di_edid_destroy(struct di_edid *edid);
+_di_edid_destroy(struct di_edid *edid);
 
 #endif

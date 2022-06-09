@@ -325,7 +325,7 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 }
 
 struct di_edid *
-di_edid_parse(const void *data, size_t size)
+_di_edid_parse(const void *data, size_t size)
 {
 	struct di_edid *edid;
 	int version, revision;
@@ -374,7 +374,7 @@ di_edid_parse(const void *data, size_t size)
 	parse_vendor_product(data, &edid->vendor_product);
 
 	if (!parse_basic_params_features(edid, data)) {
-		di_edid_destroy(edid);
+		_di_edid_destroy(edid);
 		return NULL;
 	}
 
@@ -383,7 +383,7 @@ di_edid_parse(const void *data, size_t size)
 			       + 0x36 + i * EDID_BYTE_DESCRIPTOR_SIZE;
 		if (!parse_byte_descriptor(edid, byte_desc_data)
 		    && errno != ENOTSUP) {
-			di_edid_destroy(edid);
+			_di_edid_destroy(edid);
 			return NULL;
 		}
 	}
@@ -391,7 +391,7 @@ di_edid_parse(const void *data, size_t size)
 	for (i = 0; i < exts_len; i++) {
 		ext_data = (const uint8_t *) data + (i + 1) * EDID_BLOCK_SIZE;
 		if (!parse_ext(edid, ext_data) && errno != ENOTSUP) {
-			di_edid_destroy(edid);
+			_di_edid_destroy(edid);
 			return NULL;
 		}
 	}
@@ -400,7 +400,7 @@ di_edid_parse(const void *data, size_t size)
 }
 
 void
-di_edid_destroy(struct di_edid *edid)
+_di_edid_destroy(struct di_edid *edid)
 {
 	size_t i;
 
