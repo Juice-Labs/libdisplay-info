@@ -10,11 +10,11 @@ include:
 
 # When updating the prepare-container step, make sure to bump
 # FDO_DISTRIBUTION_TAG, otherwise the container won't get rebuilt.
-# FDO_FORCE_REBUILD can be used when testing container changes.
+# To force a rebuild of the container, use:
+# $ git push -f -o ci.variable="FDO_FORCE_REBUILD=1"
 variables:
   FDO_UPSTREAM_REPO: 'emersion/libdisplay-info'
   FDO_DISTRIBUTION_TAG: '2022-06-08.0'
-  #FDO_FORCE_REBUILD: 1
 
 stages:
   - "Contribution checks"
