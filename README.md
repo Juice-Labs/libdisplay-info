@@ -18,6 +18,13 @@ particular, each commit must carry a Signed-off-by tag to denote that the
 submitter adheres to the [Developer Certificate of Origin 1.1]. This project
 follows the [freedesktop.org Contributor Covenant].
 
+## Building
+
+libdisplay-info is built using [Meson]. It has no dependencies.
+
+    meson build/
+    ninja -C build/
+
 ## Testing
 
 The low-level EDID library is tested against [edid-decode]. `test/data/`
@@ -30,4 +37,5 @@ blob or update a diff, use `test/edid-decode-diff.sh test/data/<edid>`.
 [Wayland contribution guidelines]: https://gitlab.freedesktop.org/wayland/wayland/-/blob/main/CONTRIBUTING.md
 [Developer Certificate of Origin 1.1]: https://developercertificate.org/
 [freedesktop.org Contributor Covenant]: https://www.freedesktop.org/wiki/CodeOfConduct/
+[Meson]: https://mesonbuild.com/
 [edid-decode]: https://git.linuxtv.org/edid-decode.git/
