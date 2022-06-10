@@ -33,9 +33,18 @@ contains a small collection of EDID blobs and diffs between upstream
 up-to-date. A patch should never make the diffs grow larger. To add a new EDID
 blob or update a diff, use `test/edid-decode-diff.sh test/data/<edid>`.
 
+## Fuzzing
+
+To fuzz libdisplay-info with [AFL], the library needs to be instrumented:
+
+    CC=afl-gcc meson build/
+    ninja -C build/
+    afl-fuzz -i test/data/ -o afl/ build/di-edid-decode
+
 [GitLab project]: https://gitlab.freedesktop.org/emersion/libdisplay-info
 [Wayland contribution guidelines]: https://gitlab.freedesktop.org/wayland/wayland/-/blob/main/CONTRIBUTING.md
 [Developer Certificate of Origin 1.1]: https://developercertificate.org/
 [freedesktop.org Contributor Covenant]: https://www.freedesktop.org/wiki/CodeOfConduct/
 [Meson]: https://mesonbuild.com/
 [edid-decode]: https://git.linuxtv.org/edid-decode.git/
+[AFL]: https://lcamtuf.coredump.cx/afl/
