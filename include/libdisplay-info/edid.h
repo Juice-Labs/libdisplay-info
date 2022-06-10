@@ -48,63 +48,6 @@ const struct di_edid_vendor_product *
 di_edid_get_vendor_product(const struct di_edid *edid);
 
 /**
- * EDID display descriptor tag, defined in section 3.10.3.
- */
-enum di_edid_display_descriptor_tag {
-	/* Display Product Serial Number */
-	DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_SERIAL = 0xFF,
-	/* Alphanumeric Data String (ASCII) */
-	DI_EDID_DISPLAY_DESCRIPTOR_DATA_STRING = 0xFE,
-	/* Display Range Limits */
-	DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS = 0xFD,
-	/* Display Product Name */
-	DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME = 0xFC,
-	/* Color Point Data */
-	DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT = 0xFB,
-	/* Standard Timing Identifications */
-	DI_EDID_DISPLAY_DESCRIPTOR_STD_TIMING_IDS = 0xFA,
-	/* Display Color Management (DCM) Data */
-	DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA = 0xF9,
-	/* CVT 3 Byte Timing Codes */
-	DI_EDID_DISPLAY_DESCRIPTOR_CVT_TIMING_CODES = 0xF8,
-	/* Established Timings III */
-	DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III = 0xF7,
-	/* Dummy Descriptor */
-	DI_EDID_DISPLAY_DESCRIPTOR_DUMMY = 0x10,
-};
-
-/**
- * Get a list of EDID display descriptors.
- *
- * The returned array is NULL-terminated.
- */
-const struct di_edid_display_descriptor *const *
-di_edid_get_display_descriptors(const struct di_edid *edid);
-
-/**
- * EDID display descriptor.
- */
-struct di_edid_display_descriptor;
-
-/**
- * Get the tag of an EDID display descriptor.
- */
-enum di_edid_display_descriptor_tag
-di_edid_display_descriptor_get_tag(const struct di_edid_display_descriptor *desc);
-
-/**
- * Get the contents of a product serial number, a data string, or a product name
- * display descriptor.
- *
- * Returns NULL if the display descriptor tag isn't either
- * DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_SERIAL_NUMBER,
- * DI_EDID_DISPLAY_DESCRIPTOR_DATA_STRING or
- * DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME.
- */
-const char *
-di_edid_display_descriptor_get_string(const struct di_edid_display_descriptor *desc);
-
-/**
  * Digital video input interface standard.
  */
 enum di_edid_video_input_digital_interface {
@@ -232,6 +175,63 @@ struct di_edid_misc_features {
  */
 const struct di_edid_misc_features *
 di_edid_get_misc_features(const struct di_edid *edid);
+
+/**
+ * EDID display descriptor.
+ */
+struct di_edid_display_descriptor;
+
+/**
+ * Get a list of EDID display descriptors.
+ *
+ * The returned array is NULL-terminated.
+ */
+const struct di_edid_display_descriptor *const *
+di_edid_get_display_descriptors(const struct di_edid *edid);
+
+/**
+ * EDID display descriptor tag, defined in section 3.10.3.
+ */
+enum di_edid_display_descriptor_tag {
+	/* Display Product Serial Number */
+	DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_SERIAL = 0xFF,
+	/* Alphanumeric Data String (ASCII) */
+	DI_EDID_DISPLAY_DESCRIPTOR_DATA_STRING = 0xFE,
+	/* Display Range Limits */
+	DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS = 0xFD,
+	/* Display Product Name */
+	DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME = 0xFC,
+	/* Color Point Data */
+	DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT = 0xFB,
+	/* Standard Timing Identifications */
+	DI_EDID_DISPLAY_DESCRIPTOR_STD_TIMING_IDS = 0xFA,
+	/* Display Color Management (DCM) Data */
+	DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA = 0xF9,
+	/* CVT 3 Byte Timing Codes */
+	DI_EDID_DISPLAY_DESCRIPTOR_CVT_TIMING_CODES = 0xF8,
+	/* Established Timings III */
+	DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III = 0xF7,
+	/* Dummy Descriptor */
+	DI_EDID_DISPLAY_DESCRIPTOR_DUMMY = 0x10,
+};
+
+/**
+ * Get the tag of an EDID display descriptor.
+ */
+enum di_edid_display_descriptor_tag
+di_edid_display_descriptor_get_tag(const struct di_edid_display_descriptor *desc);
+
+/**
+ * Get the contents of a product serial number, a data string, or a product name
+ * display descriptor.
+ *
+ * Returns NULL if the display descriptor tag isn't either
+ * DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_SERIAL_NUMBER,
+ * DI_EDID_DISPLAY_DESCRIPTOR_DATA_STRING or
+ * DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME.
+ */
+const char *
+di_edid_display_descriptor_get_string(const struct di_edid_display_descriptor *desc);
 
 /**
  * Get a list of EDID extensions.
