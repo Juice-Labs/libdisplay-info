@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -14,30 +14,8 @@
+@@ -14,30 +14,11 @@
      DPMS levels: Off
      Supported color formats: RGB 4:4:4
      First detailed timing includes the native pixel format and preferred refresh rate
@@ -26,6 +26,9 @@
 -    DTD 1:  1920x1200   59.950171 Hz   8:5     74.038 kHz    154.000000 MHz (519 mm x 320 mm)
 -                 Hfront   48 Hsync  32 Hback   80 Hpol P
 -                 Vfront    3 Vsync   6 Vback   26 Vpol N
++    DTD 1:  1920x1200   59.950171 Hz   0:0     74.038 kHz    154.000000 MHz (519 mm x 320 mm)
++                 Hfront   48 Hsync  32 Hback   80
++                 Vfront    3 Vsync   6 Vback   26
      Display Product Serial Number: 'G283H8BI21MS'
      Display Product Name: 'DELL 2408WFP'
      Display Range Limits:

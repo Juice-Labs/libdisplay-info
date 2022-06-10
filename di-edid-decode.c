@@ -5,6 +5,46 @@
 #include <libdisplay-info/edid.h>
 #include <libdisplay-info/info.h>
 
+static void
+print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t n)
+{
+	int hbl, vbl, horiz_total, vert_total;
+	int horiz_back_porch, vert_back_porch;
+	double refresh, horiz_freq_hz;
+
+	hbl = def->horiz_blank - 2 * def->horiz_border;
+	vbl = def->vert_blank - 2 * def->vert_border;
+	horiz_total = def->horiz_video + hbl;
+	vert_total = def->vert_video + vbl;
+	refresh = (double) def->pixel_clock_hz / (horiz_total * vert_total);
+	horiz_freq_hz = (double) def->pixel_clock_hz / horiz_total;
+
+	printf("    DTD %zu:", n);
+	printf(" %5dx%-5d", def->horiz_video, def->vert_video);
+	printf(" %10.6f Hz", refresh);
+	printf(" %3u:%-3u", 0, 0);
+	printf(" %8.3f kHz %13.6f MHz", horiz_freq_hz / 1000,
+	       (double) def->pixel_clock_hz / (1000 * 1000));
+	printf(" (%d mm x %d mm)", def->horiz_image_mm, def->vert_image_mm);
+	printf("\n");
+
+	horiz_back_porch = hbl - def->horiz_sync_pulse - def->horiz_front_porch;
+	printf("                 Hfront %4d Hsync %3d Hback %4d",
+	       def->horiz_front_porch, def->horiz_sync_pulse, horiz_back_porch);
+	if (def->horiz_border != 0) {
+		printf(" Hborder %d", def->horiz_border);
+	}
+	printf("\n");
+
+	vert_back_porch = vbl - def->vert_sync_pulse - def->vert_front_porch;
+	printf("                 Vfront %4u Vsync %3u Vback %4d",
+	       def->vert_front_porch, def->vert_sync_pulse, vert_back_porch);
+	if (def->vert_border != 0) {
+		printf(" Vborder %d", def->vert_border);
+	}
+	printf("\n");
+}
+
 static const char *
 display_desc_tag_name(enum di_edid_display_descriptor_tag tag)
 {
@@ -141,6 +181,7 @@ main(int argc, char *argv[])
 	const struct di_edid_dpms *dpms;
 	const struct di_edid_color_encoding_formats *color_encoding_formats;
 	const struct di_edid_misc_features *misc_features;
+	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;
 	const struct di_edid_display_descriptor *const *display_descs;
 	const struct di_edid_ext *const *exts;
 	size_t i;
@@ -284,6 +325,10 @@ main(int argc, char *argv[])
 	}
 
 	printf("  Detailed Timing Descriptors:\n");
+	detailed_timing_defs = di_edid_get_detailed_timing_defs(edid);
+	for (i = 0; detailed_timing_defs[i] != NULL; i++) {
+		print_detailed_timing_def(detailed_timing_defs[i], i + 1);
+	}
 	display_descs = di_edid_get_display_descriptors(edid);
 	for (i = 0; display_descs[i] != NULL; i++) {
 		print_display_desc(display_descs[i]);

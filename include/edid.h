@@ -33,6 +33,10 @@ struct di_edid {
 	struct di_edid_misc_features misc_features;
 
 	/* NULL-terminated */
+	struct di_edid_detailed_timing_def *detailed_timing_defs[EDID_BYTE_DESCRIPTOR_COUNT + 1];
+	size_t detailed_timing_defs_len;
+
+	/* NULL-terminated */
 	struct di_edid_display_descriptor *display_descriptors[EDID_BYTE_DESCRIPTOR_COUNT + 1];
 	size_t display_descriptors_len;
 

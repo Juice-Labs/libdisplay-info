@@ -217,6 +217,46 @@ parse_basic_params_features(struct di_edid *edid,
 }
 
 static bool
+parse_detailed_timing_def(struct di_edid *edid,
+			  const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
+{
+	struct di_edid_detailed_timing_def *def;
+	int raw;
+
+	def = calloc(1, sizeof(*def));
+	if (!def) {
+		return false;
+	}
+
+	raw = (data[1] << 8) | data[0];
+	def->pixel_clock_hz = raw * 10 * 1000;
+
+	def->horiz_video = (get_bit_range(data[4], 7, 4) << 8) | data[2];
+	def->horiz_blank = (get_bit_range(data[4], 3, 0) << 8) | data[3];
+
+	def->vert_video = (get_bit_range(data[7], 7, 4) << 8) | data[5];
+	def->vert_blank = (get_bit_range(data[7], 3, 0) << 8) | data[6];
+
+	def->horiz_front_porch = (get_bit_range(data[11], 7, 6) << 8) | data[8];
+	def->horiz_sync_pulse = (get_bit_range(data[11], 5, 4) << 8) | data[9];
+	def->vert_front_porch = (get_bit_range(data[11], 3, 2) << 4)
+				| get_bit_range(data[10], 7, 4);
+	def->vert_sync_pulse = (get_bit_range(data[11], 1, 0) << 4)
+			       | get_bit_range(data[10], 3, 0);
+
+	def->horiz_image_mm = (get_bit_range(data[14], 7, 4) << 8) | data[12];
+	def->vert_image_mm = (get_bit_range(data[14], 3, 0) << 8) | data[13];
+
+	def->horiz_border = data[15];
+	def->vert_border = data[16];
+
+	/* TODO: parse flags in data[17] */
+
+	edid->detailed_timing_defs[edid->detailed_timing_defs_len++] = def;
+	return true;
+}
+
+static bool
 parse_byte_descriptor(struct di_edid *edid,
 		      const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
 {
@@ -232,8 +272,7 @@ parse_byte_descriptor(struct di_edid *edid,
 			return false;
 		}
 
-		/* TODO: parse detailed timing descriptor */
-		return true;
+		return parse_detailed_timing_def(edid, data);
 	}
 
 	/* TODO: check we got at least one detailed timing descriptor, per note
@@ -404,6 +443,10 @@ _di_edid_destroy(struct di_edid *edid)
 {
 	size_t i;
 
+	for (i = 0; i < edid->detailed_timing_defs_len; i++) {
+		free(edid->detailed_timing_defs[i]);
+	}
+
 	for (i = 0; i < edid->display_descriptors_len; i++) {
 		free(edid->display_descriptors[i]);
 	}
@@ -469,6 +512,12 @@ const struct di_edid_misc_features *
 di_edid_get_misc_features(const struct di_edid *edid)
 {
 	return &edid->misc_features;
+}
+
+const struct di_edid_detailed_timing_def *const *
+di_edid_get_detailed_timing_defs(const struct di_edid *edid)
+{
+	return (const struct di_edid_detailed_timing_def *const *) &edid->detailed_timing_defs;
 }
 
 const struct di_edid_display_descriptor *const *

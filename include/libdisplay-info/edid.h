@@ -177,6 +177,34 @@ const struct di_edid_misc_features *
 di_edid_get_misc_features(const struct di_edid *edid);
 
 /**
+ * EDID detailed timing definition, defined in section 3.10.2.
+ */
+struct di_edid_detailed_timing_def {
+	/* Pixel clock */
+	int pixel_clock_hz;
+	/* Horizontal/Vertical Addressable Video in pixels/lines */
+	int horiz_video, vert_video;
+	/* Horizontal/Vertical Blanking in pixels/lines */
+	int horiz_blank, vert_blank;
+	/* Horizontal/Vertical Front Porch in pixels/lines */
+	int horiz_front_porch, vert_front_porch;
+	/* Horizontal/Vertical Sync Pulse Width in pixels/lines */
+	int horiz_sync_pulse, vert_sync_pulse;
+	/* Horizontal/Vertical Addressable Video Image Size in mm */
+	int horiz_image_mm, vert_image_mm;
+	/* Horizontal/Vertical Border in pixels/lines */
+	int horiz_border, vert_border;
+};
+
+/**
+ * Get a list of EDID detailed timing definitions.
+ *
+ * The returned array is NULL-terminated.
+ */
+const struct di_edid_detailed_timing_def *const *
+di_edid_get_detailed_timing_defs(const struct di_edid *edid);
+
+/**
  * EDID display descriptor.
  */
 struct di_edid_display_descriptor;

@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -12,21 +12,7 @@
+@@ -12,21 +12,13 @@
      Gamma: 2.20
      Supported color formats: RGB 4:4:4
      First detailed timing includes the native pixel format and preferred refresh rate
@@ -18,6 +18,12 @@
 -    DTD 2:  2560x1440   47.999925 Hz  16:9     91.968 kHz    257.510000 MHz (309 mm x 173 mm)
 -                 Hfront   88 Hsync  32 Hback  120 Hpol P
 -                 Vfront   28 Vsync   5 Vback  443 Vpol P
++    DTD 1:  2560x1440   59.999068 Hz   0:0     91.979 kHz    257.540000 MHz (309 mm x 173 mm)
++                 Hfront   88 Hsync  32 Hback  120
++                 Vfront   28 Vsync   5 Vback   60
++    DTD 2:  2560x1440   47.999925 Hz   0:0     91.968 kHz    257.510000 MHz (309 mm x 173 mm)
++                 Hfront   88 Hsync  32 Hback  120
++                 Vfront   28 Vsync   5 Vback  443
      Display Range Limits:
 -      Monitor ranges (Bare Limits): 46-62 Hz V, 89-94 kHz H, max dotclock 260 MHz
      Alphanumeric Data String: 'VVX14T058J10'
