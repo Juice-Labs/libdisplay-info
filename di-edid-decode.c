@@ -127,8 +127,9 @@ edid_checksum_index(size_t block_index)
 }
 
 int
-main(void)
+main(int argc, char *argv[])
 {
+	FILE *in;
 	static uint8_t raw[32 * 1024];
 	size_t size = 0;
 	const struct di_edid *edid;
@@ -144,9 +145,18 @@ main(void)
 	const struct di_edid_ext *const *exts;
 	size_t i;
 
-	while (!feof(stdin)) {
-		size += fread(&raw[size], 1, sizeof(raw) - size, stdin);
-		if (ferror(stdin)) {
+	in = stdin;
+	if (argc > 1) {
+		in = fopen(argv[1], "r");
+		if (!in) {
+			perror("failed to open input file");
+			return 1;
+		}
+	}
+
+	while (!feof(in)) {
+		size += fread(&raw[size], 1, sizeof(raw) - size, in);
+		if (ferror(in)) {
 			perror("fread failed");
 			return 1;
 		} else if (size >= sizeof(raw)) {
@@ -154,6 +164,8 @@ main(void)
 			return 1;
 		}
 	}
+
+	fclose(in);
 
 	info = di_info_parse_edid(raw, size);
 	if (!info) {
