@@ -149,6 +149,9 @@ main(void)
 		if (ferror(stdin)) {
 			perror("fread failed");
 			return 1;
+		} else if (size >= sizeof(raw)) {
+			fprintf(stderr, "input too large\n");
+			return 1;
 		}
 	}
 
