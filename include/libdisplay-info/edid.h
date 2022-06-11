@@ -436,4 +436,15 @@ struct di_edid_ext;
 enum di_edid_ext_tag
 di_edid_ext_get_tag(const struct di_edid_ext *ext);
 
+/* See <libdisplay-info/cta.h> */
+struct di_edid_cta;
+
+/**
+ * Get a CTA-861 extension block.
+ *
+ * Returns NULL if the extension block tag is not DI_EDID_EXT_CEA.
+ */
+const struct di_edid_cta *
+di_edid_ext_get_cta(const struct di_edid_ext *ext);
+
 #endif

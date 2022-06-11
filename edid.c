@@ -595,9 +595,19 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 		return false;
 	}
 
+	ext = calloc(1, sizeof(*ext));
+	if (!ext) {
+		return false;
+	}
+
 	tag = data[0x00];
 	switch (tag) {
 	case DI_EDID_EXT_CEA:
+		if (!_di_edid_cta_parse(&ext->cta, data, EDID_BLOCK_SIZE)) {
+			free(ext);
+			return false;
+		}
+		break;
 	case DI_EDID_EXT_VTB:
 	case DI_EDID_EXT_DI:
 	case DI_EDID_EXT_LS:
@@ -608,17 +618,13 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 		break;
 	default:
 		/* Unsupported */
+		free(ext);
 		add_failure_until(edid, 4, "Unknown Extension Block.");
 		return true;
 	}
 
-	ext = calloc(1, sizeof(*ext));
-	if (!ext) {
-		return false;
-	}
 	ext->tag = tag;
 	edid->exts[edid->exts_len++] = ext;
-
 	return true;
 }
 
@@ -914,4 +920,13 @@ enum di_edid_ext_tag
 di_edid_ext_get_tag(const struct di_edid_ext *ext)
 {
 	return ext->tag;
+}
+
+const struct di_edid_cta *
+di_edid_ext_get_cta(const struct di_edid_ext *ext)
+{
+	if (ext->tag != DI_EDID_EXT_CEA) {
+		return NULL;
+	}
+	return &ext->cta;
 }

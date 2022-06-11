@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <libdisplay-info/cta.h>
 #include <libdisplay-info/edid.h>
 #include <libdisplay-info/info.h>
 
@@ -310,10 +311,21 @@ display_color_type_name(enum di_edid_display_color_type type)
 static void
 print_ext(const struct di_edid_ext *ext, size_t ext_index)
 {
-	const char *tag_name = ext_tag_name(di_edid_ext_get_tag(ext));
+	const char *tag_name;
+	const struct di_edid_cta *cta;
 
+	tag_name = ext_tag_name(di_edid_ext_get_tag(ext));
 	printf("\n----------------\n\n");
 	printf("Block %zu, %s:\n", ext_index + 1, tag_name);
+
+	switch (di_edid_ext_get_tag(ext)) {
+	case DI_EDID_EXT_CEA:
+		cta = di_edid_ext_get_cta(ext);
+		printf("  Revision: %d\n", di_edid_cta_get_revision(cta));
+		break;
+	default:
+		break; /* Ignore */
+	}
 }
 
 static size_t
