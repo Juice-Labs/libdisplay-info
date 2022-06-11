@@ -313,6 +313,7 @@ print_ext(const struct di_edid_ext *ext, size_t ext_index)
 {
 	const char *tag_name;
 	const struct di_edid_cta *cta;
+	const struct di_edid_cta_flags *cta_flags;
 
 	tag_name = ext_tag_name(di_edid_ext_get_tag(ext));
 	printf("\n----------------\n\n");
@@ -322,6 +323,21 @@ print_ext(const struct di_edid_ext *ext, size_t ext_index)
 	case DI_EDID_EXT_CEA:
 		cta = di_edid_ext_get_cta(ext);
 		printf("  Revision: %d\n", di_edid_cta_get_revision(cta));
+
+		cta_flags = di_edid_cta_get_flags(cta);
+		if (cta_flags->underscan) {
+			printf("  Underscans IT Video Formats by default\n");
+		}
+		if (cta_flags->basic_audio) {
+			printf("  Basic audio support\n");
+		}
+		if (cta_flags->ycc444) {
+			printf("  Supports YCbCr 4:4:4\n");
+		}
+		if (cta_flags->ycc422) {
+			printf("  Supports YCbCr 4:2:2\n");
+		}
+		printf("  Native detailed modes: %d\n", cta_flags->native_dtds);
 		break;
 	default:
 		break; /* Ignore */

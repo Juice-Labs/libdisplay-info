@@ -13,6 +13,7 @@
 
 struct di_edid_cta {
 	int revision;
+	struct di_edid_cta_flags flags;
 };
 
 bool

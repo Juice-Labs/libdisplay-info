@@ -23,13 +23,10 @@
      Display Product Name: 'S27A950D'
    Extension blocks: 1
  Checksum: 0x1b
-@@ -37,14 +36,4 @@
- 
- Block 1, CTA-861 Extension Block:
-   Revision: 3
--  Underscans IT Video Formats by default
--  Basic audio support
--  Native detailed modes: 0
+@@ -40,11 +39,4 @@
+   Underscans IT Video Formats by default
+   Basic audio support
+   Native detailed modes: 0
 -  Audio Data Block:
 -    Linear PCM:
 -      Max channels: 2

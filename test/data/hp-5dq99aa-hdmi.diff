@@ -38,14 +38,10 @@
      Display Product Name: 'HP 27 QD'
      Display Product Serial Number: 'CN49120J6N'
    Extension blocks: 1
-@@ -46,62 +41,4 @@
- 
- Block 1, CTA-861 Extension Block:
-   Revision: 3
--  Underscans IT Video Formats by default
--  Supports YCbCr 4:4:4
--  Supports YCbCr 4:2:2
--  Native detailed modes: 1
+@@ -50,58 +45,4 @@
+   Supports YCbCr 4:4:4
+   Supports YCbCr 4:2:2
+   Native detailed modes: 1
 -  Video Data Block:
 -    VIC  16:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz
 -    VIC   4:  1280x720    60.000000 Hz  16:9     45.000 kHz     74.250000 MHz
