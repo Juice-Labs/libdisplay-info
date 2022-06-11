@@ -706,6 +706,7 @@ void
 _di_edid_destroy(struct di_edid *edid)
 {
 	size_t i;
+	struct di_edid_ext *ext;
 
 	if (edid->failure_msg_file) {
 		fclose(edid->failure_msg_file);
@@ -725,7 +726,15 @@ _di_edid_destroy(struct di_edid *edid)
 	}
 
 	for (i = 0; edid->exts[i] != NULL; i++) {
-		free(edid->exts[i]);
+		ext = edid->exts[i];
+		switch (ext->tag) {
+		case DI_EDID_EXT_CEA:
+			_di_edid_cta_finish(&ext->cta);
+			break;
+		default:
+			break; /* Nothing to do */
+		}
+		free(ext);
 	}
 
 	free(edid);

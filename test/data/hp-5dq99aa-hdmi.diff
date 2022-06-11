@@ -38,11 +38,10 @@
      Display Product Name: 'HP 27 QD'
      Display Product Serial Number: 'CN49120J6N'
    Extension blocks: 1
-@@ -50,58 +45,4 @@
-   Supports YCbCr 4:4:4
+@@ -51,57 +46,7 @@
    Supports YCbCr 4:2:2
    Native detailed modes: 1
--  Video Data Block:
+   Video Data Block:
 -    VIC  16:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz
 -    VIC   4:  1280x720    60.000000 Hz  16:9     45.000 kHz     74.250000 MHz
 -    VIC   3:   720x480    59.940060 Hz  16:9     31.469 kHz     27.000000 MHz
@@ -58,7 +57,7 @@
 -    DC_30bit
 -    DC_Y444
 -    Maximum TMDS clock: 310 MHz
--  Video Capability Data Block:
+   Video Capability Data Block:
 -    YCbCr quantization: No Data
 -    RGB quantization: No Data
 -    PT scan behavior: Always Underscanned
@@ -69,11 +68,11 @@
 -    Minimum Refresh Rate: 46 Hz
 -    Maximum Refresh Rate: 75 Hz
 -    Flags 1.x: 0xed (MCCS)
--  Colorimetry Data Block:
+   Colorimetry Data Block:
 -    BT2020cYCC
 -    BT2020YCC
 -    BT2020RGB
--  HDR Static Metadata Data Block:
+   HDR Static Metadata Data Block:
 -    Electro optical transfer functions:
 -      Traditional gamma - SDR luminance range
 -      Traditional gamma - HDR luminance range

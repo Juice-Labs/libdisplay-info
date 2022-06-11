@@ -308,12 +308,95 @@ display_color_type_name(enum di_edid_display_color_type type)
 	abort();
 }
 
+static const char *
+cta_data_block_tag_name(enum di_cta_data_block_tag tag)
+{
+	switch (tag) {
+	case DI_CTA_DATA_BLOCK_AUDIO:
+		return "Audio Data Block";
+	case DI_CTA_DATA_BLOCK_VIDEO:
+		return "Video Data Block";
+	case DI_CTA_DATA_BLOCK_SPEAKER_ALLOC:
+		return "Speaker Allocation Data Block";
+	case DI_CTA_DATA_BLOCK_VESA_DISPLAY_TRANSFER_CHARACTERISTIC:
+		return "VESA Display Transfer Characteristic Data Block";
+	case DI_CTA_DATA_BLOCK_VIDEO_CAP:
+		return "Video Capability Data Block";
+	case DI_CTA_DATA_BLOCK_VESA_DISPLAY_DEVICE:
+		return "VESA Display Device Data Block";
+	case DI_CTA_DATA_BLOCK_COLORIMETRY:
+		return "Colorimetry Data Block";
+	case DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA:
+		return "HDR Static Metadata Data Block";
+	case DI_CTA_DATA_BLOCK_HDR_DYNAMIC_METADATA:
+		return "HDR Dynamic Metadata Data Block";
+	case DI_CTA_DATA_BLOCK_VIDEO_FORMAT_PREF:
+		return "Video Format Preference Data Block";
+	case DI_CTA_DATA_BLOCK_YCBCR420:
+		return "YCbCr 4:2:0 Video Data Block";
+	case DI_CTA_DATA_BLOCK_YCBCR420_CAP_MAP:
+		return "YCbCr 4:2:0 Capability Map Data Block";
+	case DI_CTA_DATA_BLOCK_HDMI_AUDIO:
+		return "HDMI Audio Data Block";
+	case DI_CTA_DATA_BLOCK_ROOM_CONFIG:
+		return "Room Configuration Data Block";
+	case DI_CTA_DATA_BLOCK_SPEAKER_LOCATION:
+		return "Speaker Location Data Block";
+	case DI_CTA_DATA_BLOCK_INFOFRAME:
+		return "InfoFrame Data Block";
+	case DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VII:
+		return "DisplayID Type VII Video Timing Data Block";
+	case DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VIII:
+		return "DisplayID Type VIII Video Timing Data Block";
+	case DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_X:
+		return "DisplayID Type X Video Timing Data Block";
+	case DI_CTA_DATA_BLOCK_HDMI_EDID_EXT_OVERRIDE :
+		return "HDMI Forum EDID Extension Override Data Block";
+	case DI_CTA_DATA_BLOCK_HDMI_SINK_CAP:
+		return "HDMI Forum Sink Capability Data Block";
+	}
+	return "Unknown CTA-861 Data Block";
+}
+
+static void
+print_cta(const struct di_edid_cta *cta)
+{
+	const struct di_edid_cta_flags *cta_flags;
+	const struct di_cta_data_block *const *data_blocks;
+	const struct di_cta_data_block *data_block;
+	enum di_cta_data_block_tag data_block_tag;
+	size_t i;
+
+	printf("  Revision: %d\n", di_edid_cta_get_revision(cta));
+
+	cta_flags = di_edid_cta_get_flags(cta);
+	if (cta_flags->underscan) {
+		printf("  Underscans IT Video Formats by default\n");
+	}
+	if (cta_flags->basic_audio) {
+		printf("  Basic audio support\n");
+	}
+	if (cta_flags->ycc444) {
+		printf("  Supports YCbCr 4:4:4\n");
+	}
+	if (cta_flags->ycc422) {
+		printf("  Supports YCbCr 4:2:2\n");
+	}
+	printf("  Native detailed modes: %d\n", cta_flags->native_dtds);
+
+	data_blocks = di_edid_cta_get_data_blocks(cta);
+	for (i = 0; data_blocks[i] != NULL; i++) {
+		data_block = data_blocks[i];
+
+		data_block_tag = di_cta_data_block_get_tag(data_block);
+		printf("  %s:\n", cta_data_block_tag_name(data_block_tag));
+	}
+}
+
 static void
 print_ext(const struct di_edid_ext *ext, size_t ext_index)
 {
 	const char *tag_name;
-	const struct di_edid_cta *cta;
-	const struct di_edid_cta_flags *cta_flags;
 
 	tag_name = ext_tag_name(di_edid_ext_get_tag(ext));
 	printf("\n----------------\n\n");
@@ -321,23 +404,7 @@ print_ext(const struct di_edid_ext *ext, size_t ext_index)
 
 	switch (di_edid_ext_get_tag(ext)) {
 	case DI_EDID_EXT_CEA:
-		cta = di_edid_ext_get_cta(ext);
-		printf("  Revision: %d\n", di_edid_cta_get_revision(cta));
-
-		cta_flags = di_edid_cta_get_flags(cta);
-		if (cta_flags->underscan) {
-			printf("  Underscans IT Video Formats by default\n");
-		}
-		if (cta_flags->basic_audio) {
-			printf("  Basic audio support\n");
-		}
-		if (cta_flags->ycc444) {
-			printf("  Supports YCbCr 4:4:4\n");
-		}
-		if (cta_flags->ycc422) {
-			printf("  Supports YCbCr 4:2:2\n");
-		}
-		printf("  Native detailed modes: %d\n", cta_flags->native_dtds);
+		print_cta(di_edid_ext_get_cta(ext));
 		break;
 	default:
 		break; /* Ignore */
