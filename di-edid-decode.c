@@ -5,11 +5,40 @@
 #include <libdisplay-info/edid.h>
 #include <libdisplay-info/info.h>
 
+static int
+gcd(int a, int b)
+{
+	int tmp;
+
+	while (b) {
+		tmp = b;
+		b = a % b;
+		a = tmp;
+	}
+
+	return a;
+}
+
+static void
+compute_aspect_ratio(int width, int height, int *horiz_ratio, int *vert_ratio)
+{
+	int d;
+
+	d = gcd(width, height);
+	if (d == 0) {
+		*horiz_ratio = *vert_ratio = 0;
+	} else {
+		*horiz_ratio = width / d;
+		*vert_ratio = height / d;
+	}
+}
+
 static void
 print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t n)
 {
 	int hbl, vbl, horiz_total, vert_total;
 	int horiz_back_porch, vert_back_porch;
+	int horiz_ratio, vert_ratio;
 	double refresh, horiz_freq_hz;
 
 	hbl = def->horiz_blank - 2 * def->horiz_border;
@@ -19,10 +48,13 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t 
 	refresh = (double) def->pixel_clock_hz / (horiz_total * vert_total);
 	horiz_freq_hz = (double) def->pixel_clock_hz / horiz_total;
 
+	compute_aspect_ratio(def->horiz_video, def->vert_video,
+			     &horiz_ratio, &vert_ratio);
+
 	printf("    DTD %zu:", n);
 	printf(" %5dx%-5d", def->horiz_video, def->vert_video);
 	printf(" %10.6f Hz", refresh);
-	printf(" %3u:%-3u", 0, 0);
+	printf(" %3u:%-3u", horiz_ratio, vert_ratio);
 	printf(" %8.3f kHz %13.6f MHz", horiz_freq_hz / 1000,
 	       (double) def->pixel_clock_hz / (1000 * 1000));
 	printf(" (%d mm x %d mm)", def->horiz_image_mm, def->vert_image_mm);

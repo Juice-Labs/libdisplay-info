@@ -12,16 +12,14 @@
 -  Established Timings I & II: none
 -  Standard Timings: none
    Detailed Timing Descriptors:
--    DTD 1:  2560x1440   59.999068 Hz  16:9     91.979 kHz    257.540000 MHz (309 mm x 173 mm)
+     DTD 1:  2560x1440   59.999068 Hz  16:9     91.979 kHz    257.540000 MHz (309 mm x 173 mm)
 -                 Hfront   88 Hsync  32 Hback  120 Hpol P
 -                 Vfront   28 Vsync   5 Vback   60 Vpol P
--    DTD 2:  2560x1440   47.999925 Hz  16:9     91.968 kHz    257.510000 MHz (309 mm x 173 mm)
--                 Hfront   88 Hsync  32 Hback  120 Hpol P
--                 Vfront   28 Vsync   5 Vback  443 Vpol P
-+    DTD 1:  2560x1440   59.999068 Hz   0:0     91.979 kHz    257.540000 MHz (309 mm x 173 mm)
 +                 Hfront   88 Hsync  32 Hback  120
 +                 Vfront   28 Vsync   5 Vback   60
-+    DTD 2:  2560x1440   47.999925 Hz   0:0     91.968 kHz    257.510000 MHz (309 mm x 173 mm)
+     DTD 2:  2560x1440   47.999925 Hz  16:9     91.968 kHz    257.510000 MHz (309 mm x 173 mm)
+-                 Hfront   88 Hsync  32 Hback  120 Hpol P
+-                 Vfront   28 Vsync   5 Vback  443 Vpol P
 +                 Hfront   88 Hsync  32 Hback  120
 +                 Vfront   28 Vsync   5 Vback  443
      Display Range Limits:
