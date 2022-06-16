@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <inttypes.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <libdisplay-info/edid.h>
 #include <libdisplay-info/info.h>
@@ -80,7 +81,6 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t 
 static const char *
 display_desc_tag_name(enum di_edid_display_descriptor_tag tag)
 {
-	static char name[256];
 	switch (tag) {
 	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_SERIAL:
 		return "Display Product Serial Number";
@@ -102,12 +102,8 @@ display_desc_tag_name(enum di_edid_display_descriptor_tag tag)
 		return "Established timings III";
 	case DI_EDID_DISPLAY_DESCRIPTOR_DUMMY:
 		return "Dummy Descriptor";
-	default:
-		snprintf(name, sizeof(name), "%s Display Descriptor (0x%02hhx)",
-			 tag <= 0x0F ? "Manufacturer-Specified" : "Unknown",
-			 tag);
-		return name;
 	}
+	abort();
 }
 
 static void
@@ -151,7 +147,6 @@ print_display_desc(const struct di_edid_display_descriptor *desc)
 static const char *
 ext_tag_name(enum di_edid_ext_tag tag)
 {
-	static char name[256];
 	switch (tag) {
 	case DI_EDID_EXT_CEA:
 		return "CTA-861 Extension Block";
@@ -167,17 +162,13 @@ ext_tag_name(enum di_edid_ext_tag tag)
 		return "Block Map Extension Block";
 	case DI_EDID_EXT_VENDOR:
 		return "Manufacturer-Specific Extension Block";
-	default:
-		snprintf(name, sizeof(name),
-			 "Unknown EDID Extension Block 0x%02x", tag);
-		return name;
 	}
+	abort();
 }
 
 static const char *
 digital_interface_name(enum di_edid_video_input_digital_interface interface)
 {
-	static char name[256];
 	switch (interface) {
 	case DI_EDID_VIDEO_INPUT_DIGITAL_UNDEFINED:
 		return "Digital interface is not defined";
@@ -191,11 +182,8 @@ digital_interface_name(enum di_edid_video_input_digital_interface interface)
 		return "MDDI interface";
 	case DI_EDID_VIDEO_INPUT_DIGITAL_DISPLAYPORT:
 		return "DisplayPort interface";
-	default:
-		snprintf(name, sizeof(name), "Unknown interface: 0x%02x",
-			 interface);
-		return name;
 	}
+	abort();
 }
 
 static void
