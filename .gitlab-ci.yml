@@ -56,7 +56,7 @@ build-gcc:
     - CC=gcc meson build/ --fatal-meson-warnings -Dwerror=true -Db_coverage=true
     - ninja -C build/
     - ninja -C build/ test
-    - ninja -C build/ coverage-xml coverage-html
+    - ninja -C build/ -j1 coverage-xml coverage-html
   artifacts:
     when: always
     paths:
