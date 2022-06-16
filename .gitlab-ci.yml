@@ -14,7 +14,7 @@ include:
 # $ git push -f -o ci.variable="FDO_FORCE_REBUILD=1"
 variables:
   FDO_UPSTREAM_REPO: 'emersion/libdisplay-info'
-  FDO_DISTRIBUTION_TAG: '2022-06-08.0'
+  FDO_DISTRIBUTION_TAG: '2022-06-16.0'
 
 stages:
   - "Contribution checks"
@@ -36,7 +36,8 @@ prepare-container:
   extends: .fdo.container-build@alpine@x86_64
   stage: "Prepare container"
   variables:
-    FDO_DISTRIBUTION_PACKAGES: 'build-base meson make git gcovr py3-pygments'
+    FDO_DISTRIBUTION_PACKAGES: |
+      build-base clang compiler-rt meson make git gcovr py3-pygments
     FDO_DISTRIBUTION_EXEC: |
       git clone git://linuxtv.org/edid-decode.git
       cd edid-decode
@@ -48,11 +49,11 @@ prepare-container:
   rules:
     - when: on_success
 
-build:
+build-gcc:
   extends: .fdo.distribution-image@alpine
   stage: "Build and test"
   script:
-    - meson build/ --fatal-meson-warnings -Dwerror=true -Db_coverage=true
+    - CC=gcc meson build/ --fatal-meson-warnings -Dwerror=true -Db_coverage=true
     - ninja -C build/
     - ninja -C build/ test
     - ninja -C build/ coverage-xml coverage-html
@@ -65,5 +66,21 @@ build:
       coverage_report:
         coverage_format: cobertura
         path: build/meson-logs/coverage.xml
+  rules:
+    - when: on_success
+
+build-clang:
+  extends: .fdo.distribution-image@alpine
+  stage: "Build and test"
+  script:
+    - CC=clang meson build/ --fatal-meson-warnings -Dwerror=true -Db_sanitize=address,undefined -Db_lundef=false
+    - ninja -C build/
+    - ninja -C build/ test
+  artifacts:
+    when: always
+    paths:
+      - build/meson-logs/
+    reports:
+      junit: build/meson-logs/testlog.junit.xml
   rules:
     - when: on_success
