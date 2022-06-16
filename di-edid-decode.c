@@ -161,6 +161,8 @@ ext_tag_name(enum di_edid_ext_tag tag)
 		return "Display Information Extension Block";
 	case DI_EDID_EXT_LS:
 		return "Localized String Extension Block";
+	case DI_EDID_EXT_DPVL:
+		return "Digital Packet Video Link Extension";
 	case DI_EDID_EXT_BLOCK_MAP:
 		return "Block Map Extension Block";
 	case DI_EDID_EXT_VENDOR:
