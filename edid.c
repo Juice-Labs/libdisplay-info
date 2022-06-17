@@ -201,6 +201,9 @@ parse_basic_params_features(struct di_edid *edid,
 		edid->color_encoding_formats.rgb444 = true;
 		edid->color_encoding_formats.ycrcb444 = has_bit(features, 3);
 		edid->color_encoding_formats.ycrcb422 = has_bit(features, 4);
+		edid->display_color_type = DI_EDID_DISPLAY_COLOR_UNDEFINED;
+	} else {
+		edid->display_color_type = get_bit_range(features, 4, 3);
 	}
 
 	if (edid->revision >= 4) {
@@ -640,6 +643,12 @@ const struct di_edid_dpms *
 di_edid_get_dpms(const struct di_edid *edid)
 {
 	return &edid->dpms;
+}
+
+enum di_edid_display_color_type
+di_edid_get_display_color_type(const struct di_edid *edid)
+{
+	return edid->display_color_type;
 }
 
 const struct di_edid_color_encoding_formats *

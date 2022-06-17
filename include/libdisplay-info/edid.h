@@ -116,6 +116,29 @@ const struct di_edid_dpms *
 di_edid_get_dpms(const struct di_edid *edid);
 
 /**
+ * Display color type.
+ */
+enum di_edid_display_color_type {
+	/* Monochrome or grayscale display */
+	DI_EDID_DISPLAY_COLOR_MONOCHROME = 0x00,
+	/* RGB color display */
+	DI_EDID_DISPLAY_COLOR_RGB = 0x01,
+	/* Non-RGB color display */
+	DI_EDID_DISPLAY_COLOR_NON_RGB = 0x02,
+	/* Undefined */
+	DI_EDID_DISPLAY_COLOR_UNDEFINED = 0x03,
+};
+
+/**
+ * Get the display color type.
+ *
+ * For digital displays using EDID 1.4 and later, DI_EDID_DISPLAY_COLOR_UNDEFINED
+ * is always returned.
+ */
+enum di_edid_display_color_type
+di_edid_get_display_color_type(const struct di_edid *edid);
+
+/**
  * Basic color encoding formats, defined in section 3.6.4.
  */
 struct di_edid_color_encoding_formats {

@@ -29,6 +29,7 @@ struct di_edid {
 	struct di_edid_screen_size screen_size;
 	float gamma;
 	struct di_edid_dpms dpms;
+	enum di_edid_display_color_type display_color_type;
 	struct di_edid_color_encoding_formats color_encoding_formats;
 	struct di_edid_misc_features misc_features;
 

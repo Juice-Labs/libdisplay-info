@@ -256,6 +256,22 @@ digital_interface_name(enum di_edid_video_input_digital_interface interface)
 	abort();
 }
 
+static const char *
+display_color_type_name(enum di_edid_display_color_type type)
+{
+	switch (type) {
+	case DI_EDID_DISPLAY_COLOR_MONOCHROME:
+		return "Monochrome or grayscale display";
+	case DI_EDID_DISPLAY_COLOR_RGB:
+		return "RGB color display";
+	case DI_EDID_DISPLAY_COLOR_NON_RGB:
+		return "Non-RGB color display";
+	case DI_EDID_DISPLAY_COLOR_UNDEFINED:
+		return "Undefined display color type";
+	}
+	abort();
+}
+
 static void
 print_ext(const struct di_edid_ext *ext, size_t ext_index)
 {
@@ -284,6 +300,7 @@ main(int argc, char *argv[])
 	const struct di_edid_screen_size *screen_size;
 	float gamma;
 	const struct di_edid_dpms *dpms;
+	enum di_edid_display_color_type display_color_type;
 	const struct di_edid_color_encoding_formats *color_encoding_formats;
 	const struct di_edid_misc_features *misc_features;
 	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;
@@ -389,6 +406,11 @@ main(int argc, char *argv[])
 			printf(" Off");
 		}
 		printf("\n");
+	}
+
+	if (!video_input_digital || di_edid_get_revision(edid) < 4) {
+		display_color_type = di_edid_get_display_color_type(edid);
+		printf("    %s\n", display_color_type_name(display_color_type));
 	}
 
 	color_encoding_formats = di_edid_get_color_encoding_formats(edid);
