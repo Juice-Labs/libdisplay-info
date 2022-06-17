@@ -181,19 +181,19 @@ di_edid_get_misc_features(const struct di_edid *edid);
  */
 struct di_edid_detailed_timing_def {
 	/* Pixel clock */
-	int pixel_clock_hz;
+	int32_t pixel_clock_hz;
 	/* Horizontal/Vertical Addressable Video in pixels/lines */
-	int horiz_video, vert_video;
+	int32_t horiz_video, vert_video;
 	/* Horizontal/Vertical Blanking in pixels/lines */
-	int horiz_blank, vert_blank;
+	int32_t horiz_blank, vert_blank;
 	/* Horizontal/Vertical Front Porch in pixels/lines */
-	int horiz_front_porch, vert_front_porch;
+	int32_t horiz_front_porch, vert_front_porch;
 	/* Horizontal/Vertical Sync Pulse Width in pixels/lines */
-	int horiz_sync_pulse, vert_sync_pulse;
+	int32_t horiz_sync_pulse, vert_sync_pulse;
 	/* Horizontal/Vertical Addressable Video Image Size in mm, zero if unset */
-	int horiz_image_mm, vert_image_mm;
+	int32_t horiz_image_mm, vert_image_mm;
 	/* Horizontal/Vertical Border in pixels/lines */
-	int horiz_border, vert_border;
+	int32_t horiz_border, vert_border;
 };
 
 /**
