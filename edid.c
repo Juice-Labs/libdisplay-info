@@ -246,6 +246,13 @@ parse_detailed_timing_def(struct di_edid *edid,
 
 	def->horiz_image_mm = (get_bit_range(data[14], 7, 4) << 8) | data[12];
 	def->vert_image_mm = (get_bit_range(data[14], 3, 0) << 8) | data[13];
+	if ((def->horiz_image_mm == 16 && def->vert_image_mm == 9)
+	    || (def->horiz_image_mm == 4 && def->vert_image_mm == 3)) {
+		/* Table 3.21 note 18.2: these are special cases and define the
+		 * aspect ratio rather than the size in mm.
+		 * TODO: expose these values */
+		def->horiz_image_mm = def->vert_image_mm = 0;
+	}
 
 	def->horiz_border = data[15];
 	def->vert_border = data[16];
