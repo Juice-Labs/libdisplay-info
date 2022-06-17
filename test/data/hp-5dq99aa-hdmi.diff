@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -17,26 +17,21 @@
+@@ -17,24 +17,19 @@
      Green: 0.2890, 0.6435
      Blue : 0.1494, 0.0507
      White: 0.3134, 0.3291
@@ -33,11 +33,8 @@
 +                 Hfront   48 Hsync  32 Hback   80
 +                 Vfront    3 Vsync   5 Vback   33
      Display Range Limits:
--      Monitor ranges (GTF): 46-75 Hz V, 30-112 kHz H, max dotclock 310 MHz
-+      Monitor ranges: 46-75 Hz V, 30-112 kHz H, max dotclock 310 MHz
+       Monitor ranges (GTF): 46-75 Hz V, 30-112 kHz H, max dotclock 310 MHz
      Display Product Name: 'HP 27 QD'
-     Display Product Serial Number: 'CN49120J6N'
-   Extension blocks: 1
 @@ -51,57 +46,7 @@
    Supports YCbCr 4:2:2
    Native detailed modes: 1

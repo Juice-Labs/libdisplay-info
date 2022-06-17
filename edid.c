@@ -429,6 +429,7 @@ parse_display_range_limits(struct di_edid *edid,
 			   struct di_edid_display_range_limits *out)
 {
 	uint8_t offset_flags, vert_offset_flags, horiz_offset_flags;
+	uint8_t support_flags;
 	int max_vert_offset = 0, min_vert_offset = 0;
 	int max_horiz_offset = 0, min_horiz_offset = 0;
 
@@ -483,7 +484,64 @@ parse_display_range_limits(struct di_edid *edid,
 		add_failure(edid, "EDID 1.4 block does not set max dotclock.");
 	}
 
-	/* TODO: parse video timing support flags */
+	support_flags = data[10];
+	switch (support_flags) {
+	case 0x00:
+		/* For EDID 1.4 and later, always indicates support for default
+		 * GTF. For EDID 1.3 and earlier, a misc features bit indicates
+		 * support for default GTF. */
+		if (edid->revision >= 4 || edid->misc_features.default_gtf) {
+			out->type = DI_EDID_DISPLAY_RANGE_LIMITS_DEFAULT_GTF;
+		} else {
+			out->type = DI_EDID_DISPLAY_RANGE_LIMITS_BARE;
+		}
+		break;
+	case 0x01:
+		if (edid->revision < 4) {
+			/* Reserved */
+			add_failure(edid, "'Bare Limits' is not allowed for EDID < 1.4.");
+			return false;
+		}
+		out->type = DI_EDID_DISPLAY_RANGE_LIMITS_BARE;
+		break;
+	case 0x02:
+		out->type = DI_EDID_DISPLAY_RANGE_LIMITS_SECONDARY_GTF;
+		break;
+	case 0x04:
+		if (edid->revision < 4) {
+			/* Reserved */
+			add_failure(edid, "'CVT' is not allowed for EDID < 1.4.");
+			return false;
+		}
+		out->type = DI_EDID_DISPLAY_RANGE_LIMITS_CVT;
+		break;
+	default:
+		/* Reserved */
+		if (edid->revision <= 4) {
+			add_failure(edid, "Unknown range class (0x%02x).", support_flags);
+			return false;
+		}
+		out->type = DI_EDID_DISPLAY_RANGE_LIMITS_BARE;
+		break;
+	}
+
+	/* Some types require the display to support continuous frequencies, but
+	 * this flag is only set for EDID 1.4 and later */
+	if (edid->revision >= 4 && !edid->misc_features.continuous_freq) {
+		switch (out->type) {
+		case DI_EDID_DISPLAY_RANGE_LIMITS_DEFAULT_GTF:
+		case DI_EDID_DISPLAY_RANGE_LIMITS_SECONDARY_GTF:
+			add_failure(edid, "GTF can't be combined with non-continuous frequencies.");
+			return false;
+		case DI_EDID_DISPLAY_RANGE_LIMITS_CVT:
+			add_failure(edid, "CVT can't be combined with non-continuous frequencies.");
+			return false;
+		default:
+			break;
+		}
+	}
+
+	/* TODO: parse video timing data in bytes 11 to 17 */
 
 	return true;
 }

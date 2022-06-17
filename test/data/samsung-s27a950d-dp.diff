@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -18,17 +18,16 @@
+@@ -18,17 +18,14 @@
      Green: 0.2890, 0.6093
      Blue : 0.1455, 0.0703
      White: 0.3125, 0.3291
@@ -15,15 +15,14 @@
      DTD 2:  1920x1080   99.930409 Hz  16:9    113.221 kHz    235.500000 MHz (field sequential R/L, 598 mm x 336 mm)
 -                 Hfront   48 Hsync  32 Hback   80 Hpol P
 -                 Vfront    3 Vsync   5 Vback   45 Vpol N
+-    Display Range Limits:
+-      Monitor ranges (GTF): 24-120 Hz V, 26-140 kHz H, max dotclock 300 MHz
 +                 Hfront   48 Hsync  32 Hback   80
 +                 Vfront    3 Vsync   5 Vback   45
-     Display Range Limits:
--      Monitor ranges (GTF): 24-120 Hz V, 26-140 kHz H, max dotclock 300 MHz
-+      Monitor ranges: 24-120 Hz V, 26-140 kHz H, max dotclock 300 MHz
      Display Product Name: 'S27A950D'
    Extension blocks: 1
  Checksum: 0x1b
-@@ -41,10 +40,5 @@
+@@ -41,10 +38,5 @@
    Basic audio support
    Native detailed modes: 0
    Audio Data Block:

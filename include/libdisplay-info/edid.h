@@ -374,6 +374,24 @@ const char *
 di_edid_display_descriptor_get_string(const struct di_edid_display_descriptor *desc);
 
 /**
+ * EDID display range limits type.
+ *
+ * The values do not match the EDID specification.
+ *
+ * The CVT entry was introduced in EDID 1.4.
+ */
+enum di_edid_display_range_limits_type {
+	/* Range Limits Only - no additional timing information is provided */
+	DI_EDID_DISPLAY_RANGE_LIMITS_BARE,
+	/* Default GTF supported */
+	DI_EDID_DISPLAY_RANGE_LIMITS_DEFAULT_GTF,
+	/* Secondary GTF supported */
+	DI_EDID_DISPLAY_RANGE_LIMITS_SECONDARY_GTF,
+	/* CVT supported */
+	DI_EDID_DISPLAY_RANGE_LIMITS_CVT,
+};
+
+/**
  * EDID display range limits, defined in section 3.10.3.3.1.
  */
 struct di_edid_display_range_limits {
@@ -386,6 +404,8 @@ struct di_edid_display_range_limits {
 	/* Maximum pixel clock in Hz, zero if unset, rounded to the nearest
 	 * multiple of 10 MHz */
 	int32_t max_pixel_clock_hz;
+
+	enum di_edid_display_range_limits_type type;
 };
 
 /**

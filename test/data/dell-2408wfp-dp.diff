@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -19,25 +19,16 @@
+@@ -19,23 +19,14 @@
      Green: 0.1875, 0.7060
      Blue : 0.1484, 0.0644
      White: 0.3134, 0.3291
@@ -29,6 +29,3 @@
      Display Product Serial Number: 'G283H8BI21MS'
      Display Product Name: 'DELL 2408WFP'
      Display Range Limits:
--      Monitor ranges (Bare Limits): 56-76 Hz V, 30-83 kHz H, max dotclock 170 MHz
-+      Monitor ranges: 56-76 Hz V, 30-83 kHz H, max dotclock 170 MHz
- Checksum: 0x92

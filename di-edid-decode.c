@@ -212,12 +212,30 @@ display_desc_tag_name(enum di_edid_display_descriptor_tag tag)
 	abort();
 }
 
+static const char *
+display_range_limits_type_name(enum di_edid_display_range_limits_type type)
+{
+	switch (type) {
+	case DI_EDID_DISPLAY_RANGE_LIMITS_BARE:
+		return "Bare Limits";
+	case DI_EDID_DISPLAY_RANGE_LIMITS_DEFAULT_GTF:
+		return "GTF";
+	case DI_EDID_DISPLAY_RANGE_LIMITS_SECONDARY_GTF:
+		return "Secondary GTF";
+	case DI_EDID_DISPLAY_RANGE_LIMITS_CVT:
+		return "CVT";
+	}
+	abort();
+}
+
 static void
-print_display_desc(const struct di_edid_display_descriptor *desc)
+print_display_desc(const struct di_edid *edid,
+		   const struct di_edid_display_descriptor *desc)
 {
 	enum di_edid_display_descriptor_tag tag;
 	const char *tag_name, *str;
 	const struct di_edid_display_range_limits *range_limits;
+	enum di_edid_display_range_limits_type range_limits_type;
 
 	tag = di_edid_display_descriptor_get_tag(desc);
 	tag_name = display_desc_tag_name(tag);
@@ -233,7 +251,17 @@ print_display_desc(const struct di_edid_display_descriptor *desc)
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS:
 		range_limits = di_edid_display_descriptor_get_range_limits(desc);
-		printf("\n      Monitor ranges: %d-%d Hz V, %d-%d kHz H",
+
+		range_limits_type = range_limits->type;
+		if (di_edid_get_revision(edid) < 4
+		    && range_limits_type == DI_EDID_DISPLAY_RANGE_LIMITS_BARE) {
+			/* edid-decode always prints "GTF" for EDID 1.3 and
+			 * earlier even if the display doesn't support it */
+			range_limits_type = DI_EDID_DISPLAY_RANGE_LIMITS_DEFAULT_GTF;
+		}
+
+		printf("\n      Monitor ranges (%s): %d-%d Hz V, %d-%d kHz H",
+		       display_range_limits_type_name(range_limits_type),
 		       range_limits->min_vert_rate_hz,
 		       range_limits->max_vert_rate_hz,
 		       range_limits->min_horiz_rate_hz / 1000,
@@ -622,7 +650,7 @@ main(int argc, char *argv[])
 	}
 	display_descs = di_edid_get_display_descriptors(edid);
 	for (i = 0; display_descs[i] != NULL; i++) {
-		print_display_desc(display_descs[i]);
+		print_display_desc(edid, display_descs[i]);
 	}
 
 	exts = di_edid_get_extensions(edid);
