@@ -190,7 +190,7 @@ struct di_edid_detailed_timing_def {
 	int horiz_front_porch, vert_front_porch;
 	/* Horizontal/Vertical Sync Pulse Width in pixels/lines */
 	int horiz_sync_pulse, vert_sync_pulse;
-	/* Horizontal/Vertical Addressable Video Image Size in mm */
+	/* Horizontal/Vertical Addressable Video Image Size in mm, zero if unset */
 	int horiz_image_mm, vert_image_mm;
 	/* Horizontal/Vertical Border in pixels/lines */
 	int horiz_border, vert_border;

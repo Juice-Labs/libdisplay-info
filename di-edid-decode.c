@@ -58,7 +58,9 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t 
 	printf(" %3u:%-3u", horiz_ratio, vert_ratio);
 	printf(" %8.3f kHz %13.6f MHz", horiz_freq_hz / 1000,
 	       (double) def->pixel_clock_hz / (1000 * 1000));
-	printf(" (%d mm x %d mm)", def->horiz_image_mm, def->vert_image_mm);
+	if (def->horiz_image_mm != 0 || def->vert_image_mm != 0) {
+		printf(" (%d mm x %d mm)", def->horiz_image_mm, def->vert_image_mm);
+	}
 	printf("\n");
 
 	horiz_back_porch = hbl - def->horiz_sync_pulse - def->horiz_front_porch;
