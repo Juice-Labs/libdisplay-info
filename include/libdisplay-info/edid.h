@@ -177,6 +177,26 @@ const struct di_edid_misc_features *
 di_edid_get_misc_features(const struct di_edid *edid);
 
 /**
+ * Stereo viewing support.
+ */
+enum di_edid_detailed_timing_def_stereo {
+	/* Normal Display – No Stereo */
+	DI_EDID_DETAILED_TIMING_DEF_STEREO_NONE,
+	/* Field sequential stereo, right image when stereo sync signal = 1 */
+	DI_EDID_DETAILED_TIMING_DEF_STEREO_FIELD_SEQ_RIGHT,
+	/* Field sequential stereo, left image when stereo sync signal = 1 */
+	DI_EDID_DETAILED_TIMING_DEF_STEREO_FIELD_SEQ_LEFT,
+	/* 2-way interleaved stereo, right image on even lines */
+	DI_EDID_DETAILED_TIMING_DEF_STEREO_2_WAY_INTERLEAVED_RIGHT,
+	/* 2-way interleaved stereo, left image on even lines */
+	DI_EDID_DETAILED_TIMING_DEF_STEREO_2_WAY_INTERLEAVED_LEFT,
+	/* 4-way interleaved stereo */
+	DI_EDID_DETAILED_TIMING_DEF_STEREO_4_WAY_INTERLEAVED,
+	/* Side-by-Side interleaved stereo */
+	DI_EDID_DETAILED_TIMING_DEF_STEREO_SIDE_BY_SIDE_INTERLEAVED,
+};
+
+/**
  * EDID detailed timing definition, defined in section 3.10.2.
  */
 struct di_edid_detailed_timing_def {
@@ -194,6 +214,10 @@ struct di_edid_detailed_timing_def {
 	int32_t horiz_image_mm, vert_image_mm;
 	/* Horizontal/Vertical Border in pixels/lines */
 	int32_t horiz_border, vert_border;
+	/* Interlaced signal */
+	bool interlaced;
+	/* Stereo Viewing Support */
+	enum di_edid_detailed_timing_def_stereo stereo;
 };
 
 /**

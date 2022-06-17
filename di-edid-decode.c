@@ -34,6 +34,56 @@ compute_aspect_ratio(int width, int height, int *horiz_ratio, int *vert_ratio)
 	}
 }
 
+/**
+ * Join a list of strings into a comma-separated string.
+ *
+ * The list must be NULL-terminated.
+ */
+static char *
+join_str(const char *l[])
+{
+	char *out = NULL;
+	size_t out_size = 0, i;
+	FILE *f;
+
+	f = open_memstream(&out, &out_size);
+	if (!f) {
+		return NULL;
+	}
+
+	for (i = 0; l[i] != NULL; i++) {
+		if (i > 0) {
+			fprintf(f, ", ");
+		}
+		fprintf(f, "%s", l[i]);
+	}
+
+	fclose(f);
+	return out;
+}
+
+static const char *
+detailed_timing_def_stereo_name(enum di_edid_detailed_timing_def_stereo stereo)
+{
+	switch (stereo) {
+	case DI_EDID_DETAILED_TIMING_DEF_STEREO_NONE:
+		return "none";
+	case DI_EDID_DETAILED_TIMING_DEF_STEREO_FIELD_SEQ_RIGHT:
+		return "field sequential L/R";
+	case DI_EDID_DETAILED_TIMING_DEF_STEREO_FIELD_SEQ_LEFT:
+		return "field sequential R/L";
+	case DI_EDID_DETAILED_TIMING_DEF_STEREO_2_WAY_INTERLEAVED_RIGHT:
+		return "interleaved right even";
+	case DI_EDID_DETAILED_TIMING_DEF_STEREO_2_WAY_INTERLEAVED_LEFT:
+		return "interleaved left even";
+	case DI_EDID_DETAILED_TIMING_DEF_STEREO_4_WAY_INTERLEAVED:
+		return "four way interleaved";
+	case DI_EDID_DETAILED_TIMING_DEF_STEREO_SIDE_BY_SIDE_INTERLEAVED:
+		return "side by side interleaved";
+	}
+	abort();
+}
+
 static void
 print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t n)
 {
@@ -41,6 +91,9 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t 
 	int horiz_back_porch, vert_back_porch;
 	int horiz_ratio, vert_ratio;
 	double refresh, horiz_freq_hz;
+	const char *flags[32] = {0};
+	char size_mm[64];
+	size_t flags_len = 0;
 
 	hbl = def->horiz_blank - 2 * def->horiz_border;
 	vbl = def->vert_blank - 2 * def->vert_border;
@@ -52,14 +105,29 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t 
 	compute_aspect_ratio(def->horiz_video, def->vert_video,
 			     &horiz_ratio, &vert_ratio);
 
+	if (def->stereo != DI_EDID_DETAILED_TIMING_DEF_STEREO_NONE) {
+		flags[flags_len++] = detailed_timing_def_stereo_name(def->stereo);
+	}
+	if (def->horiz_image_mm != 0 || def->vert_image_mm != 0) {
+		snprintf(size_mm, sizeof(size_mm), "%d mm x %d mm",
+			 def->horiz_image_mm, def->vert_image_mm);
+		flags[flags_len++] = size_mm;
+	}
+	assert(flags_len < sizeof(flags) / sizeof(flags[0]));
+
 	printf("    DTD %zu:", n);
 	printf(" %5dx%-5d", def->horiz_video, def->vert_video);
+	if (def->interlaced) {
+		printf("i");
+	}
 	printf(" %10.6f Hz", refresh);
 	printf(" %3u:%-3u", horiz_ratio, vert_ratio);
 	printf(" %8.3f kHz %13.6f MHz", horiz_freq_hz / 1000,
 	       (double) def->pixel_clock_hz / (1000 * 1000));
-	if (def->horiz_image_mm != 0 || def->vert_image_mm != 0) {
-		printf(" (%d mm x %d mm)", def->horiz_image_mm, def->vert_image_mm);
+	if (flags_len > 0) {
+		char *flags_str = join_str(flags);
+		printf(" (%s)", flags_str);
+		free(flags_str);
 	}
 	printf("\n");
 

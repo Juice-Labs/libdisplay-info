@@ -222,6 +222,7 @@ parse_detailed_timing_def(struct di_edid *edid,
 {
 	struct di_edid_detailed_timing_def *def;
 	int raw;
+	uint8_t flags, stereo_hi, stereo_lo;
 
 	def = calloc(1, sizeof(*def));
 	if (!def) {
@@ -257,7 +258,40 @@ parse_detailed_timing_def(struct di_edid *edid,
 	def->horiz_border = data[15];
 	def->vert_border = data[16];
 
-	/* TODO: parse flags in data[17] */
+	flags = data[17];
+
+	def->interlaced = has_bit(flags, 7);
+
+	stereo_hi = get_bit_range(flags, 6, 5);
+	stereo_lo = get_bit_range(flags, 0, 0);
+	if (stereo_hi == 0) {
+		def->stereo = DI_EDID_DETAILED_TIMING_DEF_STEREO_NONE;
+	} else {
+		switch ((stereo_hi << 1) | stereo_lo) {
+		case (1 << 1) | 0:
+			def->stereo = DI_EDID_DETAILED_TIMING_DEF_STEREO_FIELD_SEQ_RIGHT;
+			break;
+		case (2 << 1) | 0:
+			def->stereo = DI_EDID_DETAILED_TIMING_DEF_STEREO_FIELD_SEQ_LEFT;
+			break;
+		case (1 << 1) | 1:
+			def->stereo = DI_EDID_DETAILED_TIMING_DEF_STEREO_2_WAY_INTERLEAVED_RIGHT;
+			break;
+		case (2 << 1) | 1:
+			def->stereo = DI_EDID_DETAILED_TIMING_DEF_STEREO_2_WAY_INTERLEAVED_LEFT;
+			break;
+		case (3 << 1) | 0:
+			def->stereo = DI_EDID_DETAILED_TIMING_DEF_STEREO_4_WAY_INTERLEAVED;
+			break;
+		case (3 << 1) | 1:
+			def->stereo = DI_EDID_DETAILED_TIMING_DEF_STEREO_SIDE_BY_SIDE_INTERLEAVED;
+			break;
+		default:
+			abort(); /* unreachable */
+		}
+	}
+
+	/* TODO: parse analog/digital flags */
 
 	edid->detailed_timing_defs[edid->detailed_timing_defs_len++] = def;
 	return true;
