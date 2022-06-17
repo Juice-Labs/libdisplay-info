@@ -5,6 +5,7 @@ licensed under the [Creative Commons Attribution 4.0 International][CC-BY-4.0]
 license:
 
 - panasonic-mei96a2-dp
+- samsung-s27a950d-dp
 
 The other blobs are under the same license as the rest of the libdisplay-info
 project.
