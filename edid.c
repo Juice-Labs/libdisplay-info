@@ -11,6 +11,10 @@
  */
 #define EDID_BLOCK_SIZE 128
 /**
+ * The size of an EDID standard timing, defined in section 3.9.
+ */
+#define EDID_STANDARD_TIMING_SIZE 2
+/**
  * The size of an EDID byte descriptor, defined in section 3.10.
  */
 #define EDID_BYTE_DESCRIPTOR_SIZE 18
@@ -216,6 +220,39 @@ parse_basic_params_features(struct di_edid *edid,
 	}
 	edid->misc_features.srgb_is_primary = has_bit(features, 2);
 
+	return true;
+}
+
+static bool
+parse_standard_timing(struct di_edid *edid,
+		      const uint8_t data[static EDID_STANDARD_TIMING_SIZE])
+{
+	struct di_edid_standard_timing *t;
+
+	if (data[0] == 0x01 && data[1] == 0x01) {
+		/* Unused */
+		return true;
+	}
+	if (data[0] == 0x00) {
+		/* Reserved */
+		if (edid->revision <= 4) {
+			errno = EINVAL;
+		} else {
+			errno = ENOTSUP;
+		}
+		return false;
+	}
+
+	t = calloc(1, sizeof(*t));
+	if (!t) {
+		return false;
+	}
+
+	t->horiz_video = ((int32_t) data[0] + 31) * 8;
+	t->aspect_ratio = get_bit_range(data[1], 7, 6);
+	t->refresh_rate_hz = (int32_t) get_bit_range(data[1], 5, 0) + 60;
+
+	edid->standard_timings[edid->standard_timings_len++] = t;
 	return true;
 }
 
@@ -514,7 +551,7 @@ _di_edid_parse(const void *data, size_t size)
 	struct di_edid *edid;
 	int version, revision;
 	size_t exts_len, i;
-	const uint8_t *byte_desc_data, *ext_data;
+	const uint8_t *standard_timing_data, *byte_desc_data, *ext_data;
 
 	if (size < EDID_BLOCK_SIZE ||
 	    size > EDID_MAX_BLOCK_COUNT * EDID_BLOCK_SIZE ||
@@ -562,6 +599,16 @@ _di_edid_parse(const void *data, size_t size)
 		return NULL;
 	}
 
+	for (i = 0; i < EDID_MAX_STANDARD_TIMING_COUNT; i++) {
+		standard_timing_data = (const uint8_t *) data
+				       + 0x26 + i * EDID_STANDARD_TIMING_SIZE;
+		if (!parse_standard_timing(edid, standard_timing_data)
+		    && errno != ENOTSUP) {
+			_di_edid_destroy(edid);
+			return NULL;
+		}
+	}
+
 	for (i = 0; i < EDID_BYTE_DESCRIPTOR_COUNT; i++) {
 		byte_desc_data = (const uint8_t *) data
 			       + 0x36 + i * EDID_BYTE_DESCRIPTOR_SIZE;
@@ -587,6 +634,10 @@ void
 _di_edid_destroy(struct di_edid *edid)
 {
 	size_t i;
+
+	for (i = 0; i < edid->standard_timings_len; i++) {
+		free(edid->standard_timings[i]);
+	}
 
 	for (i = 0; i < edid->detailed_timing_defs_len; i++) {
 		free(edid->detailed_timing_defs[i]);
@@ -663,6 +714,28 @@ const struct di_edid_misc_features *
 di_edid_get_misc_features(const struct di_edid *edid)
 {
 	return &edid->misc_features;
+}
+
+int32_t
+di_edid_standard_timing_get_vert_video(const struct di_edid_standard_timing *t)
+{
+	switch (t->aspect_ratio) {
+	case DI_EDID_STANDARD_TIMING_16_10:
+		return t->horiz_video * 10 / 16;
+	case DI_EDID_STANDARD_TIMING_4_3:
+		return t->horiz_video * 3 / 4;
+	case DI_EDID_STANDARD_TIMING_5_4:
+		return t->horiz_video * 4 / 5;
+	case DI_EDID_STANDARD_TIMING_16_9:
+		return t->horiz_video * 9 / 16;
+	}
+	abort(); /* unreachable */
+}
+
+const struct di_edid_standard_timing *const *
+di_edid_get_standard_timings(const struct di_edid *edid)
+{
+	return (const struct di_edid_standard_timing *const *) &edid->standard_timings;
 }
 
 const struct di_edid_detailed_timing_def *const *

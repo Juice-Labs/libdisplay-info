@@ -6,6 +6,35 @@
 #include <libdisplay-info/edid.h>
 #include <libdisplay-info/info.h>
 
+static const char *
+standard_timing_aspect_ratio_name(enum di_edid_standard_timing_aspect_ratio aspect_ratio)
+{
+	switch (aspect_ratio) {
+	case DI_EDID_STANDARD_TIMING_16_10:
+		return "16:10";
+	case DI_EDID_STANDARD_TIMING_4_3:
+		return "4:3";
+	case DI_EDID_STANDARD_TIMING_5_4:
+		return "5:4";
+	case DI_EDID_STANDARD_TIMING_16_9:
+		return "16:9";
+	}
+	abort();
+}
+
+static void
+print_standard_timing(const struct di_edid_standard_timing *t)
+{
+	int32_t vert_video;
+
+	vert_video = di_edid_standard_timing_get_vert_video(t);
+
+	printf("    %5dx%-5d", t->horiz_video, vert_video);
+	printf(" %10.6f Hz", (float) t->refresh_rate_hz);
+	printf(" %s", standard_timing_aspect_ratio_name(t->aspect_ratio));
+	printf("\n");
+}
+
 static int
 gcd(int a, int b)
 {
@@ -303,6 +332,7 @@ main(int argc, char *argv[])
 	enum di_edid_display_color_type display_color_type;
 	const struct di_edid_color_encoding_formats *color_encoding_formats;
 	const struct di_edid_misc_features *misc_features;
+	const struct di_edid_standard_timing *const *standard_timings;
 	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;
 	const struct di_edid_display_descriptor *const *display_descs;
 	const struct di_edid_ext *const *exts;
@@ -449,6 +479,16 @@ main(int argc, char *argv[])
 	}
 	if (misc_features->default_gtf) {
 		printf("    Supports GTF timings within operating range\n");
+	}
+
+	printf("  Standard Timings:");
+	standard_timings = di_edid_get_standard_timings(edid);
+	if (standard_timings[0] == NULL) {
+		printf(" none");
+	}
+	printf("\n");
+	for (i = 0; standard_timings[i] != NULL; i++) {
+		print_standard_timing(standard_timings[i]);
 	}
 
 	printf("  Detailed Timing Descriptors:\n");

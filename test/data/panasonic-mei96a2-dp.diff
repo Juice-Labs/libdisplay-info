@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -12,21 +12,14 @@
+@@ -12,21 +12,15 @@
      Gamma: 2.20
      Supported color formats: RGB 4:4:4
      First detailed timing includes the native pixel format and preferred refresh rate
@@ -10,7 +10,7 @@
 -    Blue : 0.1533, 0.0605
 -    White: 0.3134, 0.3291
 -  Established Timings I & II: none
--  Standard Timings: none
+   Standard Timings: none
    Detailed Timing Descriptors:
      DTD 1:  2560x1440   59.999068 Hz  16:9     91.979 kHz    257.540000 MHz (309 mm x 173 mm)
 -                 Hfront   88 Hsync  32 Hback  120 Hpol P

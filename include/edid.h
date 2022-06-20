@@ -16,6 +16,10 @@
  */
 #define EDID_MAX_BLOCK_COUNT 256
 /**
+ * The maximum number of EDID standard timings, defined in section 3.9.
+ */
+#define EDID_MAX_STANDARD_TIMING_COUNT 8
+/**
  * The number of EDID byte descriptors, defined in section 3.10.
  */
 #define EDID_BYTE_DESCRIPTOR_COUNT 4
@@ -32,6 +36,10 @@ struct di_edid {
 	enum di_edid_display_color_type display_color_type;
 	struct di_edid_color_encoding_formats color_encoding_formats;
 	struct di_edid_misc_features misc_features;
+
+	/* NULL-terminated */
+	struct di_edid_standard_timing *standard_timings[EDID_MAX_STANDARD_TIMING_COUNT + 1];
+	size_t standard_timings_len;
 
 	/* NULL-terminated */
 	struct di_edid_detailed_timing_def *detailed_timing_defs[EDID_BYTE_DESCRIPTOR_COUNT + 1];

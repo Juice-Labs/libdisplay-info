@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -13,22 +13,15 @@
+@@ -13,22 +13,16 @@
      DPMS levels: Off
      Supported color formats: RGB 4:4:4
      First detailed timing includes the native pixel format and preferred refresh rate
@@ -10,7 +10,7 @@
 -    Blue : 0.1455, 0.0703
 -    White: 0.3125, 0.3291
 -  Established Timings I & II: none
--  Standard Timings: none
+   Standard Timings: none
    Detailed Timing Descriptors:
      DTD 1:  1920x1080  119.982181 Hz  16:9    137.260 kHz    285.500000 MHz (field sequential R/L, 598 mm x 336 mm)
 -                 Hfront   48 Hsync  32 Hback   80 Hpol P
@@ -28,7 +28,7 @@
      Display Product Name: 'S27A950D'
    Extension blocks: 1
  Checksum: 0x1b
-@@ -36,15 +29,4 @@
+@@ -36,15 +30,4 @@
  ----------------
  
  Block 1, CTA-861 Extension Block:

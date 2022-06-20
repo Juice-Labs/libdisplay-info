@@ -200,6 +200,42 @@ const struct di_edid_misc_features *
 di_edid_get_misc_features(const struct di_edid *edid);
 
 /**
+ * Aspect ratio for an EDID standard timing.
+ */
+enum di_edid_standard_timing_aspect_ratio {
+	DI_EDID_STANDARD_TIMING_16_10 = 0, /* 16:10 */
+	DI_EDID_STANDARD_TIMING_4_3 = 1, /* 4:3 */
+	DI_EDID_STANDARD_TIMING_5_4 = 2, /* 5:4 */
+	DI_EDID_STANDARD_TIMING_16_9 = 3, /* 16:9 */
+};
+
+/**
+ * EDID standard timing, defined in section 3.9.
+ */
+struct di_edid_standard_timing {
+	/* Horizontal addressable pixels */
+	int32_t horiz_video;
+	/* Aspect ratio */
+	enum di_edid_standard_timing_aspect_ratio aspect_ratio;
+	/* Field Refresh Rate in Hz */
+	int32_t refresh_rate_hz;
+};
+
+/**
+ * Get the vertical addressable line count of an EDID standard timing.
+ */
+int32_t
+di_edid_standard_timing_get_vert_video(const struct di_edid_standard_timing *t);
+
+/**
+ * Get a lits of EDID standard timings.
+ *
+ * The returned array is NULL-terminated.
+ */
+const struct di_edid_standard_timing *const *
+di_edid_get_standard_timings(const struct di_edid *edid);
+
+/**
  * Stereo viewing support.
  */
 enum di_edid_detailed_timing_def_stereo {

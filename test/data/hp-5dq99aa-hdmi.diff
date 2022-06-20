@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -12,31 +12,12 @@
+@@ -12,31 +12,21 @@
      DPMS levels: Off
      RGB color display
      First detailed timing is the preferred timing
@@ -14,7 +14,7 @@
 -    DMT 0x04:   640x480    59.940476 Hz   4:3     31.469 kHz     25.175000 MHz
 -    DMT 0x09:   800x600    60.316541 Hz   4:3     37.879 kHz     40.000000 MHz
 -    DMT 0x10:  1024x768    60.003840 Hz   4:3     48.363 kHz     65.000000 MHz
--  Standard Timings:
+   Standard Timings:
 -    DMT 0x52:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz
 -    DMT 0x53:  1600x900    60.000000 Hz  16:9     60.000 kHz    108.000000 MHz (RB)
 -    DMT 0x55:  1280x720    60.000000 Hz  16:9     45.000 kHz     74.250000 MHz
@@ -23,6 +23,14 @@
 -    DMT 0x2f:  1440x900    59.887445 Hz  16:10    55.935 kHz    106.500000 MHz
 -    DMT 0x33:  1600x1200   60.000000 Hz   4:3     75.000 kHz    162.000000 MHz
 -    DMT 0x23:  1280x1024   60.019740 Hz   5:4     63.981 kHz    108.000000 MHz
++     1920x1080   60.000000 Hz 16:9
++     1600x900    60.000000 Hz 16:9
++     1280x720    60.000000 Hz 16:9
++     1920x1200   60.000000 Hz 16:10
++     1680x1050   60.000000 Hz 16:10
++     1440x900    60.000000 Hz 16:10
++     1600x1200   60.000000 Hz 4:3
++     1280x1024   60.000000 Hz 5:4
    Detailed Timing Descriptors:
      DTD 1:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (597 mm x 339 mm)
 -                 Hfront   48 Hsync  32 Hback   80 Hpol P
@@ -35,7 +43,7 @@
      Display Product Name: 'HP 27 QD'
      Display Product Serial Number: 'CN49120J6N'
    Extension blocks: 1
-@@ -45,63 +26,4 @@
+@@ -45,63 +35,4 @@
  ----------------
  
  Block 1, CTA-861 Extension Block:
