@@ -394,6 +394,8 @@ parse_detailed_timing_def(struct di_edid *edid,
 		}
 	}
 
+	def->signal_type = get_bit_range(flags, 4, 3);
+
 	/* TODO: parse analog/digital flags */
 
 	edid->detailed_timing_defs[edid->detailed_timing_defs_len++] = def;

@@ -285,6 +285,20 @@ enum di_edid_detailed_timing_def_stereo {
 };
 
 /**
+ * Signal definitions for EDID detailed timings, defined in notes for table 3.22.
+ */
+enum di_edid_detailed_timing_def_signal_type {
+	/* Analog composite */
+	DI_EDID_DETAILED_TIMING_DEF_SIGNAL_ANALOG_COMPOSITE = 0x00,
+	/* Bipolar analog composite */
+	DI_EDID_DETAILED_TIMING_DEF_SIGNAL_BIPOLAR_ANALOG_COMPOSITE = 0x01,
+	/* Digital composite */
+	DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_COMPOSITE = 0x02,
+	/* Digital separate */
+	DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_SEPARATE = 0x03,
+};
+
+/**
  * EDID detailed timing definition, defined in section 3.10.2.
  */
 struct di_edid_detailed_timing_def {
@@ -306,6 +320,8 @@ struct di_edid_detailed_timing_def {
 	bool interlaced;
 	/* Stereo Viewing Support */
 	enum di_edid_detailed_timing_def_stereo stereo;
+	/* Signal type */
+	enum di_edid_detailed_timing_def_signal_type signal_type;
 };
 
 /**

@@ -120,6 +120,23 @@ detailed_timing_def_stereo_name(enum di_edid_detailed_timing_def_stereo stereo)
 	abort();
 }
 
+static const char *
+detailed_timing_def_signal_type_name(enum di_edid_detailed_timing_def_signal_type type)
+{
+	switch (type) {
+	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_ANALOG_COMPOSITE:
+		return "analog composite";
+	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_BIPOLAR_ANALOG_COMPOSITE:
+		return "bipolar analog composite";
+	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_COMPOSITE:
+		return "digital composite";
+	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_SEPARATE:
+		/* edid-decode doesn't print anything in this case */
+		return NULL;
+	}
+	abort();
+}
+
 static void
 print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t n)
 {
@@ -128,6 +145,7 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t 
 	int horiz_ratio, vert_ratio;
 	double refresh, horiz_freq_hz;
 	const char *flags[32] = {0};
+	const char *signal_type_name;
 	char size_mm[64];
 	size_t flags_len = 0;
 
@@ -141,6 +159,10 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t 
 	compute_aspect_ratio(def->horiz_video, def->vert_video,
 			     &horiz_ratio, &vert_ratio);
 
+	signal_type_name = detailed_timing_def_signal_type_name(def->signal_type);
+	if (signal_type_name != NULL) {
+		flags[flags_len++] = signal_type_name;
+	}
 	if (def->stereo != DI_EDID_DETAILED_TIMING_DEF_STEREO_NONE) {
 		flags[flags_len++] = detailed_timing_def_stereo_name(def->stereo);
 	}

@@ -31,7 +31,7 @@
    Detailed Timing Descriptors:
 -    DTD 1:  1280x1024   60.019740 Hz   5:4     63.981 kHz    108.000000 MHz (digital composite, serrate, 380 mm x 300 mm)
 -                 Hfront   48 Hsync 112 Hback  248 Hpol N
-+    DTD 1:  1280x1024   60.019740 Hz   5:4     63.981 kHz    108.000000 MHz (380 mm x 300 mm)
++    DTD 1:  1280x1024   60.019740 Hz   5:4     63.981 kHz    108.000000 MHz (digital composite, 380 mm x 300 mm)
 +                 Hfront   48 Hsync 112 Hback  248
                   Vfront    1 Vsync   3 Vback   38
      Display Range Limits:
