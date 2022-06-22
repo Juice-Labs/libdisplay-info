@@ -1,14 +1,5 @@
 --- ref
 +++ di
-@@ -4,7 +4,7 @@
-     Manufacturer: SUN
-     Model: 1420
-     Serial Number: 26628685
--    Made in: week 32 of 2004
-+    Made in: week 32 of 0
-   Basic Display Parameters & Features:
-     Digital display
-     Maximum image size: 38 cm x 30 cm
 @@ -18,29 +18,14 @@
      Green: 0.2998, 0.5996
      Blue : 0.1503, 0.0664

@@ -97,10 +97,11 @@ validate_block_checksum(const uint8_t data[static EDID_BLOCK_SIZE])
 }
 
 static void
-parse_vendor_product(const uint8_t data[static EDID_BLOCK_SIZE],
-		     struct di_edid_vendor_product *out)
+parse_vendor_product(struct di_edid *edid,
+		     const uint8_t data[static EDID_BLOCK_SIZE])
 {
-	uint16_t man;
+	struct di_edid_vendor_product *out = &edid->vendor_product;
+	uint16_t man, raw_week, raw_year;
 	int year = 0;
 
 	/* The ASCII 3-letter manufacturer code is encoded in 5-bit codes. */
@@ -115,17 +116,26 @@ parse_vendor_product(const uint8_t data[static EDID_BLOCK_SIZE],
 				  (data[0x0E] << 16) |
 				  (data[0x0F] << 24));
 
-	if (data[0x11] >= 0x10) {
+	raw_week = data[0x10];
+	raw_year = data[0x11];
+
+	if (raw_year >= 0x10 || edid->revision < 4) {
 		year = data[0x11] + 1990;
+	} else if (edid->revision == 4) {
+		add_failure(edid, "Year set to reserved value.");
 	}
 
-	if (data[0x10] == 0xFF) {
+	if (raw_week == 0xFF) {
 		/* Special flag for model year */
 		out->model_year = year;
 	} else {
 		out->manufacture_year = year;
-		if (data[0x10] > 0 && data[0x10] <= 54) {
-			out->manufacture_week = data[0x10];
+		if (raw_week > 54) {
+			add_failure_until(edid, 4,
+					  "Invalid week %u of manufacture.",
+					  raw_week);
+		} else if (raw_week > 0) {
+			out->manufacture_week = raw_week;
 		}
 	}
 }
@@ -696,7 +706,7 @@ _di_edid_parse(const void *data, size_t size)
 	edid->version = version;
 	edid->revision = revision;
 
-	parse_vendor_product(data, &edid->vendor_product);
+	parse_vendor_product(edid, data);
 	parse_basic_params_features(edid, data);
 	parse_chromaticity_coords(edid, data);
 
