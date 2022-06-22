@@ -11,6 +11,7 @@ test_cases = [
 	'hp-5dq99aa-hdmi',
 	'panasonic-mei96a2-dp',
 	'samsung-s27a950d-dp',
+	'sun-gh19ps-dvi',
 ]
 
 foreach tc : test_cases

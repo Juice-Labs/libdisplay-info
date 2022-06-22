@@ -6,6 +6,7 @@ license:
 
 - panasonic-mei96a2-dp
 - samsung-s27a950d-dp
+- sun-gh19ps-dvi
 
 The other blobs are under the same license as the rest of the libdisplay-info
 project.
