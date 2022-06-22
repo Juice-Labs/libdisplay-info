@@ -35,6 +35,7 @@ symbols_flag = '-Wl,--version-script,@0@'.format(meson.current_source_dir() / sy
 di_lib = library(
 	'display-info',
 	[
+		'dmt-table.c',
 		'edid.c',
 		'info.c',
 	],
