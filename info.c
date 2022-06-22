@@ -40,6 +40,12 @@ di_info_get_edid(const struct di_info *info)
 	return info->edid;
 }
 
+const char *
+di_info_get_failure_msg(const struct di_info *info)
+{
+	return info->edid->failure_msg;
+}
+
 char *
 di_info_get_product_name(const struct di_info *info)
 {

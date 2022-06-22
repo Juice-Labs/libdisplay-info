@@ -7,6 +7,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include <libdisplay-info/edid.h>
 
@@ -54,6 +55,10 @@ struct di_edid {
 	/* NULL-terminated, doesn't include the base block */
 	struct di_edid_ext *exts[EDID_MAX_BLOCK_COUNT];
 	size_t exts_len;
+
+	char *failure_msg;
+	size_t failure_msg_size;
+	FILE *failure_msg_file;
 };
 
 struct di_edid_display_descriptor {

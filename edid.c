@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <errno.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,6 +50,48 @@ get_bit_range(uint8_t val, size_t high, size_t low)
 	n = high - low + 1;
 	bitmask = (uint8_t) ((1 << n) - 1);
 	return (uint8_t) (val >> low) & bitmask;
+}
+
+static void
+va_add_failure(struct di_edid *edid, const char fmt[], va_list args)
+{
+	if (!edid->failure_msg_file) {
+		edid->failure_msg_file = open_memstream(&edid->failure_msg,
+						        &edid->failure_msg_size);
+		if (!edid->failure_msg_file) {
+			return;
+		}
+
+		fprintf(edid->failure_msg_file, "Block 0, Base EDID:\n");
+	}
+
+	fprintf(edid->failure_msg_file, "  ");
+	vfprintf(edid->failure_msg_file, fmt, args);
+	fprintf(edid->failure_msg_file, "\n");
+}
+
+static void
+add_failure(struct di_edid *edid, const char fmt[], ...)
+{
+	va_list args;
+
+	va_start(args, fmt);
+	va_add_failure(edid, fmt, args);
+	va_end(args);
+}
+
+static void
+add_failure_until(struct di_edid *edid, int revision, const char fmt[], ...)
+{
+	va_list args;
+
+	if (edid->revision > revision) {
+		return;
+	}
+
+	va_start(args, fmt);
+	va_add_failure(edid, fmt, args);
+	va_end(args);
 }
 
 static void
@@ -681,6 +724,16 @@ _di_edid_parse(const void *data, size_t size)
 		}
 	}
 
+	if (edid->failure_msg_file) {
+		if (fflush(edid->failure_msg_file) != 0) {
+			_di_edid_destroy(edid);
+			return NULL;
+		}
+
+		fclose(edid->failure_msg_file);
+		edid->failure_msg_file = NULL;
+	}
+
 	return edid;
 }
 
@@ -688,6 +741,11 @@ void
 _di_edid_destroy(struct di_edid *edid)
 {
 	size_t i;
+
+	if (edid->failure_msg_file) {
+		fclose(edid->failure_msg_file);
+	}
+	free(edid->failure_msg);
 
 	for (i = 0; i < edid->standard_timings_len; i++) {
 		free(edid->standard_timings[i]);

@@ -45,6 +45,14 @@ const struct di_edid *
 di_info_get_edid(const struct di_info *info);
 
 /**
+ * Get the failure messages for this blob.
+ *
+ * NULL is returned if the blob conforms to the relevant specifications.
+ */
+const char *
+di_info_get_failure_msg(const struct di_info *info);
+
+/**
  * Get the product name of the display device.
  *
  * The product name typically contains the vendor, model and serial number.
