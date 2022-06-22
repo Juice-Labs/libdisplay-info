@@ -27,10 +27,15 @@ static void
 print_standard_timing(const struct di_edid_standard_timing *t)
 {
 	int32_t vert_video;
+	uint8_t dmt_id;
 
 	vert_video = di_edid_standard_timing_get_vert_video(t);
+	dmt_id = di_edid_standard_timing_get_dmt_id(t);
 
-	printf("    %5dx%-5d", t->horiz_video, vert_video);
+	/* TODO: GTF and CVT timings */
+	printf("    ");
+	printf("DMT 0x%02x:", dmt_id);
+	printf(" %5dx%-5d", t->horiz_video, vert_video);
 	printf(" %10.6f Hz", (float) t->refresh_rate_hz);
 	printf(" %s", standard_timing_aspect_ratio_name(t->aspect_ratio));
 	printf("\n");

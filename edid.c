@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "dmt.h"
 #include "edid.h"
 
 /**
@@ -832,6 +833,29 @@ di_edid_standard_timing_get_vert_video(const struct di_edid_standard_timing *t)
 		return t->horiz_video * 9 / 16;
 	}
 	abort(); /* unreachable */
+}
+
+uint8_t
+di_edid_standard_timing_get_dmt_id(const struct di_edid_standard_timing *t)
+{
+	int32_t vert_video;
+	size_t i;
+	const struct di_dmt_timing *dmt;
+
+	vert_video = di_edid_standard_timing_get_vert_video(t);
+
+	for (i = 0; i < _di_dmt_timings_len; i++) {
+		dmt = &_di_dmt_timings[i];
+
+		if (dmt->horiz_video == t->horiz_video
+		    && dmt->vert_video == vert_video
+		    && dmt->refresh_rate_hz == (float)t->refresh_rate_hz
+		    && dmt->edid_std_id != 0) {
+			return dmt->dmt_id;
+		}
+	}
+
+	return 0;
 }
 
 const struct di_edid_standard_timing *const *

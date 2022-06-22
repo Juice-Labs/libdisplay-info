@@ -247,6 +247,16 @@ int32_t
 di_edid_standard_timing_get_vert_video(const struct di_edid_standard_timing *t);
 
 /**
+ * Get the VESA Display Monitor Timing (DMT) ID, if any.
+ *
+ * Zero is returned if the standard timing doesn't have a DMT ID.
+ *
+ * TODO: replace with a function which returns a struct describing the DMT.
+ */
+uint8_t
+di_edid_standard_timing_get_dmt_id(const struct di_edid_standard_timing *t);
+
+/**
  * Get a lits of EDID standard timings.
  *
  * The returned array is NULL-terminated.
