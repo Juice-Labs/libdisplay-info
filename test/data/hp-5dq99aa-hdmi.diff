@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -17,24 +17,19 @@
+@@ -17,20 +17,15 @@
      Green: 0.2890, 0.6435
      Blue : 0.1494, 0.0507
      White: 0.3134, 0.3291
@@ -28,13 +28,7 @@
 +    DMT 0x23:  1280x1024   60.000000 Hz 5:4
    Detailed Timing Descriptors:
      DTD 1:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (597 mm x 339 mm)
--                 Hfront   48 Hsync  32 Hback   80 Hpol P
--                 Vfront    3 Vsync   5 Vback   33 Vpol N
-+                 Hfront   48 Hsync  32 Hback   80
-+                 Vfront    3 Vsync   5 Vback   33
-     Display Range Limits:
-       Monitor ranges (GTF): 46-75 Hz V, 30-112 kHz H, max dotclock 310 MHz
-     Display Product Name: 'HP 27 QD'
+                  Hfront   48 Hsync  32 Hback   80 Hpol P
 @@ -51,73 +46,14 @@
    Supports YCbCr 4:2:2
    Native detailed modes: 1

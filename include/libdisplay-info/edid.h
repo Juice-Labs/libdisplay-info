@@ -299,6 +299,14 @@ enum di_edid_detailed_timing_def_signal_type {
 };
 
 /**
+ * Digital separate sync polarity for EDID detailed timings.
+ */
+enum di_edid_detailed_timing_def_sync_polarity {
+	DI_EDID_DETAILED_TIMING_DEF_SYNC_NEGATIVE = 0,
+	DI_EDID_DETAILED_TIMING_DEF_SYNC_POSITIVE = 1,
+};
+
+/**
  * EDID detailed timing definition, defined in section 3.10.2.
  */
 struct di_edid_detailed_timing_def {
@@ -322,6 +330,42 @@ struct di_edid_detailed_timing_def {
 	enum di_edid_detailed_timing_def_stereo stereo;
 	/* Signal type */
 	enum di_edid_detailed_timing_def_signal_type signal_type;
+
+	union {
+		/* Flags for ANALOG_COMPOSITE signals */
+		struct {
+			/* Sync with serrations (H-sync during V-sync) */
+			bool sync_serrations;
+			/* Sync on green signal only (as opposed to all three
+			 * RGB video signals) */
+			bool sync_on_green;
+		} analog_composite;
+
+		/* Flags for BIPOLAR_ANALOG_COMPOSITE signals */
+		struct {
+			/* Sync with serrations (H-sync during V-sync) */
+			bool sync_serrations;
+			/* Sync on green signal only (as opposed to all three
+			 * RGB video signals) */
+			bool sync_on_green;
+		} bipolar_analog_composite;
+
+		/* Flags for DIGITAL_COMPOSITE signals */
+		struct {
+			/* Sync with serrations (H-sync during V-sync) */
+			bool sync_serrations;
+			/* Horizontal polarity (outside of V-sync) */
+			enum di_edid_detailed_timing_def_sync_polarity sync_horiz_polarity;
+		} digital_composite;
+
+		/* Flags for DIGITAL_SEPARATE signals */
+		struct {
+			/* Vertical polarity */
+			enum di_edid_detailed_timing_def_sync_polarity sync_vert_polarity;
+			/* Horizontal polarity (outside of V-sync) */
+			enum di_edid_detailed_timing_def_sync_polarity sync_horiz_polarity;
+		} digital_separate;
+	};
 };
 
 /**

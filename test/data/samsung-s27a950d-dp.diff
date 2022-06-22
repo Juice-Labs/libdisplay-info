@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -18,17 +18,14 @@
+@@ -18,7 +18,6 @@
      Green: 0.2890, 0.6093
      Blue : 0.1455, 0.0703
      White: 0.3125, 0.3291
@@ -8,17 +8,12 @@
    Standard Timings: none
    Detailed Timing Descriptors:
      DTD 1:  1920x1080  119.982181 Hz  16:9    137.260 kHz    285.500000 MHz (field sequential R/L, 598 mm x 336 mm)
--                 Hfront   48 Hsync  32 Hback   80 Hpol P
--                 Vfront    3 Vsync   5 Vback   56 Vpol P
-+                 Hfront   48 Hsync  32 Hback   80
-+                 Vfront    3 Vsync   5 Vback   56
+@@ -27,8 +26,6 @@
      DTD 2:  1920x1080   99.930409 Hz  16:9    113.221 kHz    235.500000 MHz (field sequential R/L, 598 mm x 336 mm)
--                 Hfront   48 Hsync  32 Hback   80 Hpol P
--                 Vfront    3 Vsync   5 Vback   45 Vpol N
+                  Hfront   48 Hsync  32 Hback   80 Hpol P
+                  Vfront    3 Vsync   5 Vback   45 Vpol N
 -    Display Range Limits:
 -      Monitor ranges (GTF): 24-120 Hz V, 26-140 kHz H, max dotclock 300 MHz
-+                 Hfront   48 Hsync  32 Hback   80
-+                 Vfront    3 Vsync   5 Vback   45
      Display Product Name: 'S27A950D'
    Extension blocks: 1
  Checksum: 0x1b

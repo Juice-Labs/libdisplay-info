@@ -396,7 +396,24 @@ parse_detailed_timing_def(struct di_edid *edid,
 
 	def->signal_type = get_bit_range(flags, 4, 3);
 
-	/* TODO: parse analog/digital flags */
+	switch (def->signal_type) {
+	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_ANALOG_COMPOSITE:
+		def->analog_composite.sync_serrations = has_bit(flags, 2);
+		def->analog_composite.sync_on_green = has_bit(flags, 1);
+		break;
+	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_BIPOLAR_ANALOG_COMPOSITE:
+		def->bipolar_analog_composite.sync_serrations = has_bit(flags, 2);
+		def->bipolar_analog_composite.sync_on_green = has_bit(flags, 1);
+		break;
+	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_COMPOSITE:
+		def->digital_composite.sync_serrations = has_bit(flags, 2);
+		def->digital_composite.sync_horiz_polarity = has_bit(flags, 1);
+		break;
+	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_SEPARATE:
+		def->digital_separate.sync_vert_polarity = has_bit(flags, 2);
+		def->digital_separate.sync_horiz_polarity = has_bit(flags, 1);
+		break;
+	}
 
 	edid->detailed_timing_defs[edid->detailed_timing_defs_len++] = def;
 	return true;

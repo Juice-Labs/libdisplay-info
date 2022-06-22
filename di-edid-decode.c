@@ -137,6 +137,46 @@ detailed_timing_def_signal_type_name(enum di_edid_detailed_timing_def_signal_typ
 	abort();
 }
 
+static bool
+detailed_timing_def_sync_serrations(const struct di_edid_detailed_timing_def *def)
+{
+	switch (def->signal_type) {
+	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_ANALOG_COMPOSITE:
+		return def->analog_composite.sync_serrations;
+	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_BIPOLAR_ANALOG_COMPOSITE:
+		return def->bipolar_analog_composite.sync_serrations;
+	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_COMPOSITE:
+		return def->digital_composite.sync_serrations;
+	default:
+		return false;
+	}
+}
+
+static bool
+detailed_timing_def_sync_on_green(const struct di_edid_detailed_timing_def *def)
+{
+	switch (def->signal_type) {
+	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_ANALOG_COMPOSITE:
+		return def->analog_composite.sync_on_green;
+	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_BIPOLAR_ANALOG_COMPOSITE:
+		return def->bipolar_analog_composite.sync_on_green;
+	default:
+		return false;
+	}
+}
+
+static const char *
+detailed_timing_def_sync_polarity_name(enum di_edid_detailed_timing_def_sync_polarity polarity)
+{
+	switch (polarity) {
+	case DI_EDID_DETAILED_TIMING_DEF_SYNC_NEGATIVE:
+		return "N";
+	case DI_EDID_DETAILED_TIMING_DEF_SYNC_POSITIVE:
+		return "P";
+	}
+	abort();
+}
+
 static void
 print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t n)
 {
@@ -148,6 +188,7 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t 
 	const char *signal_type_name;
 	char size_mm[64];
 	size_t flags_len = 0;
+	enum di_edid_detailed_timing_def_sync_polarity polarity;
 
 	hbl = def->horiz_blank - 2 * def->horiz_border;
 	vbl = def->vert_blank - 2 * def->vert_border;
@@ -162,6 +203,12 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t 
 	signal_type_name = detailed_timing_def_signal_type_name(def->signal_type);
 	if (signal_type_name != NULL) {
 		flags[flags_len++] = signal_type_name;
+	}
+	if (detailed_timing_def_sync_serrations(def)) {
+		flags[flags_len++] = "serrate";
+	}
+	if (detailed_timing_def_sync_on_green(def)) {
+		flags[flags_len++] = "sync-on-green";
 	}
 	if (def->stereo != DI_EDID_DETAILED_TIMING_DEF_STEREO_NONE) {
 		flags[flags_len++] = detailed_timing_def_stereo_name(def->stereo);
@@ -195,6 +242,13 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t 
 	if (def->horiz_border != 0) {
 		printf(" Hborder %d", def->horiz_border);
 	}
+	if (def->signal_type == DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_COMPOSITE) {
+		polarity = def->digital_composite.sync_horiz_polarity;
+		printf(" Hpol %s", detailed_timing_def_sync_polarity_name(polarity));
+	} else if (def->signal_type == DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_SEPARATE) {
+		polarity = def->digital_separate.sync_horiz_polarity;
+		printf(" Hpol %s", detailed_timing_def_sync_polarity_name(polarity));
+	}
 	printf("\n");
 
 	vert_back_porch = vbl - def->vert_sync_pulse - def->vert_front_porch;
@@ -202,6 +256,10 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t 
 	       def->vert_front_porch, def->vert_sync_pulse, vert_back_porch);
 	if (def->vert_border != 0) {
 		printf(" Vborder %d", def->vert_border);
+	}
+	if (def->signal_type == DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_SEPARATE) {
+		polarity = def->digital_separate.sync_vert_polarity;
+		printf(" Vpol %s", detailed_timing_def_sync_polarity_name(polarity));
 	}
 	printf("\n");
 }
