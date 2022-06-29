@@ -169,10 +169,7 @@ parse_video_input_digital(struct di_edid *edid, uint8_t video_input)
 	color_bit_depth = get_bit_range(video_input, 6, 4);
 	if (color_bit_depth == 0x07) {
 		/* Reserved */
-		if (edid->revision <= 4) {
-			errno = EINVAL;
-			return false;
-		}
+		add_failure_until(edid, 4, "Color Bit Depth set to reserved value.");
 	} else if (color_bit_depth != 0) {
 		digital->color_bit_depth = 2 * color_bit_depth + 4;
 	}
@@ -188,12 +185,11 @@ parse_video_input_digital(struct di_edid *edid, uint8_t video_input)
 		digital->interface = interface;
 		break;
 	default:
-		/* Reserved */
-		if (edid->revision <= 4) {
-			errno = EINVAL;
-			return false;
-		}
+		add_failure_until(edid, 4,
+				  "Digital Video Interface Standard set to reserved value 0x%02x.",
+				  interface);
 		digital->interface = DI_EDID_VIDEO_INPUT_DIGITAL_UNDEFINED;
+		break;
 	}
 
 	return true;
@@ -276,11 +272,14 @@ decode_chromaticity_coord(uint8_t hi, uint8_t lo)
 }
 
 static bool
-parse_chromaticity_coords(const uint8_t data[static EDID_BLOCK_SIZE],
-			  struct di_edid_chromaticity_coords *coords)
+parse_chromaticity_coords(struct di_edid *edid,
+			  const uint8_t data[static EDID_BLOCK_SIZE])
 {
 	uint8_t lo;
 	bool all_set, any_set;
+	struct di_edid_chromaticity_coords *coords;
+
+	coords = &edid->chromaticity_coords;
 
 	lo = data[0x19];
 	coords->red_x = decode_chromaticity_coord(data[0x1B], get_bit_range(lo, 7, 6));
@@ -302,14 +301,12 @@ parse_chromaticity_coords(const uint8_t data[static EDID_BLOCK_SIZE],
 		  && coords->green_x != 0 && coords->green_y != 0
 		  && coords->blue_x != 0 && coords->blue_y != 0;
 	if (any_set && !all_set) {
-		errno = EINVAL;
-		return false;
+		add_failure(edid, "Some but not all primaries coordinates are unset.");
 	}
 
 	/* Both white-point coords must be set */
 	if (coords->white_x == 0 || coords->white_y == 0) {
-		errno = EINVAL;
-		return false;
+		add_failure(edid, "White-point coordinates are unset.");
 	}
 
 	return true;
@@ -326,13 +323,10 @@ parse_standard_timing(struct di_edid *edid,
 		return true;
 	}
 	if (data[0] == 0x00) {
-		/* Reserved */
-		if (edid->revision <= 4) {
-			errno = EINVAL;
-		} else {
-			errno = ENOTSUP;
-		}
-		return false;
+		add_failure_until(edid, 4,
+				  "Use 0x0101 as the invalid Standard Timings code, not 0x%02x%02x.",
+				  data[0], data[1]);
+		return true;
 	}
 
 	t = calloc(1, sizeof(*t));
@@ -430,7 +424,7 @@ parse_detailed_timing_def(struct di_edid *edid,
 }
 
 static bool
-decode_display_range_limits_offset(const struct di_edid *edid, uint8_t flags,
+decode_display_range_limits_offset(struct di_edid *edid, uint8_t flags,
 				  int *max_offset, int *min_offset)
 {
 	switch (flags) {
@@ -445,19 +439,17 @@ decode_display_range_limits_offset(const struct di_edid *edid, uint8_t flags,
 		*min_offset = 255;
 		break;
 	default:
-		/* Reserved */
-		if (edid->revision <= 4) {
-			errno = EINVAL;
-			return false;
-		}
-		break;
+		add_failure_until(edid, 4,
+				  "Range offset flags set to reserved value 0x%02x.",
+				  flags);
+		return false;
 	}
 
 	return true;
 }
 
 static bool
-parse_display_range_limits(const struct di_edid *edid,
+parse_display_range_limits(struct di_edid *edid,
 			   const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
 			   struct di_edid_display_range_limits *out)
 {
@@ -485,19 +477,15 @@ parse_display_range_limits(const struct di_edid *edid,
 
 		if (edid->revision <= 4 &&
 		    get_bit_range(offset_flags, 7, 4) != 0) {
-			/* Reserved */
-			errno = EINVAL;
-			return false;
+			add_failure(edid, "Bits 7:4 of the range offset flags are reserved.");
 		}
 	} else if (offset_flags != 0) {
-		/* Reserved */
-		errno = EINVAL;
-		return false;
+		add_failure(edid, "Range offset flags are unsupported in EDID 1.3.");
 	}
 
 	if (edid->revision <= 4 && (data[5] == 0 || data[6] == 0 ||
 				    data[7] == 0 || data[8] == 0)) {
-		/* Reserved */
+		add_failure(edid, "Range limits set to reserved values.");
 		errno = EINVAL;
 		return false;
 	}
@@ -507,17 +495,20 @@ parse_display_range_limits(const struct di_edid *edid,
 	out->min_horiz_rate_hz = (data[7] + min_horiz_offset) * 1000;
 	out->max_horiz_rate_hz = (data[8] + max_horiz_offset) * 1000;
 
-	if (out->min_vert_rate_hz > out->max_vert_rate_hz ||
-	    out->min_horiz_rate_hz > out->max_horiz_rate_hz) {
+	if (out->min_vert_rate_hz > out->max_vert_rate_hz) {
+		add_failure(edid, "Min vertical rate > max vertical rate.");
+		errno = EINVAL;
+		return false;
+	}
+	if (out->min_horiz_rate_hz > out->max_horiz_rate_hz) {
+		add_failure(edid, "Min horizontal freq > max horizontal freq.");
 		errno = EINVAL;
 		return false;
 	}
 
 	out->max_pixel_clock_hz = (int32_t) data[9] * 10 * 1000 * 1000;
 	if (edid->revision == 4 && out->max_pixel_clock_hz == 0) {
-		/* Reserved */
-		errno = EINVAL;
-		return false;
+		add_failure(edid, "EDID 1.4 block does not set max dotclock.");
 	}
 
 	/* TODO: parse video timing support flags */
@@ -537,8 +528,7 @@ parse_byte_descriptor(struct di_edid *edid,
 		if (edid->display_descriptors_len > 0) {
 			/* A detailed timing descriptor is not allowed after a
 			 * display descriptor per note 3 of table 3.20. */
-			errno = EINVAL;
-			return false;
+			add_failure(edid, "Invalid detailed timing descriptor ordering.");
 		}
 
 		return parse_detailed_timing_def(edid, data);
@@ -568,7 +558,7 @@ parse_byte_descriptor(struct di_edid *edid,
 	case DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS:
 		if (!parse_display_range_limits(edid, data, &desc->range_limits)) {
 			free(desc);
-			return false;
+			return true;
 		}
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT:
@@ -582,16 +572,10 @@ parse_byte_descriptor(struct di_edid *edid,
 		free(desc);
 		if (tag <= 0x0F) {
 			/* Manufacturer-specific */
-			errno = ENOTSUP;
 		} else {
-			/* Reserved */
-			if (edid->revision > 4) {
-				errno = ENOTSUP;
-			} else {
-				errno = EINVAL;
-			}
+			add_failure_until(edid, 4, "Unknown Type 0x%02hhx.", tag);
 		}
-		return false;
+		return true;
 	}
 
 	desc->tag = tag;
@@ -623,8 +607,8 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 		break;
 	default:
 		/* Unsupported */
-		errno = ENOTSUP;
-		return false;
+		add_failure_until(edid, 4, "Unknown Extension Block.");
+		return true;
 	}
 
 	ext = calloc(1, sizeof(*ext));
@@ -691,7 +675,7 @@ _di_edid_parse(const void *data, size_t size)
 		return NULL;
 	}
 
-	if (!parse_chromaticity_coords(data, &edid->chromaticity_coords)) {
+	if (!parse_chromaticity_coords(edid, data)) {
 		_di_edid_destroy(edid);
 		return NULL;
 	}
@@ -718,7 +702,7 @@ _di_edid_parse(const void *data, size_t size)
 
 	for (i = 0; i < exts_len; i++) {
 		ext_data = (const uint8_t *) data + (i + 1) * EDID_BLOCK_SIZE;
-		if (!parse_ext(edid, ext_data) && errno != ENOTSUP) {
+		if (!parse_ext(edid, ext_data)) {
 			_di_edid_destroy(edid);
 			return NULL;
 		}
