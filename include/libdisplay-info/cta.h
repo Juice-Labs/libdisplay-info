@@ -117,4 +117,38 @@ enum di_cta_data_block_tag {
 enum di_cta_data_block_tag
 di_cta_data_block_get_tag(const struct di_cta_data_block *block);
 
+/**
+ * CTA colorimetry data block, defined in section 7.5.5.
+ */
+struct di_cta_colorimetry_block {
+	/* Standard Definition Colorimetry based on IEC 61966-2-4 */
+	bool xvycc_601;
+	/* High Definition Colorimetry based on IEC 61966-2-4 */
+	bool xvycc_709;
+	/* Colorimetry based on IEC 61966-2-1/Amendment 1 */
+	bool sycc_601;
+	/* Colorimetry based on IEC 61966-2-5, Annex A */
+	bool opycc_601;
+	/* Colorimetry based on IEC 61966-2-5 */
+	bool oprgb;
+	/* Colorimetry based on Rec. ITU-R BT.2020 Y'cC'bcC'rc */
+	bool bt2020_cycc;
+	/* Colorimetry based on Rec. ITU-R BT.2020 Y'C'bC'r */
+	bool bt2020_ycc;
+	/* Colorimetry based on Rec. ITU-R BT.2020 R'G'B' */
+	bool bt2020_rgb;
+	/* Colorimetry based on SMPTE ST 2113 R'G'B' */
+	bool st2113_rgb;
+	/* Colorimetry based on Rec. ITU-R BT.2100 ICtCp */
+	bool ictcp;
+};
+
+/**
+ * Get the colorimetry data from a CTA data block.
+ *
+ * Returns NULL if the data block tag is not DI_CTA_DATA_BLOCK_COLORIMETRY.
+ */
+const struct di_cta_colorimetry_block *
+di_cta_data_block_get_colorimetry(const struct di_cta_data_block *block);
+
 #endif

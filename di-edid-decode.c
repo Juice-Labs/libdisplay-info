@@ -393,6 +393,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_data_block *const *data_blocks;
 	const struct di_cta_data_block *data_block;
 	enum di_cta_data_block_tag data_block_tag;
+	const struct di_cta_colorimetry_block *colorimetry;
 	size_t i;
 
 	printf("  Revision: %d\n", di_edid_cta_get_revision(cta));
@@ -418,6 +419,34 @@ print_cta(const struct di_edid_cta *cta)
 
 		data_block_tag = di_cta_data_block_get_tag(data_block);
 		printf("  %s:\n", cta_data_block_tag_name(data_block_tag));
+
+		switch (data_block_tag) {
+		case DI_CTA_DATA_BLOCK_COLORIMETRY:
+			colorimetry = di_cta_data_block_get_colorimetry(data_block);
+			if (colorimetry->xvycc_601)
+				printf("    xvYCC601\n");
+			if (colorimetry->xvycc_709)
+				printf("    xvYCC709\n");
+			if (colorimetry->sycc_601)
+				printf("    sYCC601\n");
+			if (colorimetry->opycc_601)
+				printf("    opYCC601\n");
+			if (colorimetry->oprgb)
+				printf("    opRGB\n");
+			if (colorimetry->bt2020_cycc)
+				printf("    BT2020cYCC\n");
+			if (colorimetry->bt2020_ycc)
+				printf("    BT2020YCC\n");
+			if (colorimetry->bt2020_rgb)
+				printf("    BT2020RGB\n");
+			if (colorimetry->ictcp)
+				printf("    ICtCp\n");
+			if (colorimetry->st2113_rgb)
+				printf("    ST2113RGB\n");
+			break;
+		default:
+			break; /* Ignore */
+		}
 	}
 }
 

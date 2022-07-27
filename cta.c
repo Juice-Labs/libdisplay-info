@@ -11,11 +11,45 @@
 #define CTA_HEADER_SIZE 4
 
 static bool
+parse_colorimetry_block(struct di_cta_colorimetry_block *colorimetry,
+			const uint8_t *data, size_t size)
+{
+	if (size < 2) {
+		errno = EINVAL;
+		return false;
+	}
+
+	colorimetry->bt2020_rgb = has_bit(data[0], 7);
+	colorimetry->bt2020_ycc = has_bit(data[0], 6);
+	colorimetry->bt2020_cycc = has_bit(data[0], 5);
+	colorimetry->oprgb = has_bit(data[0], 4);
+	colorimetry->opycc_601 = has_bit(data[0], 3);
+	colorimetry->sycc_601 = has_bit(data[0], 2);
+	colorimetry->xvycc_709 = has_bit(data[0], 1);
+	colorimetry->xvycc_601 = has_bit(data[0], 0);
+
+	colorimetry->st2113_rgb = has_bit(data[1], 7);
+	colorimetry->ictcp = has_bit(data[1], 6);
+
+	if (get_bit_range(data[1], 5, 0) != 0) {
+		errno = EINVAL;
+		return false;
+	}
+
+	return true;
+}
+
+static bool
 parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, size_t size)
 {
 	enum di_cta_data_block_tag tag;
 	uint8_t extended_tag;
 	struct di_cta_data_block *data_block;
+
+	data_block = calloc(1, sizeof(*data_block));
+	if (!data_block) {
+		return false;
+	}
 
 	switch (raw_tag) {
 	case 1:
@@ -27,7 +61,7 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 	case 3:
 		/* Vendor-Specific Data Block */
 		errno = ENOTSUP;
-		return false;
+		goto err;
 	case 4:
 		tag = DI_CTA_DATA_BLOCK_SPEAKER_ALLOC;
 		break;
@@ -38,7 +72,7 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 		/* Use Extended Tag */
 		if (size < 1) {
 			errno = EINVAL;
-			return false;
+			goto err;
 		}
 
 		extended_tag = data[0];
@@ -54,6 +88,9 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 			break;
 		case 5:
 			tag = DI_CTA_DATA_BLOCK_COLORIMETRY;
+			if (!parse_colorimetry_block(&data_block->colorimetry,
+						     data, size))
+				goto err;
 			break;
 		case 6:
 			tag = DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA;
@@ -100,7 +137,7 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 		case 1: /* Vendor-Specific Video Data Block */
 		case 17: /* Vendor-Specific Audio Data Block */
 			errno = ENOTSUP;
-			return false;
+			goto err;
 		default:
 			/* Reserved */
 			if (cta->revision <= 3) {
@@ -108,7 +145,7 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 			} else {
 				errno = ENOTSUP;
 			}
-			return false;
+			goto err;
 		}
 		break;
 	default:
@@ -118,17 +155,16 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 		} else {
 			errno = ENOTSUP;
 		}
-		return false;
-	}
-
-	data_block = calloc(1, sizeof(*data_block));
-	if (!data_block) {
-		return false;
+		goto err;
 	}
 
 	data_block->tag = tag;
 	cta->data_blocks[cta->data_blocks_len++] = data_block;
 	return true;
+
+err:
+	free(data_block);
+	return false;
 }
 
 bool
@@ -227,4 +263,13 @@ enum di_cta_data_block_tag
 di_cta_data_block_get_tag(const struct di_cta_data_block *block)
 {
 	return block->tag;
+}
+
+const struct di_cta_colorimetry_block *
+di_cta_data_block_get_colorimetry(const struct di_cta_data_block *block)
+{
+	if (block->tag != DI_CTA_DATA_BLOCK_COLORIMETRY) {
+		return NULL;
+	}
+	return &block->colorimetry;
 }

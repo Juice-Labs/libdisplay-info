@@ -22,6 +22,9 @@ struct di_edid_cta {
 
 struct di_cta_data_block {
 	enum di_cta_data_block_tag tag;
+
+	/* Used for DI_CTA_DATA_BLOCK_COLORIMETRY */
+	struct di_cta_colorimetry_block colorimetry;
 };
 
 bool

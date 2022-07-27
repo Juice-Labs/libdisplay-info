@@ -35,7 +35,7 @@
      Display Range Limits:
        Monitor ranges (GTF): 46-75 Hz V, 30-112 kHz H, max dotclock 310 MHz
      Display Product Name: 'HP 27 QD'
-@@ -51,73 +46,11 @@
+@@ -51,73 +46,14 @@
    Supports YCbCr 4:2:2
    Native detailed modes: 1
    Video Data Block:
@@ -66,9 +66,9 @@
 -    Maximum Refresh Rate: 75 Hz
 -    Flags 1.x: 0xed (MCCS)
    Colorimetry Data Block:
--    BT2020cYCC
--    BT2020YCC
--    BT2020RGB
+     BT2020cYCC
+     BT2020YCC
+     BT2020RGB
    HDR Static Metadata Data Block:
 -    Electro optical transfer functions:
 -      Traditional gamma - SDR luminance range
