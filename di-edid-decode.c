@@ -472,6 +472,7 @@ main(int argc, char *argv[])
 	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;
 	const struct di_edid_display_descriptor *const *display_descs;
 	const struct di_edid_ext *const *exts;
+	const char *failure_msg;
 	size_t i;
 
 	in = stdin;
@@ -664,6 +665,16 @@ main(int argc, char *argv[])
 	for (i = 0; exts[i] != NULL; i++) {
 		print_ext(exts[i], i);
 		printf("Checksum: 0x%02hhx\n", raw[edid_checksum_index(i + 1)]);
+	}
+
+	printf("\n----------------\n\n");
+
+	failure_msg = di_info_get_failure_msg(info);
+	if (failure_msg) {
+		printf("Failures:\n\n%s", failure_msg);
+		printf("EDID conformity: FAIL\n");
+	} else {
+		printf("EDID conformity: PASS\n");
 	}
 
 	di_info_destroy(info);

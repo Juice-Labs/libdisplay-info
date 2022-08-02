@@ -35,7 +35,7 @@
      Display Range Limits:
        Monitor ranges (GTF): 46-75 Hz V, 30-112 kHz H, max dotclock 310 MHz
      Display Product Name: 'HP 27 QD'
-@@ -51,73 +46,7 @@
+@@ -51,73 +46,11 @@
    Supports YCbCr 4:2:2
    Native detailed modes: 1
    Video Data Block:
@@ -93,9 +93,10 @@
 -                 Hfront   48 Hsync  32 Hback   80 Hpol P
 -                 Vfront    3 Vsync   5 Vback   31 Vpol N
 -Checksum: 0xa3  Unused space in Extension Block: 10 bytes
--
------------------
--
++Checksum: 0xa3
+ 
+ ----------------
+ 
 -Warnings:
 -
 -Block 1, CTA-861 Extension Block:
@@ -109,4 +110,4 @@
 -  Video Capability Data Block: Set Selectable RGB Quantization to avoid interop issues.
 -
 -EDID conformity: FAIL
-+Checksum: 0xa3
++EDID conformity: PASS
