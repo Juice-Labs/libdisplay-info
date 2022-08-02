@@ -130,7 +130,7 @@ parse_vendor_product(const uint8_t data[static EDID_BLOCK_SIZE],
 	}
 }
 
-static bool
+static void
 parse_video_input_digital(struct di_edid *edid, uint8_t video_input)
 {
 	uint8_t color_bit_depth, interface;
@@ -138,7 +138,7 @@ parse_video_input_digital(struct di_edid *edid, uint8_t video_input)
 
 	if (edid->revision < 4) {
 		/* TODO: parse EDID 1.3- fields */
-		return true;
+		return;
 	}
 
 	color_bit_depth = get_bit_range(video_input, 6, 4);
@@ -166,11 +166,9 @@ parse_video_input_digital(struct di_edid *edid, uint8_t video_input)
 		digital->interface = DI_EDID_VIDEO_INPUT_DIGITAL_UNDEFINED;
 		break;
 	}
-
-	return true;
 }
 
-static bool
+static void
 parse_basic_params_features(struct di_edid *edid,
 			    const uint8_t data[static EDID_BLOCK_SIZE])
 {
@@ -182,9 +180,7 @@ parse_basic_params_features(struct di_edid *edid,
 
 	/* TODO: parse analog fields */
 	if (edid->is_digital) {
-		if (!parse_video_input_digital(edid, video_input)) {
-			return false;
-		}
+		parse_video_input_digital(edid, video_input);
 	}
 
 	/* v1.3 says screen size is undefined if either byte is zero, v1.4 says
@@ -233,8 +229,6 @@ parse_basic_params_features(struct di_edid *edid,
 		edid->misc_features.has_preferred_timing = has_bit(features, 1);
 	}
 	edid->misc_features.srgb_is_primary = has_bit(features, 2);
-
-	return true;
 }
 
 static float
@@ -705,11 +699,7 @@ _di_edid_parse(const void *data, size_t size)
 	edid->revision = revision;
 
 	parse_vendor_product(data, &edid->vendor_product);
-
-	if (!parse_basic_params_features(edid, data)) {
-		_di_edid_destroy(edid);
-		return NULL;
-	}
+	parse_basic_params_features(edid, data);
 
 	if (!parse_chromaticity_coords(edid, data)) {
 		_di_edid_destroy(edid);
