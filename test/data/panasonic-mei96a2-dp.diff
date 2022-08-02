@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -17,15 +17,14 @@
+@@ -17,25 +17,15 @@
      Green: 0.2949, 0.6083
      Blue : 0.1533, 0.0605
      White: 0.3134, 0.3291
@@ -20,3 +20,13 @@
      Display Range Limits:
        Monitor ranges (Bare Limits): 46-62 Hz V, 89-94 kHz H, max dotclock 260 MHz
      Alphanumeric Data String: 'VVX14T058J10'
+ Checksum: 0x09
+-
+-----------------
+-
+-Failures:
+-
+-Block 0, Base EDID:
+-  Missing Display Product Name.
+-
+-EDID conformity: FAIL
