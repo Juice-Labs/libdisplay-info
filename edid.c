@@ -461,7 +461,6 @@ parse_display_range_limits(struct di_edid *edid,
 	if (edid->revision <= 4 && (data[5] == 0 || data[6] == 0 ||
 				    data[7] == 0 || data[8] == 0)) {
 		add_failure(edid, "Range limits set to reserved values.");
-		errno = EINVAL;
 		return false;
 	}
 
@@ -472,12 +471,10 @@ parse_display_range_limits(struct di_edid *edid,
 
 	if (out->min_vert_rate_hz > out->max_vert_rate_hz) {
 		add_failure(edid, "Min vertical rate > max vertical rate.");
-		errno = EINVAL;
 		return false;
 	}
 	if (out->min_horiz_rate_hz > out->max_horiz_rate_hz) {
 		add_failure(edid, "Min horizontal freq > max horizontal freq.");
-		errno = EINVAL;
 		return false;
 	}
 
