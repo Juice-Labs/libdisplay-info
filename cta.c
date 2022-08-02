@@ -1,21 +1,49 @@
 #include <assert.h>
 #include <errno.h>
+#include <inttypes.h>
 #include <stdlib.h>
 
 #include "bits.h"
 #include "cta.h"
+#include "log.h"
 
 /**
  * Number of bytes in the CTA header (tag + revision + DTD offset + flags).
  */
 #define CTA_HEADER_SIZE 4
 
+static void
+add_failure(struct di_edid_cta *cta, const char fmt[], ...)
+{
+	va_list args;
+
+	va_start(args, fmt);
+	_di_logger_va_add_failure(cta->logger, fmt, args);
+	va_end(args);
+}
+
+static void
+add_failure_until(struct di_edid_cta *cta, int revision, const char fmt[], ...)
+{
+	va_list args;
+
+	if (cta->revision > revision) {
+		return;
+	}
+
+	va_start(args, fmt);
+	_di_logger_va_add_failure(cta->logger, fmt, args);
+	va_end(args);
+}
+
 static bool
-parse_colorimetry_block(struct di_cta_colorimetry_block *colorimetry,
+parse_colorimetry_block(struct di_edid_cta *cta,
+			struct di_cta_colorimetry_block *colorimetry,
 			const uint8_t *data, size_t size)
 {
 	if (size < 2) {
-		errno = EINVAL;
+		add_failure(cta, "Colorimetry Data Block: Empty Data Block with length %u.",
+			    size);
 		return false;
 	}
 
@@ -31,10 +59,9 @@ parse_colorimetry_block(struct di_cta_colorimetry_block *colorimetry,
 	colorimetry->st2113_rgb = has_bit(data[1], 7);
 	colorimetry->ictcp = has_bit(data[1], 6);
 
-	if (get_bit_range(data[1], 5, 0) != 0) {
-		errno = EINVAL;
-		return false;
-	}
+	if (get_bit_range(data[1], 5, 0) != 0)
+		add_failure_until(cta, 3,
+				  "Colorimetry Data Block: Reserved bits MD0-MD3 must be 0.");
 
 	return true;
 }
@@ -60,8 +87,7 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 		break;
 	case 3:
 		/* Vendor-Specific Data Block */
-		errno = ENOTSUP;
-		goto err;
+		goto skip;
 	case 4:
 		tag = DI_CTA_DATA_BLOCK_SPEAKER_ALLOC;
 		break;
@@ -71,8 +97,8 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 	case 7:
 		/* Use Extended Tag */
 		if (size < 1) {
-			errno = EINVAL;
-			goto err;
+			add_failure(cta, "Empty block with extended tag.");
+			goto skip;
 		}
 
 		extended_tag = data[0];
@@ -88,9 +114,10 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 			break;
 		case 5:
 			tag = DI_CTA_DATA_BLOCK_COLORIMETRY;
-			if (!parse_colorimetry_block(&data_block->colorimetry,
+			if (!parse_colorimetry_block(cta,
+						     &data_block->colorimetry,
 						     data, size))
-				goto err;
+				goto skip;
 			break;
 		case 6:
 			tag = DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA;
@@ -136,39 +163,34 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 			break;
 		case 1: /* Vendor-Specific Video Data Block */
 		case 17: /* Vendor-Specific Audio Data Block */
-			errno = ENOTSUP;
-			goto err;
+			goto skip;
 		default:
 			/* Reserved */
-			if (cta->revision <= 3) {
-				errno = EINVAL;
-			} else {
-				errno = ENOTSUP;
-			}
-			goto err;
+			add_failure_until(cta, 3,
+					  "Unknown CTA-861 Data Block (extended tag 0x"PRIx8", length %zu).",
+					  extended_tag, size);
+			goto skip;
 		}
 		break;
 	default:
 		/* Reserved */
-		if (cta->revision <= 3) {
-			errno = EINVAL;
-		} else {
-			errno = ENOTSUP;
-		}
-		goto err;
+		add_failure_until(cta, 3, "Unknown CTA-861 Data Block (tag 0x"PRIx8", length %zu).",
+				  raw_tag, size);
+		goto skip;
 	}
 
 	data_block->tag = tag;
 	cta->data_blocks[cta->data_blocks_len++] = data_block;
 	return true;
 
-err:
+skip:
 	free(data_block);
-	return false;
+	return true;
 }
 
 bool
-_di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size)
+_di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size,
+		   struct di_logger *logger)
 {
 	uint8_t flags, dtd_start;
 	uint8_t data_block_header, data_block_tag, data_block_size;
@@ -176,6 +198,8 @@ _di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size)
 
 	assert(size == 128);
 	assert(data[0] == 0x02);
+
+	cta->logger = logger;
 
 	cta->revision = data[1];
 	dtd_start = data[2];
@@ -189,8 +213,7 @@ _di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size)
 		cta->flags.native_dtds = get_bit_range(flags, 3, 0);
 	} else if (flags != 0) {
 		/* Reserved */
-		errno = EINVAL;
-		return false;
+		add_failure(cta, "Non-zero byte 3.");
 	}
 
 	if (dtd_start == 0) {
@@ -213,8 +236,7 @@ _di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size)
 		}
 
 		if (!parse_data_block(cta, data_block_tag,
-				      &data[i + 1], data_block_size)
-		    && errno != ENOTSUP) {
+				      &data[i + 1], data_block_size)) {
 			_di_edid_cta_finish(cta);
 			return false;
 		}
@@ -222,12 +244,11 @@ _di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size)
 		i += 1 + data_block_size;
 	}
 
-	if (i != dtd_start) {
-		_di_edid_cta_finish(cta);
-		errno = EINVAL;
-		return false;
-	}
+	if (i != dtd_start)
+		add_failure(cta, "Offset is %"PRIu8", but should be %zu.",
+			    dtd_start, i);
 
+	cta->logger = NULL;
 	return true;
 }
 

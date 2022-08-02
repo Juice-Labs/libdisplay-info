@@ -621,6 +621,8 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 {
 	struct di_edid_ext *ext;
 	uint8_t tag;
+	struct di_logger logger;
+	char section_name[64];
 
 	if (!validate_block_checksum(data)) {
 		errno = EINVAL;
@@ -635,7 +637,15 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 	tag = data[0x00];
 	switch (tag) {
 	case DI_EDID_EXT_CEA:
-		if (!_di_edid_cta_parse(&ext->cta, data, EDID_BLOCK_SIZE)) {
+		snprintf(section_name, sizeof(section_name),
+			 "Block %zu, CTA-861 Extension Block",
+			 edid->exts_len + 1);
+		logger = (struct di_logger) {
+			.f = edid->logger->f,
+			.section = section_name,
+		};
+
+		if (!_di_edid_cta_parse(&ext->cta, data, EDID_BLOCK_SIZE, &logger)) {
 			free(ext);
 			return false;
 		}

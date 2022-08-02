@@ -18,6 +18,8 @@ struct di_edid_cta {
 	/* NULL-terminated */
 	struct di_cta_data_block *data_blocks[128];
 	size_t data_blocks_len;
+
+	struct di_logger *logger;
 };
 
 struct di_cta_data_block {
@@ -28,7 +30,8 @@ struct di_cta_data_block {
 };
 
 bool
-_di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size);
+_di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size,
+		   struct di_logger *logger);
 
 void
 _di_edid_cta_finish(struct di_edid_cta *cta);
