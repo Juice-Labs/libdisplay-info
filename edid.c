@@ -692,7 +692,7 @@ _di_edid_parse(const void *data, size_t size)
 
 	exts_len = size / EDID_BLOCK_SIZE - 1;
 	if (exts_len != parse_ext_count(data)) {
-		errno = -EINVAL;
+		errno = EINVAL;
 		return NULL;
 	}
 
