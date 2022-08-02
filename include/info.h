@@ -9,6 +9,8 @@
 
 struct di_info {
 	struct di_edid *edid;
+
+	char *failure_msg;
 };
 
 #endif

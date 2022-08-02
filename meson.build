@@ -39,6 +39,7 @@ di_lib = library(
 		'dmt-table.c',
 		'edid.c',
 		'info.c',
+		'log.c',
 	],
 	include_directories: include_directories('include'),
 	link_args: symbols_flag,

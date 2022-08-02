@@ -1,6 +1,5 @@
 #include <assert.h>
 #include <errno.h>
-#include <stdarg.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +7,7 @@
 #include "bits.h"
 #include "dmt.h"
 #include "edid.h"
+#include "log.h"
 
 /**
  * The size of an EDID block, defined in section 2.2.
@@ -28,30 +28,12 @@
 static const uint8_t header[] = { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
 
 static void
-va_add_failure(struct di_edid *edid, const char fmt[], va_list args)
-{
-	if (!edid->failure_msg_file) {
-		edid->failure_msg_file = open_memstream(&edid->failure_msg,
-						        &edid->failure_msg_size);
-		if (!edid->failure_msg_file) {
-			return;
-		}
-
-		fprintf(edid->failure_msg_file, "Block 0, Base EDID:\n");
-	}
-
-	fprintf(edid->failure_msg_file, "  ");
-	vfprintf(edid->failure_msg_file, fmt, args);
-	fprintf(edid->failure_msg_file, "\n");
-}
-
-static void
 add_failure(struct di_edid *edid, const char fmt[], ...)
 {
 	va_list args;
 
 	va_start(args, fmt);
-	va_add_failure(edid, fmt, args);
+	_di_logger_va_add_failure(edid->logger, fmt, args);
 	va_end(args);
 }
 
@@ -65,7 +47,7 @@ add_failure_until(struct di_edid *edid, int revision, const char fmt[], ...)
 	}
 
 	va_start(args, fmt);
-	va_add_failure(edid, fmt, args);
+	_di_logger_va_add_failure(edid->logger, fmt, args);
 	va_end(args);
 }
 
@@ -679,9 +661,10 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 }
 
 struct di_edid *
-_di_edid_parse(const void *data, size_t size)
+_di_edid_parse(const void *data, size_t size, FILE *failure_msg_file)
 {
 	struct di_edid *edid;
+	struct di_logger logger;
 	int version, revision;
 	size_t exts_len, i;
 	const uint8_t *standard_timing_data, *byte_desc_data, *ext_data;
@@ -722,6 +705,12 @@ _di_edid_parse(const void *data, size_t size)
 		return NULL;
 	}
 
+	logger = (struct di_logger) {
+		.f = failure_msg_file,
+		.section = "Block 0, Base EDID",
+	};
+	edid->logger = &logger;
+
 	edid->version = version;
 	edid->revision = revision;
 
@@ -755,16 +744,7 @@ _di_edid_parse(const void *data, size_t size)
 		}
 	}
 
-	if (edid->failure_msg_file) {
-		if (fflush(edid->failure_msg_file) != 0) {
-			_di_edid_destroy(edid);
-			return NULL;
-		}
-
-		fclose(edid->failure_msg_file);
-		edid->failure_msg_file = NULL;
-	}
-
+	edid->logger = NULL;
 	return edid;
 }
 
@@ -773,11 +753,6 @@ _di_edid_destroy(struct di_edid *edid)
 {
 	size_t i;
 	struct di_edid_ext *ext;
-
-	if (edid->failure_msg_file) {
-		fclose(edid->failure_msg_file);
-	}
-	free(edid->failure_msg);
 
 	for (i = 0; i < edid->standard_timings_len; i++) {
 		free(edid->standard_timings[i]);
