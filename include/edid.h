@@ -26,6 +26,10 @@
  * The number of EDID byte descriptors, defined in section 3.10.
  */
 #define EDID_BYTE_DESCRIPTOR_COUNT 4
+/**
+ * The size of an EDID byte descriptor, defined in section 3.10.
+ */
+#define EDID_BYTE_DESCRIPTOR_SIZE 18
 
 struct di_edid {
 	struct di_edid_vendor_product vendor_product;
@@ -92,5 +96,11 @@ _di_edid_parse(const void *data, size_t size, FILE *failure_msg_file);
  */
 void
 _di_edid_destroy(struct di_edid *edid);
+
+/**
+ * Parse an EDID detailed timing definition.
+ */
+struct di_edid_detailed_timing_def *
+_di_edid_parse_detailed_timing_def(const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE]);
 
 #endif

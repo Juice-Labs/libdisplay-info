@@ -17,10 +17,6 @@
  * The size of an EDID standard timing, defined in section 3.9.
  */
 #define EDID_STANDARD_TIMING_SIZE 2
-/**
- * The size of an EDID byte descriptor, defined in section 3.10.
- */
-#define EDID_BYTE_DESCRIPTOR_SIZE 18
 
 /**
  * Fixed EDID header, defined in section 3.1.
@@ -330,9 +326,8 @@ parse_standard_timing(struct di_edid *edid,
 	return true;
 }
 
-static bool
-parse_detailed_timing_def(struct di_edid *edid,
-			  const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
+struct di_edid_detailed_timing_def *
+_di_edid_parse_detailed_timing_def(const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
 {
 	struct di_edid_detailed_timing_def *def;
 	int raw;
@@ -340,7 +335,7 @@ parse_detailed_timing_def(struct di_edid *edid,
 
 	def = calloc(1, sizeof(*def));
 	if (!def) {
-		return false;
+		return NULL;
 	}
 
 	raw = (data[1] << 8) | data[0];
@@ -426,8 +421,7 @@ parse_detailed_timing_def(struct di_edid *edid,
 		break;
 	}
 
-	edid->detailed_timing_defs[edid->detailed_timing_defs_len++] = def;
-	return true;
+	return def;
 }
 
 static bool
@@ -583,6 +577,7 @@ parse_byte_descriptor(struct di_edid *edid,
 		      const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
 {
 	struct di_edid_display_descriptor *desc;
+	struct di_edid_detailed_timing_def *detailed_timing_def;
 	uint8_t tag;
 	char *newline;
 
@@ -593,7 +588,13 @@ parse_byte_descriptor(struct di_edid *edid,
 			add_failure(edid, "Invalid detailed timing descriptor ordering.");
 		}
 
-		return parse_detailed_timing_def(edid, data);
+		detailed_timing_def = _di_edid_parse_detailed_timing_def(data);
+		if (!detailed_timing_def) {
+			return false;
+		}
+
+		edid->detailed_timing_defs[edid->detailed_timing_defs_len++] = detailed_timing_def;
+		return true;
 	}
 
 	if (edid->revision >= 3 && edid->revision <= 4 &&
