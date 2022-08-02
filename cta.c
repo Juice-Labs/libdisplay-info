@@ -2,15 +2,21 @@
 #include <errno.h>
 #include <inttypes.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "bits.h"
 #include "cta.h"
 #include "log.h"
+#include "edid.h"
 
 /**
  * Number of bytes in the CTA header (tag + revision + DTD offset + flags).
  */
 #define CTA_HEADER_SIZE 4
+/**
+ * Exclusive upper bound for the detailed timing definitions in the CTA block.
+ */
+#define CTA_DTD_END 127
 
 static void
 add_failure(struct di_edid_cta *cta, const char fmt[], ...)
@@ -195,6 +201,7 @@ _di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size,
 	uint8_t flags, dtd_start;
 	uint8_t data_block_header, data_block_tag, data_block_size;
 	size_t i;
+	struct di_edid_detailed_timing_def *detailed_timing_def;
 
 	assert(size == 128);
 	assert(data[0] == 0x02);
@@ -248,6 +255,28 @@ _di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size,
 		add_failure(cta, "Offset is %"PRIu8", but should be %zu.",
 			    dtd_start, i);
 
+	for (i = dtd_start; i + EDID_BYTE_DESCRIPTOR_SIZE <= CTA_DTD_END;
+	     i += EDID_BYTE_DESCRIPTOR_SIZE) {
+		if (data[i] == 0)
+			break;
+
+		detailed_timing_def = _di_edid_parse_detailed_timing_def(&data[i]);
+		if (!detailed_timing_def) {
+			_di_edid_cta_finish(cta);
+			return false;
+		}
+		cta->detailed_timing_defs[cta->detailed_timing_defs_len++] = detailed_timing_def;
+	}
+
+	/* All padding bytes after the last DTD must be zero */
+	while (i < CTA_DTD_END) {
+		if (data[i] != 0) {
+			add_failure(cta, "Padding: Contains non-zero bytes.");
+			break;
+		}
+		i++;
+	}
+
 	cta->logger = NULL;
 	return true;
 }
@@ -259,6 +288,10 @@ _di_edid_cta_finish(struct di_edid_cta *cta)
 
 	for (i = 0; i < cta->data_blocks_len; i++) {
 		free(cta->data_blocks[i]);
+	}
+
+	for (i = 0; i < cta->detailed_timing_defs_len; i++) {
+		free(cta->detailed_timing_defs[i]);
 	}
 }
 
@@ -293,4 +326,10 @@ di_cta_data_block_get_colorimetry(const struct di_cta_data_block *block)
 		return NULL;
 	}
 	return &block->colorimetry;
+}
+
+const struct di_edid_detailed_timing_def *const *
+di_edid_cta_get_detailed_timing_defs(const struct di_edid_cta *cta)
+{
+	return (const struct di_edid_detailed_timing_def *const *) cta->detailed_timing_defs;
 }

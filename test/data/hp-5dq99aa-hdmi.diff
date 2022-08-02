@@ -23,7 +23,7 @@
    Detailed Timing Descriptors:
      DTD 1:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (597 mm x 339 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
-@@ -51,73 +51,14 @@
+@@ -51,46 +51,12 @@
    Supports YCbCr 4:2:2
    Native detailed modes: 1
    Video Data Block:
@@ -67,19 +67,13 @@
 -    Desired content max luminance: 115 (603.666 cd/m^2)
 -    Desired content max frame-average luminance: 90 (351.250 cd/m^2)
 -    Desired content min luminance: 1 (0.000 cd/m^2)
--  Detailed Timing Descriptors:
--    DTD 2:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz (597 mm x 339 mm)
--                 Hfront   88 Hsync  44 Hback  148 Hpol P
--                 Vfront    4 Vsync   5 Vback   36 Vpol P
--    DTD 3:  1920x1080   50.000000 Hz  16:9     56.250 kHz    148.500000 MHz (597 mm x 339 mm)
--                 Hfront  528 Hsync  44 Hback  148 Hpol P
--                 Vfront    4 Vsync   5 Vback   36 Vpol P
--    DTD 4:  2560x1440   74.970923 Hz  16:9    111.857 kHz    304.250000 MHz (597 mm x 339 mm)
--                 Hfront   48 Hsync  32 Hback   80 Hpol P
--                 Vfront    3 Vsync   5 Vback   44 Vpol N
--    DTD 5:  1920x1080   74.972503 Hz  16:9     83.894 kHz    174.500000 MHz (597 mm x 339 mm)
--                 Hfront   48 Hsync  32 Hback   80 Hpol P
--                 Vfront    3 Vsync   5 Vback   31 Vpol N
+   Detailed Timing Descriptors:
+     DTD 2:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz (597 mm x 339 mm)
+                  Hfront   88 Hsync  44 Hback  148 Hpol P
+@@ -104,20 +70,8 @@
+     DTD 5:  1920x1080   74.972503 Hz  16:9     83.894 kHz    174.500000 MHz (597 mm x 339 mm)
+                  Hfront   48 Hsync  32 Hback   80 Hpol P
+                  Vfront    3 Vsync   5 Vback   31 Vpol N
 -Checksum: 0xa3  Unused space in Extension Block: 10 bytes
 +Checksum: 0xa3
  

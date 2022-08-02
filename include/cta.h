@@ -11,6 +11,15 @@
 
 #include <libdisplay-info/cta.h>
 
+/**
+ * The maximum number of detailed timing definitions included in an EDID CTA
+ * block.
+ *
+ * The CTA extension leaves at most 122 bytes for timings, and each timing takes
+ * 18 bytes.
+ */
+#define EDID_CTA_MAX_DETAILED_TIMING_DEFS 6
+
 struct di_edid_cta {
 	int revision;
 	struct di_edid_cta_flags flags;
@@ -18,6 +27,10 @@ struct di_edid_cta {
 	/* NULL-terminated */
 	struct di_cta_data_block *data_blocks[128];
 	size_t data_blocks_len;
+
+	/* NULL-terminated */
+	struct di_edid_detailed_timing_def *detailed_timing_defs[EDID_CTA_MAX_DETAILED_TIMING_DEFS + 1];
+	size_t detailed_timing_defs_len;
 
 	struct di_logger *logger;
 };

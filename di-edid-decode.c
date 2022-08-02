@@ -8,6 +8,8 @@
 #include <libdisplay-info/edid.h>
 #include <libdisplay-info/info.h>
 
+static size_t num_detailed_timing_defs = 0;
+
 static const char *
 standard_timing_aspect_ratio_name(enum di_edid_standard_timing_aspect_ratio aspect_ratio)
 {
@@ -192,7 +194,7 @@ detailed_timing_def_sync_polarity_name(enum di_edid_detailed_timing_def_sync_pol
 }
 
 static void
-print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t n)
+print_detailed_timing_def(const struct di_edid_detailed_timing_def *def)
 {
 	int hbl, vbl, horiz_total, vert_total;
 	int horiz_back_porch, vert_back_porch;
@@ -234,7 +236,7 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def, size_t 
 	}
 	assert(flags_len < sizeof(flags) / sizeof(flags[0]));
 
-	printf("    DTD %zu:", n);
+	printf("    DTD %zu:", ++num_detailed_timing_defs);
 	printf(" %5dx%-5d", def->horiz_video, def->vert_video);
 	if (def->interlaced) {
 		printf("i");
@@ -489,6 +491,7 @@ print_cta(const struct di_edid_cta *cta)
 	enum di_cta_data_block_tag data_block_tag;
 	const struct di_cta_colorimetry_block *colorimetry;
 	size_t i;
+	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;
 
 	printf("  Revision: %d\n", di_edid_cta_get_revision(cta));
 
@@ -541,6 +544,14 @@ print_cta(const struct di_edid_cta *cta)
 		default:
 			break; /* Ignore */
 		}
+	}
+
+	detailed_timing_defs = di_edid_cta_get_detailed_timing_defs(cta);
+	if (detailed_timing_defs[0]) {
+		printf("  Detailed Timing Descriptors:\n");
+	}
+	for (i = 0; detailed_timing_defs[i] != NULL; i++) {
+		print_detailed_timing_def(detailed_timing_defs[i]);
 	}
 }
 
@@ -812,7 +823,7 @@ main(int argc, char *argv[])
 	printf("  Detailed Timing Descriptors:\n");
 	detailed_timing_defs = di_edid_get_detailed_timing_defs(edid);
 	for (i = 0; detailed_timing_defs[i] != NULL; i++) {
-		print_detailed_timing_def(detailed_timing_defs[i], i + 1);
+		print_detailed_timing_def(detailed_timing_defs[i]);
 	}
 	display_descs = di_edid_get_display_descriptors(edid);
 	for (i = 0; display_descs[i] != NULL; i++) {

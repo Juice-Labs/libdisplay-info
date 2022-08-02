@@ -151,4 +151,12 @@ struct di_cta_colorimetry_block {
 const struct di_cta_colorimetry_block *
 di_cta_data_block_get_colorimetry(const struct di_cta_data_block *block);
 
+/**
+ * Get a list of EDID detailed timing definitions.
+ *
+ * The returned array is NULL-terminated.
+ */
+const struct di_edid_detailed_timing_def *const *
+di_edid_cta_get_detailed_timing_defs(const struct di_edid_cta *cta);
+
 #endif
