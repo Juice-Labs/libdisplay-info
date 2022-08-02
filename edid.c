@@ -240,7 +240,7 @@ decode_chromaticity_coord(uint8_t hi, uint8_t lo)
 	return (float) raw / 1024;
 }
 
-static bool
+static void
 parse_chromaticity_coords(struct di_edid *edid,
 			  const uint8_t data[static EDID_BLOCK_SIZE])
 {
@@ -277,8 +277,6 @@ parse_chromaticity_coords(struct di_edid *edid,
 	if (coords->white_x == 0 || coords->white_y == 0) {
 		add_failure(edid, "White-point coordinates are unset.");
 	}
-
-	return true;
 }
 
 static bool
@@ -700,11 +698,7 @@ _di_edid_parse(const void *data, size_t size)
 
 	parse_vendor_product(data, &edid->vendor_product);
 	parse_basic_params_features(edid, data);
-
-	if (!parse_chromaticity_coords(edid, data)) {
-		_di_edid_destroy(edid);
-		return NULL;
-	}
+	parse_chromaticity_coords(edid, data);
 
 	for (i = 0; i < EDID_MAX_STANDARD_TIMING_COUNT; i++) {
 		standard_timing_data = (const uint8_t *) data
