@@ -678,5 +678,5 @@ main(int argc, char *argv[])
 	}
 
 	di_info_destroy(info);
-	return 0;
+	return failure_msg ? 254 : 0;
 }
