@@ -271,6 +271,35 @@ parse_chromaticity_coords(struct di_edid *edid,
 	}
 }
 
+static void
+parse_established_timings_i_ii(struct di_edid *edid,
+			       const uint8_t data[static EDID_BLOCK_SIZE])
+{
+	struct di_edid_established_timings_i_ii *timings = &edid->established_timings_i_ii;
+
+	timings->has_720x400_70hz = has_bit(data[0x23], 7);
+	timings->has_720x400_88hz = has_bit(data[0x23], 6);
+	timings->has_640x480_60hz = has_bit(data[0x23], 5);
+	timings->has_640x480_67hz = has_bit(data[0x23], 4);
+	timings->has_640x480_72hz = has_bit(data[0x23], 3);
+	timings->has_640x480_75hz = has_bit(data[0x23], 2);
+	timings->has_800x600_56hz = has_bit(data[0x23], 1);
+	timings->has_800x600_60hz = has_bit(data[0x23], 0);
+
+	/* Established timings II */
+	timings->has_800x600_72hz = has_bit(data[0x24], 7);
+	timings->has_800x600_75hz = has_bit(data[0x24], 6);
+	timings->has_832x624_75hz = has_bit(data[0x24], 5);
+	timings->has_1024x768_87hz_interlaced = has_bit(data[0x24], 4);
+	timings->has_1024x768_60hz = has_bit(data[0x24], 3);
+	timings->has_1024x768_70hz = has_bit(data[0x24], 2);
+	timings->has_1024x768_75hz = has_bit(data[0x24], 1);
+	timings->has_1280x1024_75hz = has_bit(data[0x24], 0);
+
+	timings->has_1152x870_75hz = has_bit(data[0x25], 7);
+	/* TODO: manufacturer specified timings in bits 6:0 */
+}
+
 static bool
 parse_standard_timing(struct di_edid *edid,
 		      const uint8_t data[static EDID_STANDARD_TIMING_SIZE])
@@ -732,6 +761,8 @@ _di_edid_parse(const void *data, size_t size, FILE *failure_msg_file)
 	parse_basic_params_features(edid, data);
 	parse_chromaticity_coords(edid, data);
 
+	parse_established_timings_i_ii(edid, data);
+
 	for (i = 0; i < EDID_MAX_STANDARD_TIMING_COUNT; i++) {
 		standard_timing_data = (const uint8_t *) data
 				       + 0x26 + i * EDID_STANDARD_TIMING_SIZE;
@@ -861,6 +892,12 @@ const struct di_edid_chromaticity_coords *
 di_edid_get_chromaticity_coords(const struct di_edid *edid)
 {
 	return &edid->chromaticity_coords;
+}
+
+const struct di_edid_established_timings_i_ii *
+di_edid_get_established_timings_i_ii(const struct di_edid *edid)
+{
+	return &edid->established_timings_i_ii;
 }
 
 int32_t

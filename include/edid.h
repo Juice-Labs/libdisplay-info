@@ -41,6 +41,7 @@ struct di_edid {
 	struct di_edid_misc_features misc_features;
 
 	struct di_edid_chromaticity_coords chromaticity_coords;
+	struct di_edid_established_timings_i_ii established_timings_i_ii;
 
 	/* NULL-terminated */
 	struct di_edid_standard_timing *standard_timings[EDID_MAX_STANDARD_TIMING_COUNT + 1];

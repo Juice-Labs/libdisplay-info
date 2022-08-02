@@ -219,6 +219,39 @@ const struct di_edid_chromaticity_coords *
 di_edid_get_chromaticity_coords(const struct di_edid *edid);
 
 /**
+ * Established timings I and II, defined in section 3.8.
+ */
+struct di_edid_established_timings_i_ii {
+	/* Established timings I */
+	bool has_720x400_70hz; /* 720 x 400 @ 70Hz (IBM, VGA) */
+	bool has_720x400_88hz; /* 720 x 400 @ 88Hz (IBM, XGA2) */
+	bool has_640x480_60hz; /* 640 x 480 @ 60Hz (IBM, VGA) */
+	bool has_640x480_67hz; /* 640 x 480 @ 67Hz (Apple, Mac II) */
+	bool has_640x480_72hz; /* 640 x 480 @ 72Hz (VESA) */
+	bool has_640x480_75hz; /* 640 x 480 @ 75Hz (VESA) */
+	bool has_800x600_56hz; /* 800 x 600 @ 56Hz (VESA) */
+	bool has_800x600_60hz; /* 800 x 600 @ 60Hz (VESA) */
+
+	/* Established timings II */
+	bool has_800x600_72hz; /* 800 x 600 @ 72Hz (VESA) */
+	bool has_800x600_75hz; /* 800 x 600 @ 75Hz (VESA) */
+	bool has_832x624_75hz; /* 832 x 624 @ 75Hz (Apple, Mac II) */
+	bool has_1024x768_87hz_interlaced; /* 1024 x 768 @ 87Hz interlaced (IBM) */
+	bool has_1024x768_60hz; /* 1024 x 768 @ 60Hz (VESA) */
+	bool has_1024x768_70hz; /* 1024 x 768 @ 70Hz (VESA) */
+	bool has_1024x768_75hz; /* 1024 x 768 @ 75Hz (VESA) */
+	bool has_1280x1024_75hz; /* 1280 x 1024 @ 75Hz (VESA) */
+
+	bool has_1152x870_75hz; /* 1152 x 870 @ 75Hz (Apple, Mac II) */
+};
+
+/**
+ * Get established timings I and II.
+ */
+const struct di_edid_established_timings_i_ii *
+di_edid_get_established_timings_i_ii(const struct di_edid *edid);
+
+/**
  * Aspect ratio for an EDID standard timing.
  */
 enum di_edid_standard_timing_aspect_ratio {

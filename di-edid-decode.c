@@ -98,6 +98,20 @@ join_str(const char *l[])
 	return out;
 }
 
+static bool
+has_established_timings_i_ii(const struct di_edid_established_timings_i_ii *timings)
+{
+	return timings->has_720x400_70hz || timings->has_720x400_88hz
+	       || timings->has_640x480_60hz || timings->has_640x480_67hz
+	       || timings->has_640x480_72hz || timings->has_640x480_75hz
+	       || timings->has_800x600_56hz || timings->has_800x600_60hz
+	       || timings->has_800x600_72hz || timings->has_800x600_75hz
+	       || timings->has_832x624_75hz || timings->has_1024x768_87hz_interlaced
+	       || timings->has_1024x768_60hz || timings->has_1024x768_70hz
+	       || timings->has_1024x768_75hz || timings->has_1280x1024_75hz
+	       || timings->has_1152x870_75hz;
+}
+
 static const char *
 detailed_timing_def_stereo_name(enum di_edid_detailed_timing_def_stereo stereo)
 {
@@ -577,6 +591,7 @@ main(int argc, char *argv[])
 	const struct di_edid_color_encoding_formats *color_encoding_formats;
 	const struct di_edid_misc_features *misc_features;
 	const struct di_edid_chromaticity_coords *chromaticity_coords;
+	const struct di_edid_established_timings_i_ii *established_timings_i_ii;
 	const struct di_edid_standard_timing *const *standard_timings;
 	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;
 	const struct di_edid_display_descriptor *const *display_descs;
@@ -742,6 +757,47 @@ main(int argc, char *argv[])
 	printf("    White: %.4f, %.4f\n",
 	       truncate_chromaticity_coord(chromaticity_coords->white_x),
 	       truncate_chromaticity_coord(chromaticity_coords->white_y));
+
+	printf("  Established Timings I & II:");
+	established_timings_i_ii = di_edid_get_established_timings_i_ii(edid);
+	if (!has_established_timings_i_ii(established_timings_i_ii)) {
+		printf(" none");
+	}
+	printf("\n");
+	if (established_timings_i_ii->has_720x400_70hz)
+		printf("    IBM     :   720x400    70.081663 Hz   9:5     31.467 kHz     28.320000 MHz\n");
+	if (established_timings_i_ii->has_720x400_88hz)
+		printf("    IBM     :   720x400    87.849542 Hz   9:5     39.444 kHz     35.500000 MHz\n");
+	if (established_timings_i_ii->has_640x480_60hz)
+		printf("    DMT 0x04:   640x480    59.940476 Hz   4:3     31.469 kHz     25.175000 MHz\n");
+	if (established_timings_i_ii->has_640x480_67hz)
+		printf("    Apple   :   640x480    66.666667 Hz   4:3     35.000 kHz     30.240000 MHz\n");
+	if (established_timings_i_ii->has_640x480_72hz)
+		printf("    DMT 0x05:   640x480    72.808802 Hz   4:3     37.861 kHz     31.500000 MHz\n");
+	if (established_timings_i_ii->has_640x480_75hz)
+		printf("    DMT 0x06:   640x480    75.000000 Hz   4:3     37.500 kHz     31.500000 MHz\n");
+	if (established_timings_i_ii->has_800x600_56hz)
+		printf("    DMT 0x08:   800x600    56.250000 Hz   4:3     35.156 kHz     36.000000 MHz\n");
+	if (established_timings_i_ii->has_800x600_60hz)
+		printf("    DMT 0x09:   800x600    60.316541 Hz   4:3     37.879 kHz     40.000000 MHz\n");
+	if (established_timings_i_ii->has_800x600_72hz)
+		printf("    DMT 0x0a:   800x600    72.187572 Hz   4:3     48.077 kHz     50.000000 MHz\n");
+	if (established_timings_i_ii->has_800x600_75hz)
+		printf("    DMT 0x0b:   800x600    75.000000 Hz   4:3     46.875 kHz     49.500000 MHz\n");
+	if (established_timings_i_ii->has_832x624_75hz)
+		printf("    Apple   :   832x624    74.551266 Hz   4:3     49.726 kHz     57.284000 MHz\n");
+	if (established_timings_i_ii->has_1024x768_87hz_interlaced)
+		printf("    DMT 0x0f:  1024x768i   86.957532 Hz   4:3     35.522 kHz     44.900000 MHz\n");
+	if (established_timings_i_ii->has_1024x768_60hz)
+		printf("    DMT 0x10:  1024x768    60.003840 Hz   4:3     48.363 kHz     65.000000 MHz\n");
+	if (established_timings_i_ii->has_1024x768_70hz)
+		printf("    DMT 0x11:  1024x768    70.069359 Hz   4:3     56.476 kHz     75.000000 MHz\n");
+	if (established_timings_i_ii->has_1024x768_75hz)
+		printf("    DMT 0x12:  1024x768    75.028582 Hz   4:3     60.023 kHz     78.750000 MHz\n");
+	if (established_timings_i_ii->has_1280x1024_75hz)
+		printf("    DMT 0x24:  1280x1024   75.024675 Hz   5:4     79.976 kHz    135.000000 MHz\n");
+	if (established_timings_i_ii->has_1152x870_75hz)
+		printf("    Apple   :  1152x870    75.061550 Hz 192:145   68.681 kHz    100.000000 MHz\n");
 
 	printf("  Standard Timings:");
 	standard_timings = di_edid_get_standard_timings(edid);

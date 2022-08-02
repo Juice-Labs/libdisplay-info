@@ -1,14 +1,8 @@
 --- ref
 +++ di
-@@ -17,20 +17,15 @@
-     Green: 0.2890, 0.6435
-     Blue : 0.1494, 0.0507
-     White: 0.3134, 0.3291
--  Established Timings I & II:
--    IBM     :   720x400    70.081663 Hz   9:5     31.467 kHz     28.320000 MHz
--    DMT 0x04:   640x480    59.940476 Hz   4:3     31.469 kHz     25.175000 MHz
--    DMT 0x09:   800x600    60.316541 Hz   4:3     37.879 kHz     40.000000 MHz
--    DMT 0x10:  1024x768    60.003840 Hz   4:3     48.363 kHz     65.000000 MHz
+@@ -23,14 +23,14 @@
+     DMT 0x09:   800x600    60.316541 Hz   4:3     37.879 kHz     40.000000 MHz
+     DMT 0x10:  1024x768    60.003840 Hz   4:3     48.363 kHz     65.000000 MHz
    Standard Timings:
 -    DMT 0x52:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz
 -    DMT 0x53:  1600x900    60.000000 Hz  16:9     60.000 kHz    108.000000 MHz (RB)
@@ -29,7 +23,7 @@
    Detailed Timing Descriptors:
      DTD 1:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (597 mm x 339 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
-@@ -51,73 +46,14 @@
+@@ -51,73 +51,14 @@
    Supports YCbCr 4:2:2
    Native detailed modes: 1
    Video Data Block:
