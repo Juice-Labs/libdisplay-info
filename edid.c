@@ -703,8 +703,7 @@ _di_edid_parse(const void *data, size_t size)
 	for (i = 0; i < EDID_MAX_STANDARD_TIMING_COUNT; i++) {
 		standard_timing_data = (const uint8_t *) data
 				       + 0x26 + i * EDID_STANDARD_TIMING_SIZE;
-		if (!parse_standard_timing(edid, standard_timing_data)
-		    && errno != ENOTSUP) {
+		if (!parse_standard_timing(edid, standard_timing_data)) {
 			_di_edid_destroy(edid);
 			return NULL;
 		}
@@ -713,8 +712,7 @@ _di_edid_parse(const void *data, size_t size)
 	for (i = 0; i < EDID_BYTE_DESCRIPTOR_COUNT; i++) {
 		byte_desc_data = (const uint8_t *) data
 			       + 0x36 + i * EDID_BYTE_DESCRIPTOR_SIZE;
-		if (!parse_byte_descriptor(edid, byte_desc_data)
-		    && errno != ENOTSUP) {
+		if (!parse_byte_descriptor(edid, byte_desc_data)) {
 			_di_edid_destroy(edid);
 			return NULL;
 		}
