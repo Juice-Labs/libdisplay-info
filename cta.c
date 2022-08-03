@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <errno.h>
 #include <inttypes.h>
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -72,6 +73,63 @@ parse_colorimetry_block(struct di_edid_cta *cta,
 	return true;
 }
 
+static float
+parse_max_luminance(uint8_t raw)
+{
+	if (raw == 0)
+		return 0;
+	return 50 * powf(2, (float) raw / 32);
+}
+
+static float
+parse_min_luminance(uint8_t raw, float max)
+{
+	if (raw == 0)
+		return 0;
+	return max * powf((float) raw / 255, 2) / 100;
+}
+
+static bool
+parse_hdr_static_metadata_block(struct di_edid_cta *cta,
+				struct di_cta_hdr_static_metadata_block_priv *metadata,
+				const uint8_t *data, size_t size)
+{
+	uint8_t eotfs, descriptors;
+
+	if (size < 2) {
+		add_failure(cta, "HDR Static Metadata Data Block: Empty Data Block with length %u.",
+			    size);
+		return false;
+	}
+
+	eotfs = data[0];
+	metadata->eotfs.traditional_sdr = has_bit(eotfs, 0);
+	metadata->eotfs.traditional_hdr = has_bit(eotfs, 1);
+	metadata->eotfs.pq = has_bit(eotfs, 2);
+	metadata->eotfs.hlg = has_bit(eotfs, 3);
+	if (get_bit_range(eotfs, 7, 4))
+		add_failure_until(cta, 3, "HDR Static Metadata Data Block: Unknown EOTF.");
+
+	descriptors = data[1];
+	metadata->descriptors.type1 = has_bit(descriptors, 0);
+	if (get_bit_range(descriptors, 7, 1))
+		add_failure_until(cta, 3, "HDR Static Metadata Data Block: Unknown descriptor type.");
+
+	if (size > 2)
+		metadata->base.desired_content_max_luminance = parse_max_luminance(data[2]);
+	if (size > 3)
+		metadata->base.desired_content_max_frame_avg_luminance = parse_max_luminance(data[3]);
+	if (size > 4) {
+		if (metadata->base.desired_content_max_luminance == 0)
+			add_failure(cta, "HDR Static Metadata Data Block: Desired content min luminance is set, but max luminance is unset.");
+		else
+			metadata->base.desired_content_min_luminance =
+				parse_min_luminance(data[4], metadata->base.desired_content_max_luminance);
+	}
+
+	return true;
+}
+
 static bool
 parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, size_t size)
 {
@@ -127,6 +185,10 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 			break;
 		case 6:
 			tag = DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA;
+			if (!parse_hdr_static_metadata_block(cta,
+							     &data_block->hdr_static_metadata,
+							     data, size))
+				goto skip;
 			break;
 		case 7:
 			tag = DI_CTA_DATA_BLOCK_HDR_DYNAMIC_METADATA;
@@ -326,6 +388,39 @@ di_cta_data_block_get_colorimetry(const struct di_cta_data_block *block)
 		return NULL;
 	}
 	return &block->colorimetry;
+}
+
+const struct di_cta_hdr_static_metadata_block *
+di_cta_data_block_get_hdr_static_metadata(const struct di_cta_data_block *block)
+{
+	if (block->tag != DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA) {
+		return NULL;
+	}
+	return &block->hdr_static_metadata.base;
+}
+
+static const struct di_cta_hdr_static_metadata_block_priv *
+get_hdr_static_metadata_block_priv(const struct di_cta_hdr_static_metadata_block *block)
+{
+	return (const struct di_cta_hdr_static_metadata_block_priv *) block;
+}
+
+const struct di_cta_hdr_static_metadata_block_eotfs *
+di_cta_hdr_static_metadata_block_get_eofts(const struct di_cta_hdr_static_metadata_block *block)
+{
+	const struct di_cta_hdr_static_metadata_block_priv *priv;
+
+	priv = get_hdr_static_metadata_block_priv(block);
+	return &priv->eotfs;
+}
+
+const struct di_cta_hdr_static_metadata_block_descriptors *
+di_cta_hdr_static_metadata_block_get_descriptors(const struct di_cta_hdr_static_metadata_block *block)
+{
+	const struct di_cta_hdr_static_metadata_block_priv *priv;
+
+	priv = get_hdr_static_metadata_block_priv(block);
+	return &priv->descriptors;
 }
 
 const struct di_edid_detailed_timing_def *const *

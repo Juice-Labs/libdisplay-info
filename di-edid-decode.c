@@ -464,6 +464,60 @@ display_color_type_name(enum di_edid_display_color_type type)
 	abort();
 }
 
+static uint8_t
+encode_max_luminance(float max)
+{
+	if (max == 0)
+		return 0;
+	return (uint8_t) (log2f(max / 50) * 32);
+}
+
+static uint8_t
+encode_min_luminance(float min, float max)
+{
+	if (min == 0)
+		return 0;
+	return (uint8_t) (255 * sqrtf(min / max * 100));
+}
+
+static void
+print_cta_hdr_static_metadata(const struct di_cta_hdr_static_metadata_block *metadata)
+{
+	const struct di_cta_hdr_static_metadata_block_eotfs *eotfs;
+	const struct di_cta_hdr_static_metadata_block_descriptors *descriptors;
+
+	printf("    Electro optical transfer functions:\n");
+	eotfs = di_cta_hdr_static_metadata_block_get_eofts(metadata);
+	if (eotfs->traditional_sdr)
+		printf("      Traditional gamma - SDR luminance range\n");
+	if (eotfs->traditional_hdr)
+		printf("      Traditional gamma - HDR luminance range\n");
+	if (eotfs->pq)
+		printf("      SMPTE ST2084\n");
+	if (eotfs->hlg)
+		printf("      Hybrid Log-Gamma\n");
+
+	printf("    Supported static metadata descriptors:\n");
+	descriptors = di_cta_hdr_static_metadata_block_get_descriptors(metadata);
+	if (descriptors->type1)
+		printf("      Static metadata type 1\n");
+
+	/* TODO: figure out a way to print raw values? */
+	if (metadata->desired_content_max_luminance != 0)
+		printf("    Desired content max luminance: %" PRIu8 " (%.3f cd/m^2)\n",
+		       encode_max_luminance(metadata->desired_content_max_luminance),
+		       metadata->desired_content_max_luminance);
+	if (metadata->desired_content_max_frame_avg_luminance != 0)
+		printf("    Desired content max frame-average luminance: %" PRIu8 " (%.3f cd/m^2)\n",
+		       encode_max_luminance(metadata->desired_content_max_frame_avg_luminance),
+		       metadata->desired_content_max_frame_avg_luminance);
+	if (metadata->desired_content_min_luminance != 0)
+		printf("    Desired content min luminance: %" PRIu8 " (%.3f cd/m^2)\n",
+		       encode_min_luminance(metadata->desired_content_min_luminance,
+					    metadata->desired_content_max_luminance),
+		       metadata->desired_content_min_luminance);
+}
+
 static const char *
 cta_data_block_tag_name(enum di_cta_data_block_tag tag)
 {
@@ -522,6 +576,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_data_block *data_block;
 	enum di_cta_data_block_tag data_block_tag;
 	const struct di_cta_colorimetry_block *colorimetry;
+	const struct di_cta_hdr_static_metadata_block *hdr_static_metadata;
 	size_t i;
 	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;
 
@@ -572,6 +627,10 @@ print_cta(const struct di_edid_cta *cta)
 				printf("    ICtCp\n");
 			if (colorimetry->st2113_rgb)
 				printf("    ST2113RGB\n");
+			break;
+		case DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA:
+			hdr_static_metadata = di_cta_data_block_get_hdr_static_metadata(data_block);
+			print_cta_hdr_static_metadata(hdr_static_metadata);
 			break;
 		default:
 			break; /* Ignore */

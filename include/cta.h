@@ -35,11 +35,19 @@ struct di_edid_cta {
 	struct di_logger *logger;
 };
 
+struct di_cta_hdr_static_metadata_block_priv {
+	struct di_cta_hdr_static_metadata_block base;
+	struct di_cta_hdr_static_metadata_block_eotfs eotfs;
+	struct di_cta_hdr_static_metadata_block_descriptors descriptors;
+};
+
 struct di_cta_data_block {
 	enum di_cta_data_block_tag tag;
 
 	/* Used for DI_CTA_DATA_BLOCK_COLORIMETRY */
 	struct di_cta_colorimetry_block colorimetry;
+	/* Used for DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA */
+	struct di_cta_hdr_static_metadata_block_priv hdr_static_metadata;
 };
 
 bool

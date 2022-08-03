@@ -42,6 +42,7 @@ di_lib = library(
 		'log.c',
 	],
 	include_directories: include_directories('include'),
+	dependencies: [math],
 	link_args: symbols_flag,
 	link_depends: symbols_file,
 	install: true,

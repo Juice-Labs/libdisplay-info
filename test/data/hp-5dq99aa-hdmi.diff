@@ -23,7 +23,7 @@
    Detailed Timing Descriptors:
      DTD 1:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (597 mm x 339 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
-@@ -51,46 +51,12 @@
+@@ -51,32 +51,7 @@
    Supports YCbCr 4:2:2
    Native detailed modes: 1
    Video Data Block:
@@ -56,21 +56,7 @@
    Colorimetry Data Block:
      BT2020cYCC
      BT2020YCC
-     BT2020RGB
-   HDR Static Metadata Data Block:
--    Electro optical transfer functions:
--      Traditional gamma - SDR luminance range
--      Traditional gamma - HDR luminance range
--      SMPTE ST2084
--    Supported static metadata descriptors:
--      Static metadata type 1
--    Desired content max luminance: 115 (603.666 cd/m^2)
--    Desired content max frame-average luminance: 90 (351.250 cd/m^2)
--    Desired content min luminance: 1 (0.000 cd/m^2)
-   Detailed Timing Descriptors:
-     DTD 2:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz (597 mm x 339 mm)
-                  Hfront   88 Hsync  44 Hback  148 Hpol P
-@@ -104,20 +70,8 @@
+@@ -104,20 +79,8 @@
      DTD 5:  1920x1080   74.972503 Hz  16:9     83.894 kHz    174.500000 MHz (597 mm x 339 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
                   Vfront    3 Vsync   5 Vback   31 Vpol N
