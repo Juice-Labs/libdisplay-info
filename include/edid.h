@@ -36,6 +36,7 @@ struct di_edid {
 	int version, revision;
 
 	bool is_digital;
+	struct di_edid_video_input_analog video_input_analog;
 	struct di_edid_video_input_digital video_input_digital;
 	struct di_edid_screen_size screen_size;
 	float gamma;

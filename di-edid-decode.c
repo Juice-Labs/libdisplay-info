@@ -397,6 +397,22 @@ ext_tag_name(enum di_edid_ext_tag tag)
 }
 
 static const char *
+analog_signal_level_std_name(enum di_edid_video_input_analog_signal_level_std std)
+{
+	switch (std) {
+	case DI_EDID_VIDEO_INPUT_ANALOG_SIGNAL_LEVEL_0:
+		return "0.700 : 0.300 : 1.000 V p-p";
+	case DI_EDID_VIDEO_INPUT_ANALOG_SIGNAL_LEVEL_1:
+		return "0.714 : 0.286 : 1.000 V p-p";
+	case DI_EDID_VIDEO_INPUT_ANALOG_SIGNAL_LEVEL_2:
+		return "1.000 : 0.400 : 1.400 V p-p";
+	case DI_EDID_VIDEO_INPUT_ANALOG_SIGNAL_LEVEL_3:
+		return "0.700 : 0.000 : 0.700 V p-p";
+	}
+	abort();
+}
+
+static const char *
 digital_interface_name(enum di_edid_video_input_digital_interface interface)
 {
 	switch (interface) {
@@ -594,6 +610,7 @@ main(int argc, char *argv[])
 	const struct di_edid *edid;
 	struct di_info *info;
 	const struct di_edid_vendor_product *vendor_product;
+	const struct di_edid_video_input_analog *video_input_analog;
 	const struct di_edid_video_input_digital *video_input_digital;
 	const struct di_edid_screen_size *screen_size;
 	float gamma;
@@ -660,6 +677,30 @@ main(int argc, char *argv[])
 	}
 
 	printf("  Basic Display Parameters & Features:\n");
+	video_input_analog = di_edid_get_video_input_analog(edid);
+	if (video_input_analog) {
+		printf("    Analog display\n");
+		printf("    Signal Level Standard: %s\n",
+		       analog_signal_level_std_name(video_input_analog->signal_level_std));
+		switch (video_input_analog->video_setup) {
+		case DI_EDID_VIDEO_INPUT_ANALOG_BLANK_LEVEL_EQ_BLACK:
+			printf("    Blank-to-black setup/pedestal\n");
+			break;
+		case DI_EDID_VIDEO_INPUT_ANALOG_BLANK_TO_BLACK_SETUP_PEDESTAL:
+			printf("    Blank level equals black level\n");
+			break;
+		}
+		printf("    Sync:");
+		if (video_input_analog->sync_separate)
+			printf(" Separate");
+		if (video_input_analog->sync_composite)
+			printf(" Composite");
+		if (video_input_analog->sync_on_green)
+			printf(" SyncOnGreen");
+		if (video_input_analog->sync_serrations)
+			printf(" Serration");
+		printf("\n");
+	}
 	video_input_digital = di_edid_get_video_input_digital(edid);
 	if (video_input_digital) {
 		printf("    Digital display\n");

@@ -48,6 +48,55 @@ const struct di_edid_vendor_product *
 di_edid_get_vendor_product(const struct di_edid *edid);
 
 /**
+ * EDID analog signal level standard.
+ */
+enum di_edid_video_input_analog_signal_level_std {
+	/* 0.700 : 0.300 : 1.000 V p-p */
+	DI_EDID_VIDEO_INPUT_ANALOG_SIGNAL_LEVEL_0 = 0x00,
+	/* 0.714 : 0.286 : 1.000 V p-p */
+	DI_EDID_VIDEO_INPUT_ANALOG_SIGNAL_LEVEL_1 = 0x01,
+	/* 1.000 : 0.400 : 1.400 V p-p */
+	DI_EDID_VIDEO_INPUT_ANALOG_SIGNAL_LEVEL_2 = 0x02,
+	/* 0.700 : 0.000 : 0.700 V p-p */
+	DI_EDID_VIDEO_INPUT_ANALOG_SIGNAL_LEVEL_3 = 0x03,
+};
+
+/**
+ * EDID analog video setup.
+ */
+enum di_edid_video_input_analog_video_setup {
+	/* Blank level equals black level */
+	DI_EDID_VIDEO_INPUT_ANALOG_BLANK_LEVEL_EQ_BLACK = 0,
+	/* Blank-to-black setup or pedestal */
+	DI_EDID_VIDEO_INPUT_ANALOG_BLANK_TO_BLACK_SETUP_PEDESTAL = 1,
+};
+
+/**
+ * EDID analog video input basic information, defined in section 3.6.1.
+ */
+struct di_edid_video_input_analog {
+	enum di_edid_video_input_analog_signal_level_std signal_level_std;
+	enum di_edid_video_input_analog_video_setup video_setup;
+
+	/* Separate Sync H & V Signals are supported */
+	bool sync_separate;
+	/* Composite Sync Signal on Horizontal is supported */
+	bool sync_composite;
+	/* Composite Sync Signal on Green Video is supported */
+	bool sync_on_green;
+	/* Serration on the Vertical Sync is supported */
+	bool sync_serrations;
+};
+
+/**
+ * Get the analog video input basic information.
+ *
+ * Returns NULL if this isn't an analog display.
+ */
+const struct di_edid_video_input_analog *
+di_edid_get_video_input_analog(const struct di_edid *edid);
+
+/**
  * Digital video input interface standard.
  */
 enum di_edid_video_input_digital_interface {

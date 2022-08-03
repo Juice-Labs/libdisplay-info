@@ -166,6 +166,19 @@ parse_video_input_digital(struct di_edid *edid, uint8_t video_input)
 }
 
 static void
+parse_video_input_analog(struct di_edid *edid, uint8_t video_input)
+{
+	struct di_edid_video_input_analog *analog = &edid->video_input_analog;
+
+	analog->signal_level_std = get_bit_range(video_input, 6, 5);
+	analog->video_setup = has_bit(video_input, 4);
+	analog->sync_separate = has_bit(video_input, 3);
+	analog->sync_composite = has_bit(video_input, 2);
+	analog->sync_on_green = has_bit(video_input, 1);
+	analog->sync_serrations = has_bit(video_input, 0);
+}
+
+static void
 parse_basic_params_features(struct di_edid *edid,
 			    const uint8_t data[static EDID_BLOCK_SIZE])
 {
@@ -175,9 +188,10 @@ parse_basic_params_features(struct di_edid *edid,
 	video_input = data[0x14];
 	edid->is_digital = has_bit(video_input, 7);
 
-	/* TODO: parse analog fields */
 	if (edid->is_digital) {
 		parse_video_input_digital(edid, video_input);
+	} else {
+		parse_video_input_analog(edid, video_input);
 	}
 
 	/* v1.3 says screen size is undefined if either byte is zero, v1.4 says
@@ -852,6 +866,12 @@ const struct di_edid_vendor_product *
 di_edid_get_vendor_product(const struct di_edid *edid)
 {
 	return &edid->vendor_product;
+}
+
+const struct di_edid_video_input_analog *
+di_edid_get_video_input_analog(const struct di_edid *edid)
+{
+	return edid->is_digital ? NULL : &edid->video_input_analog;
 }
 
 const struct di_edid_video_input_digital *
