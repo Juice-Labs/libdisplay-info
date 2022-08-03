@@ -124,8 +124,17 @@ parse_video_input_digital(struct di_edid *edid, uint8_t video_input)
 	uint8_t color_bit_depth, interface;
 	struct di_edid_video_input_digital *digital = &edid->video_input_digital;
 
+	if (edid->revision < 2) {
+		if (get_bit_range(video_input, 6, 0) != 0)
+			add_failure(edid, "Digital Video Interface Standard set to reserved value 0x%02x.",
+				    video_input);
+		return;
+	}
 	if (edid->revision < 4) {
-		/* TODO: parse EDID 1.3- fields */
+		if (get_bit_range(video_input, 6, 1) != 0)
+			add_failure(edid, "Digital Video Interface Standard set to reserved value 0x%02x.",
+				    video_input);
+		digital->dfp1 = has_bit(video_input, 0);
 		return;
 	}
 

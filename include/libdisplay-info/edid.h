@@ -63,6 +63,10 @@ enum di_edid_video_input_digital_interface {
  * EDID digital video input basic information, defined in section 3.6.1.
  */
 struct di_edid_video_input_digital {
+	/* EDID 1.2 and 1.3 */
+	bool dfp1; /* Compatible with VESA DFP 1.x TDMS CRGB */
+
+	/* EDID 1.4 and later */
 	int color_bit_depth; /* zero if undefined */
 	enum di_edid_video_input_digital_interface interface;
 };

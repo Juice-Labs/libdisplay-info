@@ -673,6 +673,8 @@ main(int argc, char *argv[])
 			printf("    %s\n",
 			       digital_interface_name(video_input_digital->interface));
 		}
+		if (video_input_digital->dfp1)
+			printf("    DFP 1.x compatible TMDS\n");
 	}
 	screen_size = di_edid_get_screen_size(edid);
 	if (screen_size->width_cm > 0) {
