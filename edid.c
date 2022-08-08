@@ -567,8 +567,12 @@ parse_byte_descriptor(struct di_edid *edid,
 		return parse_detailed_timing_def(edid, data);
 	}
 
-	/* TODO: check we got at least one detailed timing descriptor, per note
-	 * 4 of table 3.20. */
+	if (edid->revision >= 3 && edid->revision <= 4 &&
+	    edid->detailed_timing_defs_len == 0) {
+		/* Per section 3.10.1 */
+		add_failure(edid,
+			    "The first byte descriptor must contain the preferred timing.");
+	}
 
 	desc = calloc(1, sizeof(*desc));
 	if (!desc) {
