@@ -362,7 +362,7 @@ print_display_desc(const struct di_edid *edid,
 	case DI_EDID_DISPLAY_DESCRIPTOR_DATA_STRING:
 	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME:
 		str = di_edid_display_descriptor_get_string(desc);
-		printf(" '%s'", str);
+		printf(" '%s'\n", str);
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS:
 		range_limits = di_edid_display_descriptor_get_range_limits(desc);
@@ -385,20 +385,36 @@ print_display_desc(const struct di_edid *edid,
 			printf(", max dotclock %d MHz",
 			       range_limits->max_pixel_clock_hz / (1000 * 1000));
 		}
+		printf("\n");
+
+		switch (range_limits_type) {
+		case DI_EDID_DISPLAY_RANGE_LIMITS_SECONDARY_GTF:
+			printf("      GTF Secondary Curve Block:\n");
+			printf("        Start frequency: %u kHz\n",
+			       range_limits->secondary_gtf->start_freq_hz / 1000);
+			printf("        C: %.1f%%\n", range_limits->secondary_gtf->c);
+			printf("        M: %u%%/kHz\n", (int) range_limits->secondary_gtf->m);
+			printf("        K: %u\n", (int) range_limits->secondary_gtf->k);
+			printf("        J: %.1f%%\n", range_limits->secondary_gtf->j);
+			break;
+		default:
+			break;
+		}
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_STD_TIMING_IDS:
 		standard_timings = di_edid_display_descriptor_get_standard_timings(desc);
 
+		printf("\n");
 		for (i = 0; standard_timings[i] != NULL; i++) {
 			printf("  ");
 			print_standard_timing(standard_timings[i]);
 		}
 		break;
 	default:
+		printf("\n");
 		break; /* TODO: print other tags */
 	}
 
-	printf("\n");
 }
 
 static const char *

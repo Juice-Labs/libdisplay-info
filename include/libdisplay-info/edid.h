@@ -551,6 +551,13 @@ enum di_edid_display_range_limits_type {
 	DI_EDID_DISPLAY_RANGE_LIMITS_CVT,
 };
 
+struct di_edid_display_range_limits_secondary_gtf {
+	/* Start break frequency in Hz */
+	int start_freq_hz;
+	/* C, M, K, J parameters */
+	float c, m, k, j;
+};
+
 /**
  * EDID display range limits, defined in section 3.10.3.3.1.
  */
@@ -566,6 +573,9 @@ struct di_edid_display_range_limits {
 	int32_t max_pixel_clock_hz;
 
 	enum di_edid_display_range_limits_type type;
+
+	/* For SECONDARY_GTF limits, NULL otherwise */
+	const struct di_edid_display_range_limits_secondary_gtf *secondary_gtf;
 };
 
 /**

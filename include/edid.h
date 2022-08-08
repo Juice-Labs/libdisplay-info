@@ -81,13 +81,18 @@ struct di_edid {
 	struct di_logger *logger;
 };
 
+struct di_edid_display_range_limits_priv {
+	struct di_edid_display_range_limits base;
+	struct di_edid_display_range_limits_secondary_gtf secondary_gtf;
+};
+
 struct di_edid_display_descriptor {
 	enum di_edid_display_descriptor_tag tag;
 	/* Used for PRODUCT_SERIAL, DATA_STRING and PRODUCT_NAME,
 	 * zero-terminated */
 	char str[14];
 	/* Used for RANGE_LIMITS */
-	struct di_edid_display_range_limits range_limits;
+	struct di_edid_display_range_limits_priv range_limits;
 	/* Used for STD_TIMING_IDS, NULL-terminated */
 	struct di_edid_standard_timing *standard_timings[EDID_MAX_DESCRIPTOR_STANDARD_TIMING_COUNT + 1];
 	size_t standard_timings_len;

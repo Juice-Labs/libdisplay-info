@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -38,26 +38,20 @@
+@@ -38,14 +38,14 @@
      DMT 0x24:  1280x1024   75.024675 Hz   5:4     79.976 kHz    135.000000 MHz
      Apple   :  1152x870    75.061550 Hz 192:145   68.681 kHz    100.000000 MHz
    Standard Timings:
@@ -23,19 +23,7 @@
    Detailed Timing Descriptors:
      DTD 1:  3840x2160   59.996625 Hz  16:9    133.312 kHz    533.250000 MHz (700 mm x 390 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
-                  Vfront    3 Vsync   5 Vback   54 Vpol N
-     Display Range Limits:
-       Monitor ranges (Secondary GTF): 40-60 Hz V, 135-135 kHz H, max dotclock 600 MHz
--      GTF Secondary Curve Block:
--        Start frequency: 64 kHz
--        C: 16.0%
--        M: 8224%/kHz
--        K: 32
--        J: 16.0%
-     Display Product Name: 'MAG321CURV'
-     Display Product Serial Number: 'DA2A019360041'
-   Extension blocks: 1
-@@ -73,57 +67,32 @@
+@@ -73,57 +73,32 @@
    Supports YCbCr 4:2:2
    Native detailed modes: 1
    Video Data Block:
@@ -110,7 +98,7 @@
    HDR Static Metadata Data Block:
      Electro optical transfer functions:
        Traditional gamma - SDR luminance range
-@@ -133,7 +102,6 @@
+@@ -133,7 +108,6 @@
        Static metadata type 1
      Desired content max luminance: 92 (366.802 cd/m^2)
      Desired content max frame-average luminance: 92 (366.802 cd/m^2)
@@ -118,7 +106,7 @@
    Detailed Timing Descriptors:
      DTD 2:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (700 mm x 390 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
-@@ -144,29 +112,12 @@
+@@ -144,29 +118,12 @@
      DTD 4:  1280x768    59.870228 Hz   5:3     47.776 kHz     79.500000 MHz (700 mm x 390 mm)
                   Hfront   64 Hsync 128 Hback  192 Hpol N
                   Vfront    3 Vsync   7 Vback   20 Vpol P

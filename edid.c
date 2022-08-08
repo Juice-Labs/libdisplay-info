@@ -493,13 +493,17 @@ decode_display_range_limits_offset(struct di_edid *edid, uint8_t flags,
 static bool
 parse_display_range_limits(struct di_edid *edid,
 			   const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
-			   struct di_edid_display_range_limits *out)
+			   struct di_edid_display_range_limits_priv *priv)
 {
 	uint8_t offset_flags, vert_offset_flags, horiz_offset_flags;
 	uint8_t support_flags;
 	int max_vert_offset = 0, min_vert_offset = 0;
 	int max_horiz_offset = 0, min_horiz_offset = 0;
 	size_t i;
+	struct di_edid_display_range_limits *base;
+	struct di_edid_display_range_limits_secondary_gtf *secondary_gtf;
+
+	base = &priv->base;
 
 	offset_flags = data[4];
 	if (edid->revision >= 4) {
@@ -533,22 +537,22 @@ parse_display_range_limits(struct di_edid *edid,
 		return false;
 	}
 
-	out->min_vert_rate_hz = data[5] + min_vert_offset;
-	out->max_vert_rate_hz = data[6] + max_vert_offset;
-	out->min_horiz_rate_hz = (data[7] + min_horiz_offset) * 1000;
-	out->max_horiz_rate_hz = (data[8] + max_horiz_offset) * 1000;
+	base->min_vert_rate_hz = data[5] + min_vert_offset;
+	base->max_vert_rate_hz = data[6] + max_vert_offset;
+	base->min_horiz_rate_hz = (data[7] + min_horiz_offset) * 1000;
+	base->max_horiz_rate_hz = (data[8] + max_horiz_offset) * 1000;
 
-	if (out->min_vert_rate_hz > out->max_vert_rate_hz) {
+	if (base->min_vert_rate_hz > base->max_vert_rate_hz) {
 		add_failure(edid, "Display Range Limits: Min vertical rate > max vertical rate.");
 		return false;
 	}
-	if (out->min_horiz_rate_hz > out->max_horiz_rate_hz) {
+	if (base->min_horiz_rate_hz > base->max_horiz_rate_hz) {
 		add_failure(edid, "Display Range Limits: Min horizontal freq > max horizontal freq.");
 		return false;
 	}
 
-	out->max_pixel_clock_hz = (int32_t) data[9] * 10 * 1000 * 1000;
-	if (edid->revision == 4 && out->max_pixel_clock_hz == 0) {
+	base->max_pixel_clock_hz = (int32_t) data[9] * 10 * 1000 * 1000;
+	if (edid->revision == 4 && base->max_pixel_clock_hz == 0) {
 		add_failure(edid, "Display Range Limits: EDID 1.4 block does not set max dotclock.");
 	}
 
@@ -559,9 +563,9 @@ parse_display_range_limits(struct di_edid *edid,
 		 * GTF. For EDID 1.3 and earlier, a misc features bit indicates
 		 * support for default GTF. */
 		if (edid->revision >= 4 || edid->misc_features.default_gtf) {
-			out->type = DI_EDID_DISPLAY_RANGE_LIMITS_DEFAULT_GTF;
+			base->type = DI_EDID_DISPLAY_RANGE_LIMITS_DEFAULT_GTF;
 		} else {
-			out->type = DI_EDID_DISPLAY_RANGE_LIMITS_BARE;
+			base->type = DI_EDID_DISPLAY_RANGE_LIMITS_BARE;
 		}
 		break;
 	case 0x01:
@@ -570,10 +574,10 @@ parse_display_range_limits(struct di_edid *edid,
 			add_failure(edid, "Display Range Limits: 'Bare Limits' is not allowed for EDID < 1.4.");
 			return false;
 		}
-		out->type = DI_EDID_DISPLAY_RANGE_LIMITS_BARE;
+		base->type = DI_EDID_DISPLAY_RANGE_LIMITS_BARE;
 		break;
 	case 0x02:
-		out->type = DI_EDID_DISPLAY_RANGE_LIMITS_SECONDARY_GTF;
+		base->type = DI_EDID_DISPLAY_RANGE_LIMITS_SECONDARY_GTF;
 		break;
 	case 0x04:
 		if (edid->revision < 4) {
@@ -581,7 +585,7 @@ parse_display_range_limits(struct di_edid *edid,
 			add_failure(edid, "Display Range Limits: 'CVT' is not allowed for EDID < 1.4.");
 			return false;
 		}
-		out->type = DI_EDID_DISPLAY_RANGE_LIMITS_CVT;
+		base->type = DI_EDID_DISPLAY_RANGE_LIMITS_CVT;
 		break;
 	default:
 		/* Reserved */
@@ -591,14 +595,14 @@ parse_display_range_limits(struct di_edid *edid,
 				    support_flags);
 			return false;
 		}
-		out->type = DI_EDID_DISPLAY_RANGE_LIMITS_BARE;
+		base->type = DI_EDID_DISPLAY_RANGE_LIMITS_BARE;
 		break;
 	}
 
 	/* Some types require the display to support continuous frequencies, but
 	 * this flag is only set for EDID 1.4 and later */
 	if (edid->revision >= 4 && !edid->misc_features.continuous_freq) {
-		switch (out->type) {
+		switch (base->type) {
 		case DI_EDID_DISPLAY_RANGE_LIMITS_DEFAULT_GTF:
 		case DI_EDID_DISPLAY_RANGE_LIMITS_SECONDARY_GTF:
 			add_failure(edid, "Display Range Limits: GTF can't be combined with non-continuous frequencies.");
@@ -611,8 +615,23 @@ parse_display_range_limits(struct di_edid *edid,
 		}
 	}
 
-	switch (out->type) {
+	switch (base->type) {
 	case DI_EDID_DISPLAY_RANGE_LIMITS_SECONDARY_GTF:
+		secondary_gtf = &priv->secondary_gtf;
+
+		if (data[11] != 0)
+			add_failure(edid,
+				    "Display Range Limits: Byte 11 is 0x%02x instead of 0x00.",
+				    data[11]);
+
+		secondary_gtf->start_freq_hz = data[12] * 2 * 1000;
+		secondary_gtf->c = (float) data[13] / 2;
+		secondary_gtf->m = (float) ((data[15] << 8) | data[14]);
+		secondary_gtf->k = (float) data[16];
+		secondary_gtf->j = (float) data[17] / 2;
+
+		base->secondary_gtf = secondary_gtf;
+		break;
 	case DI_EDID_DISPLAY_RANGE_LIMITS_CVT:
 		/* TODO: parse video timing data in bytes 11 to 17 */
 		break;
@@ -1118,7 +1137,7 @@ di_edid_display_descriptor_get_range_limits(const struct di_edid_display_descrip
 	if (desc->tag != DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS) {
 		return NULL;
 	}
-	return &desc->range_limits;
+	return &desc->range_limits.base;
 }
 
 const struct di_edid_standard_timing *const *
