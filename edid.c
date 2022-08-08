@@ -502,15 +502,15 @@ parse_display_range_limits(struct di_edid *edid,
 
 		if (edid->revision <= 4 &&
 		    get_bit_range(offset_flags, 7, 4) != 0) {
-			add_failure(edid, "Bits 7:4 of the range offset flags are reserved.");
+			add_failure(edid, "Display Range Limits: Bits 7:4 of the range offset flags are reserved.");
 		}
 	} else if (offset_flags != 0) {
-		add_failure(edid, "Range offset flags are unsupported in EDID 1.3.");
+		add_failure(edid, "Display Range Limits: Range offset flags are unsupported in EDID 1.3.");
 	}
 
 	if (edid->revision <= 4 && (data[5] == 0 || data[6] == 0 ||
 				    data[7] == 0 || data[8] == 0)) {
-		add_failure(edid, "Range limits set to reserved values.");
+		add_failure(edid, "Display Range Limits: Range limits set to reserved values.");
 		return false;
 	}
 
@@ -520,17 +520,17 @@ parse_display_range_limits(struct di_edid *edid,
 	out->max_horiz_rate_hz = (data[8] + max_horiz_offset) * 1000;
 
 	if (out->min_vert_rate_hz > out->max_vert_rate_hz) {
-		add_failure(edid, "Min vertical rate > max vertical rate.");
+		add_failure(edid, "Display Range Limits: Min vertical rate > max vertical rate.");
 		return false;
 	}
 	if (out->min_horiz_rate_hz > out->max_horiz_rate_hz) {
-		add_failure(edid, "Min horizontal freq > max horizontal freq.");
+		add_failure(edid, "Display Range Limits: Min horizontal freq > max horizontal freq.");
 		return false;
 	}
 
 	out->max_pixel_clock_hz = (int32_t) data[9] * 10 * 1000 * 1000;
 	if (edid->revision == 4 && out->max_pixel_clock_hz == 0) {
-		add_failure(edid, "EDID 1.4 block does not set max dotclock.");
+		add_failure(edid, "Display Range Limits: EDID 1.4 block does not set max dotclock.");
 	}
 
 	support_flags = data[10];
@@ -548,7 +548,7 @@ parse_display_range_limits(struct di_edid *edid,
 	case 0x01:
 		if (edid->revision < 4) {
 			/* Reserved */
-			add_failure(edid, "'Bare Limits' is not allowed for EDID < 1.4.");
+			add_failure(edid, "Display Range Limits: 'Bare Limits' is not allowed for EDID < 1.4.");
 			return false;
 		}
 		out->type = DI_EDID_DISPLAY_RANGE_LIMITS_BARE;
@@ -559,7 +559,7 @@ parse_display_range_limits(struct di_edid *edid,
 	case 0x04:
 		if (edid->revision < 4) {
 			/* Reserved */
-			add_failure(edid, "'CVT' is not allowed for EDID < 1.4.");
+			add_failure(edid, "Display Range Limits: 'CVT' is not allowed for EDID < 1.4.");
 			return false;
 		}
 		out->type = DI_EDID_DISPLAY_RANGE_LIMITS_CVT;
@@ -567,7 +567,9 @@ parse_display_range_limits(struct di_edid *edid,
 	default:
 		/* Reserved */
 		if (edid->revision <= 4) {
-			add_failure(edid, "Unknown range class (0x%02x).", support_flags);
+			add_failure(edid,
+				    "Display Range Limits: Unknown range class (0x%02x).",
+				    support_flags);
 			return false;
 		}
 		out->type = DI_EDID_DISPLAY_RANGE_LIMITS_BARE;
@@ -580,10 +582,10 @@ parse_display_range_limits(struct di_edid *edid,
 		switch (out->type) {
 		case DI_EDID_DISPLAY_RANGE_LIMITS_DEFAULT_GTF:
 		case DI_EDID_DISPLAY_RANGE_LIMITS_SECONDARY_GTF:
-			add_failure(edid, "GTF can't be combined with non-continuous frequencies.");
+			add_failure(edid, "Display Range Limits: GTF can't be combined with non-continuous frequencies.");
 			return false;
 		case DI_EDID_DISPLAY_RANGE_LIMITS_CVT:
-			add_failure(edid, "CVT can't be combined with non-continuous frequencies.");
+			add_failure(edid, "Display Range Limits: CVT can't be combined with non-continuous frequencies.");
 			return false;
 		default:
 			break;
