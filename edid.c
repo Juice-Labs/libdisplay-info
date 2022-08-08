@@ -499,6 +499,7 @@ parse_display_range_limits(struct di_edid *edid,
 	uint8_t support_flags;
 	int max_vert_offset = 0, min_vert_offset = 0;
 	int max_horiz_offset = 0, min_horiz_offset = 0;
+	size_t i;
 
 	offset_flags = data[4];
 	if (edid->revision >= 4) {
@@ -610,7 +611,26 @@ parse_display_range_limits(struct di_edid *edid,
 		}
 	}
 
-	/* TODO: parse video timing data in bytes 11 to 17 */
+	switch (out->type) {
+	case DI_EDID_DISPLAY_RANGE_LIMITS_SECONDARY_GTF:
+	case DI_EDID_DISPLAY_RANGE_LIMITS_CVT:
+		/* TODO: parse video timing data in bytes 11 to 17 */
+		break;
+	case DI_EDID_DISPLAY_RANGE_LIMITS_BARE:
+	case DI_EDID_DISPLAY_RANGE_LIMITS_DEFAULT_GTF:
+		if (data[11] != 0x0A)
+			add_failure(edid,
+				    "Display Range Limits: Byte 11 is 0x%02x instead of 0x0a.",
+				    data[11]);
+		for (i = 12; i < EDID_BYTE_DESCRIPTOR_SIZE; i++) {
+			if (data[i] != 0x20) {
+				add_failure(edid,
+					    "Display Range Limits: Bytes 12-17 must be 0x20.");
+				break;
+			}
+		}
+		break;
+	}
 
 	return true;
 }
