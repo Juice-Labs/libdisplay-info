@@ -496,12 +496,13 @@ parse_display_range_limits(struct di_edid *edid,
 			   struct di_edid_display_range_limits_priv *priv)
 {
 	uint8_t offset_flags, vert_offset_flags, horiz_offset_flags;
-	uint8_t support_flags;
+	uint8_t support_flags, preferred_aspect_ratio;
 	int max_vert_offset = 0, min_vert_offset = 0;
 	int max_horiz_offset = 0, min_horiz_offset = 0;
 	size_t i;
 	struct di_edid_display_range_limits *base;
 	struct di_edid_display_range_limits_secondary_gtf *secondary_gtf;
+	struct di_edid_display_range_limits_cvt *cvt;
 
 	base = &priv->base;
 
@@ -633,7 +634,64 @@ parse_display_range_limits(struct di_edid *edid,
 		base->secondary_gtf = secondary_gtf;
 		break;
 	case DI_EDID_DISPLAY_RANGE_LIMITS_CVT:
-		/* TODO: parse video timing data in bytes 11 to 17 */
+		cvt = &priv->cvt;
+
+		cvt->version = get_bit_range(data[11], 7, 4);
+		cvt->revision = get_bit_range(data[11], 3, 0);
+
+		base->max_pixel_clock_hz -= get_bit_range(data[12], 7, 2) * 250 * 1000;
+		cvt->max_horiz_px = 8 * ((get_bit_range(data[12], 1, 0) << 8) | data[13]);
+
+		cvt->supported_aspect_ratio = data[14];
+		if (get_bit_range(data[14], 2, 0) != 0)
+			add_failure_until(edid, 4,
+					  "Display Range Limits: Reserved bits of byte 14 are non-zero.");
+
+		preferred_aspect_ratio = get_bit_range(data[15], 7, 5);
+		switch (preferred_aspect_ratio) {
+		case 0:
+			cvt->preferred_aspect_ratio = DI_EDID_CVT_ASPECT_RATIO_4_3;
+			break;
+		case 1:
+			cvt->preferred_aspect_ratio = DI_EDID_CVT_ASPECT_RATIO_16_9;
+			break;
+		case 2:
+			cvt->preferred_aspect_ratio = DI_EDID_CVT_ASPECT_RATIO_16_10;
+			break;
+		case 3:
+			cvt->preferred_aspect_ratio = DI_EDID_CVT_ASPECT_RATIO_5_4;
+			break;
+		case 4:
+			cvt->preferred_aspect_ratio = DI_EDID_CVT_ASPECT_RATIO_15_9;
+			break;
+		default:
+			/* Reserved */
+			add_failure_until(edid, 4,
+					  "Display Range Limits: Invalid preferred aspect ratio 0x%02x.",
+					  preferred_aspect_ratio);
+			return false;
+		}
+
+		cvt->standard_blanking = has_bit(data[15], 3);
+		cvt->reduced_blanking = has_bit(data[15], 4);
+
+		if (get_bit_range(data[15], 2, 0) != 0)
+			add_failure_until(edid, 4,
+					  "Display Range Limits: Reserved bits of byte 15 are non-zero.");
+
+		cvt->supported_scaling = data[16];
+		if (get_bit_range(data[16], 3, 0) != 0)
+			add_failure_until(edid, 4,
+					  "Display Range Limits: Reserved bits of byte 16 are non-zero.");
+
+		cvt->preferred_vert_refresh_hz = data[17];
+		if (cvt->preferred_vert_refresh_hz == 0) {
+			add_failure_until(edid, 4,
+					  "Display Range Limits: Preferred vertical refresh rate must be specified.");
+			return false;
+		}
+
+		base->cvt = cvt;
 		break;
 	case DI_EDID_DISPLAY_RANGE_LIMITS_BARE:
 	case DI_EDID_DISPLAY_RANGE_LIMITS_DEFAULT_GTF:

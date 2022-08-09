@@ -558,6 +558,40 @@ struct di_edid_display_range_limits_secondary_gtf {
 	float c, m, k, j;
 };
 
+enum di_edid_cvt_aspect_ratio {
+	DI_EDID_CVT_ASPECT_RATIO_4_3 = 1 << 7,
+	DI_EDID_CVT_ASPECT_RATIO_16_9 = 1 << 6,
+	DI_EDID_CVT_ASPECT_RATIO_16_10 = 1 << 5,
+	DI_EDID_CVT_ASPECT_RATIO_5_4 = 1 << 4,
+	DI_EDID_CVT_ASPECT_RATIO_15_9 = 1 << 3,
+};
+
+enum di_edid_cvt_scaling {
+	DI_EDID_CVT_SCALING_HORIZ_SHRINK = 1 << 7,
+	DI_EDID_CVT_SCALING_HORIZ_STRETCH = 1 << 6,
+	DI_EDID_CVT_SCALING_VERT_SHRINK = 1 << 5,
+	DI_EDID_CVT_SCALING_VERT_STRETCH = 1 << 4,
+};
+
+struct di_edid_display_range_limits_cvt {
+	int32_t version, revision;
+	/* Maximum active pixels per line, zero for no limit */
+	int32_t max_horiz_px;
+	/* Supported aspect ratio, bitfield of enum di_edid_cvt_aspect_ratio */
+	uint32_t supported_aspect_ratio;
+	/* Preferred aspect ratio */
+	enum di_edid_cvt_aspect_ratio preferred_aspect_ratio;
+	/* Whether standard CVT blanking is supported */
+	bool standard_blanking;
+	/* Whether reduced CVT blanking is supported */
+	bool reduced_blanking;
+	/* Supported types of display scaling, bitfield of
+	 * enum di_edid_cvt_scaling */
+	uint32_t supported_scaling;
+	/* Preferred vertical refresh rate, in Hz */
+	int32_t preferred_vert_refresh_hz;
+};
+
 /**
  * EDID display range limits, defined in section 3.10.3.3.1.
  */
@@ -569,13 +603,16 @@ struct di_edid_display_range_limits {
 	int32_t min_horiz_rate_hz, max_horiz_rate_hz;
 
 	/* Maximum pixel clock in Hz, zero if unset, rounded to the nearest
-	 * multiple of 10 MHz */
+	 * multiple of 0.25 MHz if CVT, otherwise to the nearest multiple of
+	 * 10 MHz */
 	int32_t max_pixel_clock_hz;
 
 	enum di_edid_display_range_limits_type type;
 
 	/* For SECONDARY_GTF limits, NULL otherwise */
 	const struct di_edid_display_range_limits_secondary_gtf *secondary_gtf;
+	/* For CVT limits, NULL otherwise */
+	const struct di_edid_display_range_limits_cvt *cvt;
 };
 
 /**

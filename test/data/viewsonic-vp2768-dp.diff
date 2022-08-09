@@ -23,26 +23,7 @@
    Detailed Timing Descriptors:
      DTD 1:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (597 mm x 336 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
-@@ -53,18 +53,6 @@
-     Display Product Serial Number: 'UY5171500307'
-     Display Range Limits:
-       Monitor ranges (CVT): 50-75 Hz V, 24-90 kHz H, max dotclock 250 MHz
--      CVT version 1.1
--      Max active pixels per line: 6400
--      Supported aspect ratios: 4:3 16:9
--      Preferred aspect ratio: 16:9
--      Supports CVT standard blanking
--      Supports CVT reduced blanking
--      Supported display scaling:
--        Horizontal shrink
--        Horizontal stretch
--        Vertical shrink
--        Vertical stretch
--      Preferred vertical refresh: 60 Hz
-     Display Product Name: 'VP2768 Series'
-   Extension blocks: 1
- Checksum: 0xa0
-@@ -79,35 +67,29 @@
+@@ -79,35 +79,29 @@
    Supports YCbCr 4:2:2
    Native detailed modes: 1
    Video Data Block:
@@ -94,7 +75,7 @@
      DTD 4:  1280x720    60.000000 Hz  16:9     45.000 kHz     74.250000 MHz (597 mm x 336 mm)
                   Hfront  110 Hsync  40 Hback  220 Hpol P
                   Vfront    5 Vsync   5 Vback   20 Vpol P
-@@ -117,28 +99,8 @@
+@@ -117,28 +111,14 @@
      DTD 6:  1920x1080   50.000000 Hz  16:9     56.250 kHz    148.500000 MHz (597 mm x 336 mm)
                   Hfront  528 Hsync  44 Hback  148 Hpol P
                   Vfront    4 Vsync   5 Vback   36 Vpol P
@@ -111,17 +92,16 @@
 -  Base EDID: Some timings are out of range of the Monitor Ranges:
 -    Vertical Freq: 24.000 - 75.062 Hz (Monitor: 50.000 - 75.000 Hz)
 -
--Failures:
--
--Block 0, Base EDID:
+ Failures:
+ 
+ Block 0, Base EDID:
 -  Basic Display Parameters & Features: sRGB is signaled, but the chromaticities do not match.
--  Display Range Limits: Reserved bits of byte 14 are non-zero.
--  Display Range Limits: Reserved bits of byte 15 are non-zero.
--  Display Range Limits: Reserved bits of byte 16 are non-zero.
+   Display Range Limits: Reserved bits of byte 14 are non-zero.
+   Display Range Limits: Reserved bits of byte 15 are non-zero.
+   Display Range Limits: Reserved bits of byte 16 are non-zero.
 -Block 1, CTA-861 Extension Block:
 -  Missing VCDB, needed for Set Selectable RGB Quantization to avoid interop issues.
 -EDID:
 -  CTA-861: Native progressive timings are a mix of several resolutions.
 -
--EDID conformity: FAIL
-+EDID conformity: PASS
+ EDID conformity: FAIL

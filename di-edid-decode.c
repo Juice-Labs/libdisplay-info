@@ -341,6 +341,24 @@ display_range_limits_type_name(enum di_edid_display_range_limits_type type)
 	abort();
 }
 
+static const char *
+cvt_aspect_ratio_name(enum di_edid_cvt_aspect_ratio aspect_ratio)
+{
+	switch (aspect_ratio) {
+	case DI_EDID_CVT_ASPECT_RATIO_4_3:
+		return "4:3";
+	case DI_EDID_CVT_ASPECT_RATIO_16_9:
+		return "16:9";
+	case DI_EDID_CVT_ASPECT_RATIO_16_10:
+		return "16:10";
+	case DI_EDID_CVT_ASPECT_RATIO_5_4:
+		return "5:4";
+	case DI_EDID_CVT_ASPECT_RATIO_15_9:
+		return "15:9";
+	}
+	abort();
+}
+
 static void
 print_display_desc(const struct di_edid *edid,
 		   const struct di_edid_display_descriptor *desc)
@@ -396,6 +414,51 @@ print_display_desc(const struct di_edid *edid,
 			printf("        M: %u%%/kHz\n", (int) range_limits->secondary_gtf->m);
 			printf("        K: %u\n", (int) range_limits->secondary_gtf->k);
 			printf("        J: %.1f%%\n", range_limits->secondary_gtf->j);
+			break;
+		case DI_EDID_DISPLAY_RANGE_LIMITS_CVT:
+			printf("      CVT version %d.%d\n",
+			       range_limits->cvt->version,
+			       range_limits->cvt->revision);
+
+			if (range_limits->cvt->max_horiz_px != 0)
+				printf("      Max active pixels per line: %d\n",
+				       range_limits->cvt->max_horiz_px);
+
+			printf("      Supported aspect ratios:");
+			if (range_limits->cvt->supported_aspect_ratio & DI_EDID_CVT_ASPECT_RATIO_4_3)
+				printf(" 4:3");
+			if (range_limits->cvt->supported_aspect_ratio & DI_EDID_CVT_ASPECT_RATIO_16_9)
+				printf(" 16:9");
+			if (range_limits->cvt->supported_aspect_ratio & DI_EDID_CVT_ASPECT_RATIO_16_10)
+				printf(" 16:10");
+			if (range_limits->cvt->supported_aspect_ratio & DI_EDID_CVT_ASPECT_RATIO_5_4)
+				printf(" 5:4");
+			if (range_limits->cvt->supported_aspect_ratio & DI_EDID_CVT_ASPECT_RATIO_15_9)
+				printf(" 15:9");
+			printf("\n");
+
+			printf("      Preferred aspect ratio: %s\n",
+			       cvt_aspect_ratio_name(range_limits->cvt->preferred_aspect_ratio));
+
+			if (range_limits->cvt->standard_blanking)
+				printf("      Supports CVT standard blanking\n");
+			if (range_limits->cvt->reduced_blanking)
+				printf("      Supports CVT reduced blanking\n");
+
+			if (range_limits->cvt->supported_scaling != 0) {
+				printf("      Supported display scaling:\n");
+				if (range_limits->cvt->supported_scaling & DI_EDID_CVT_SCALING_HORIZ_SHRINK)
+					printf("        Horizontal shrink\n");
+				if (range_limits->cvt->supported_scaling & DI_EDID_CVT_SCALING_HORIZ_STRETCH)
+					printf("        Horizontal stretch\n");
+				if (range_limits->cvt->supported_scaling & DI_EDID_CVT_SCALING_VERT_SHRINK)
+					printf("        Vertical shrink\n");
+				if (range_limits->cvt->supported_scaling & DI_EDID_CVT_SCALING_VERT_STRETCH)
+					printf("        Vertical stretch\n");
+			}
+
+			printf("      Preferred vertical refresh: %d Hz\n",
+			       range_limits->cvt->preferred_vert_refresh_hz);
 			break;
 		default:
 			break;

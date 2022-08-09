@@ -84,6 +84,7 @@ struct di_edid {
 struct di_edid_display_range_limits_priv {
 	struct di_edid_display_range_limits base;
 	struct di_edid_display_range_limits_secondary_gtf secondary_gtf;
+	struct di_edid_display_range_limits_cvt cvt;
 };
 
 struct di_edid_display_descriptor {
