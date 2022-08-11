@@ -3,12 +3,28 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <getopt.h>
 
 #include <libdisplay-info/cta.h>
 #include <libdisplay-info/edid.h>
 #include <libdisplay-info/info.h>
 
 static size_t num_detailed_timing_defs = 0;
+
+static const struct option long_options[] = {
+	{ "help", no_argument, 0, 'h' },
+	{ 0, 0, 0, 0 }
+};
+
+static void usage(void)
+{
+	fprintf(stderr, "Usage:		di-edid-decode  <options> [in]\n"
+			" [in]:		EDID file to parse. Read from standard input (stdin),\n"
+			"		if none given.\n"
+			"Example :	di-edid-decode /sys/class/drm/card0-DP-2/edid \n"
+			"\nOptions:\n"
+			"-h, --help	display the help message\n");
+}
 
 static const char *
 standard_timing_aspect_ratio_name(enum di_edid_standard_timing_aspect_ratio aspect_ratio)
@@ -626,8 +642,25 @@ main(int argc, char *argv[])
 	const struct di_edid_ext *const *exts;
 	const char *failure_msg;
 	size_t i;
+	int opt;
 
 	in = stdin;
+	while (1) {
+		int option_index = 0;
+		opt = getopt_long(argc, argv, "h", long_options, &option_index);
+		if (opt == -1)
+			break;
+
+		switch (opt) {
+		case 'h':
+			usage();
+			return -1;
+		default:
+			usage();
+			return -1;
+		}
+	}
+
 	if (argc > 1) {
 		in = fopen(argv[1], "r");
 		if (!in) {
