@@ -6,6 +6,7 @@
 #include <getopt.h>
 
 #include <libdisplay-info/cta.h>
+#include <libdisplay-info/dmt.h>
 #include <libdisplay-info/edid.h>
 #include <libdisplay-info/displayid.h>
 #include <libdisplay-info/info.h>
@@ -38,11 +39,11 @@ standard_timing_aspect_ratio_name(enum di_edid_standard_timing_aspect_ratio aspe
 	case DI_EDID_STANDARD_TIMING_16_10:
 		return "16:10";
 	case DI_EDID_STANDARD_TIMING_4_3:
-		return "4:3";
+		return " 4:3 ";
 	case DI_EDID_STANDARD_TIMING_5_4:
-		return "5:4";
+		return " 5:4 ";
 	case DI_EDID_STANDARD_TIMING_16_9:
-		return "16:9";
+		return "16:9 ";
 	}
 	abort();
 }
@@ -51,17 +52,34 @@ static void
 print_standard_timing(const struct di_edid_standard_timing *t)
 {
 	int32_t vert_video;
-	uint8_t dmt_id;
+	const struct di_dmt_timing *dmt;
+	int hbl, vbl, horiz_total, vert_total;
+	double refresh, horiz_freq_hz, pixel_clock_mhz;
 
 	vert_video = di_edid_standard_timing_get_vert_video(t);
-	dmt_id = di_edid_standard_timing_get_dmt_id(t);
+	dmt = di_edid_standard_timing_get_dmt(t);
 
-	/* TODO: GTF and CVT timings */
+	if (dmt) {
+		hbl = dmt->horiz_blank - 2 * dmt->horiz_border;
+		vbl = dmt->vert_blank - 2 * dmt->vert_border;
+		horiz_total = dmt->horiz_video + hbl;
+		vert_total = dmt->vert_video + vbl;
+		refresh = (double) dmt->pixel_clock_hz / (horiz_total * vert_total);
+		horiz_freq_hz = (double) dmt->pixel_clock_hz / horiz_total;
+		pixel_clock_mhz = (double) dmt->pixel_clock_hz / (1000 * 1000);
+	} else {
+		/* TODO: GTF and CVT timings */
+		refresh = 0;
+		horiz_freq_hz = 0;
+		pixel_clock_mhz = 0;
+	}
+
 	printf("    ");
-	printf("DMT 0x%02x:", dmt_id);
+	printf("DMT 0x%02x:", dmt ? dmt->dmt_id : 0);
 	printf(" %5dx%-5d", t->horiz_video, vert_video);
-	printf(" %10.6f Hz", (float) t->refresh_rate_hz);
-	printf(" %s", standard_timing_aspect_ratio_name(t->aspect_ratio));
+	printf(" %10.6f Hz", refresh);
+	printf("  %s ", standard_timing_aspect_ratio_name(t->aspect_ratio));
+	printf(" %8.3f kHz %13.6f MHz", horiz_freq_hz / 1000, pixel_clock_mhz);
 	printf("\n");
 }
 

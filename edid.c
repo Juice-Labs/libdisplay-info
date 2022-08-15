@@ -1186,8 +1186,8 @@ di_edid_standard_timing_get_vert_video(const struct di_edid_standard_timing *t)
 	abort(); /* unreachable */
 }
 
-uint8_t
-di_edid_standard_timing_get_dmt_id(const struct di_edid_standard_timing *t)
+const struct di_dmt_timing *
+di_edid_standard_timing_get_dmt(const struct di_edid_standard_timing *t)
 {
 	int32_t vert_video;
 	size_t i;
@@ -1202,7 +1202,7 @@ di_edid_standard_timing_get_dmt_id(const struct di_edid_standard_timing *t)
 		    && dmt->vert_video == vert_video
 		    && dmt->refresh_rate_hz == (float)t->refresh_rate_hz
 		    && dmt->edid_std_id != 0) {
-			return dmt->dmt_id;
+			return dmt;
 		}
 	}
 
