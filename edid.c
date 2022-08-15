@@ -601,6 +601,30 @@ parse_display_range_limits(struct di_edid *edid,
 }
 
 static bool
+parse_standard_timings_descriptor(struct di_edid *edid,
+				  const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
+				  struct di_edid_display_descriptor *desc)
+{
+	struct di_edid_standard_timing *t;
+	size_t i;
+	const uint8_t *timing_data;
+
+	for (i = 0; i < EDID_MAX_DESCRIPTOR_STANDARD_TIMING_COUNT; i++) {
+		timing_data = &data[5 + i * EDID_STANDARD_TIMING_SIZE];
+		if (!parse_standard_timing(edid, timing_data, &t))
+			return false;
+		if (t)
+			desc->standard_timings[desc->standard_timings_len++] = t;
+	}
+
+	if (data[17] != 0x0A)
+		add_failure_until(edid, 4,
+				  "Standard Timing Identifications: Last byte must be a line feed.");
+
+	return true;
+}
+
+static bool
 parse_byte_descriptor(struct di_edid *edid,
 		      const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
 {
@@ -656,8 +680,13 @@ parse_byte_descriptor(struct di_edid *edid,
 			return true;
 		}
 		break;
-	case DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT:
 	case DI_EDID_DISPLAY_DESCRIPTOR_STD_TIMING_IDS:
+		if (!parse_standard_timings_descriptor(edid, data, desc)) {
+			free(desc);
+			return false;
+		}
+		break;
+	case DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT:
 	case DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA:
 	case DI_EDID_DISPLAY_DESCRIPTOR_CVT_TIMING_CODES:
 	case DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III:
@@ -827,6 +856,23 @@ _di_edid_parse(const void *data, size_t size, FILE *failure_msg_file)
 	return edid;
 }
 
+static void
+destroy_display_descriptor(struct di_edid_display_descriptor *desc)
+{
+	size_t i;
+
+	switch (desc->tag) {
+	case DI_EDID_DISPLAY_DESCRIPTOR_STD_TIMING_IDS:
+		for (i = 0; i < desc->standard_timings_len; i++) {
+			free(desc->standard_timings[i]);
+		}
+		break;
+	default:
+		break; /* Nothing to do */
+	}
+	free(desc);
+}
+
 void
 _di_edid_destroy(struct di_edid *edid)
 {
@@ -842,7 +888,7 @@ _di_edid_destroy(struct di_edid *edid)
 	}
 
 	for (i = 0; i < edid->display_descriptors_len; i++) {
-		free(edid->display_descriptors[i]);
+		destroy_display_descriptor(edid->display_descriptors[i]);
 	}
 
 	for (i = 0; edid->exts[i] != NULL; i++) {
@@ -1023,6 +1069,15 @@ di_edid_display_descriptor_get_range_limits(const struct di_edid_display_descrip
 		return NULL;
 	}
 	return &desc->range_limits;
+}
+
+const struct di_edid_standard_timing *const *
+di_edid_display_descriptor_get_standard_timings(const struct di_edid_display_descriptor *desc)
+{
+	if (desc->tag != DI_EDID_DISPLAY_DESCRIPTOR_STD_TIMING_IDS) {
+		return NULL;
+	}
+	return (const struct di_edid_standard_timing *const *) desc->standard_timings;
 }
 
 const struct di_edid_ext *const *

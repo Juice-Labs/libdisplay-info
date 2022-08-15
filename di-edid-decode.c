@@ -348,6 +348,8 @@ print_display_desc(const struct di_edid *edid,
 	const char *tag_name, *str;
 	const struct di_edid_display_range_limits *range_limits;
 	enum di_edid_display_range_limits_type range_limits_type;
+	const struct di_edid_standard_timing *const *standard_timings;
+	size_t i;
 
 	tag = di_edid_display_descriptor_get_tag(desc);
 	tag_name = display_desc_tag_name(tag);
@@ -381,6 +383,14 @@ print_display_desc(const struct di_edid *edid,
 		if (range_limits->max_pixel_clock_hz != 0) {
 			printf(", max dotclock %d MHz",
 			       range_limits->max_pixel_clock_hz / (1000 * 1000));
+		}
+		break;
+	case DI_EDID_DISPLAY_DESCRIPTOR_STD_TIMING_IDS:
+		standard_timings = di_edid_display_descriptor_get_standard_timings(desc);
+
+		for (i = 0; standard_timings[i] != NULL; i++) {
+			printf("  ");
+			print_standard_timing(standard_timings[i]);
 		}
 		break;
 	default:

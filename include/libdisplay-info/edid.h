@@ -564,6 +564,17 @@ const struct di_edid_display_range_limits *
 di_edid_display_descriptor_get_range_limits(const struct di_edid_display_descriptor *desc);
 
 /**
+ * Get a standard timing list from an EDID display descriptor.
+ *
+ * The returned array is NULL-terminated.
+ *
+ * Returns NULL if the display descriptor tag isn't
+ * DI_EDID_DISPLAY_DESCRIPTOR_STD_TIMING_IDS.
+ */
+const struct di_edid_standard_timing *const *
+di_edid_display_descriptor_get_standard_timings(const struct di_edid_display_descriptor *desc);
+
+/**
  * Get a list of EDID extensions.
  *
  * The returned array is NULL-terminated.

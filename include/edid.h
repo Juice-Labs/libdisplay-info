@@ -30,6 +30,11 @@
  * The size of an EDID byte descriptor, defined in section 3.10.
  */
 #define EDID_BYTE_DESCRIPTOR_SIZE 18
+/**
+ * The maximum number of standard timings in an EDID display descriptor, defined
+ * in section 3.10.3.6.
+ */
+#define EDID_MAX_DESCRIPTOR_STANDARD_TIMING_COUNT 6
 
 struct di_edid {
 	struct di_edid_vendor_product vendor_product;
@@ -74,6 +79,9 @@ struct di_edid_display_descriptor {
 	char str[14];
 	/* Used for RANGE_LIMITS */
 	struct di_edid_display_range_limits range_limits;
+	/* Used for STD_TIMING_IDS, NULL-terminated */
+	struct di_edid_standard_timing *standard_timings[EDID_MAX_DESCRIPTOR_STANDARD_TIMING_COUNT + 1];
+	size_t standard_timings_len;
 };
 
 struct di_edid_ext {
