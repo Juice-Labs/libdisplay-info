@@ -19,6 +19,16 @@ struct di_dmt_timing {
 	int32_t horiz_video, vert_video;
 	/* Field Refresh Rate in Hz */
 	float refresh_rate_hz;
+	/* Pixel clock in Hz */
+	int32_t pixel_clock_hz;
+	/* Horizontal/Vertical Blanking in pixels/lines */
+	int32_t horiz_blank, vert_blank;
+	/* Horizontal/Vertical Front Porch in pixels/lines */
+	int32_t horiz_front_porch, vert_front_porch;
+	/* Horizontal/Vertical Sync Pulse Width in pixels/lines */
+	int32_t horiz_sync_pulse, vert_sync_pulse;
+	/* Horizontal/Vertical Border in pixels/lines */
+	int32_t horiz_border, vert_border;
 };
 
 extern const struct di_dmt_timing _di_dmt_timings[];

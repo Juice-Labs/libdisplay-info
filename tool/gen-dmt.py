@@ -22,6 +22,16 @@ def parse_hex_list(s):
         assert(0 <= int(b, 16) <= 255)
     return "0x" + "".join(l)
 
+def parse_pixel_param(l):
+    l = l[2].split(" ")
+    assert(len(l) >= 2 and l[1] == "Pixels")
+    return int(l[0])
+
+def parse_line_param(l):
+    l = l[1].split(" ")
+    assert(len(l) >= 2 and l[1] == "lines")
+    return int(l[0])
+
 def parse_timing(page):
     lines = [l.strip() for l in page.splitlines()]
     if len(lines) < 6:
@@ -73,6 +83,18 @@ def parse_timing(page):
     edid_std_id = parse_hex_list(ids["Std. 2 Byte Code"])
     cvt_id = parse_hex_list(ids["CVT 3 Byte Code"])
 
+    pixel_clock_mhz = float(params["Pixel Clock"][0].split(";")[0])
+    horiz_blank = parse_pixel_param(params["Hor Blank Time"])
+    horiz_front_porch = parse_pixel_param(params["// H Front Porch"])
+    horiz_sync_pulse = parse_pixel_param(params["Hor Sync Time"])
+    horiz_border = parse_pixel_param(params["// H Right Border"])
+    assert(horiz_border == parse_pixel_param(params["// H Left Border"]))
+    vert_blank = parse_line_param(params["Ver Blank Time"])
+    vert_front_porch = parse_line_param(params["// V Front Porch"])
+    vert_sync_pulse = parse_line_param(params["Ver Sync Time"])
+    vert_border = parse_line_param(params["// V Bottom Border"])
+    assert(vert_border == parse_line_param(params["// V Top Border"]))
+
     return {
         "dmt_id": dmt_id,
         "edid_std_id": 0 if edid_std_id is None else edid_std_id,
@@ -80,6 +102,15 @@ def parse_timing(page):
         "horiz_video": horiz_video,
         "vert_video": vert_video,
         "refresh_rate_hz": refresh_rate_hz,
+        "pixel_clock_hz": int(pixel_clock_mhz * 1000 * 1000),
+        "horiz_blank": horiz_blank,
+        "horiz_front_porch": horiz_front_porch,
+        "horiz_sync_pulse": horiz_sync_pulse,
+        "horiz_border": horiz_border,
+        "vert_blank": vert_blank,
+        "vert_front_porch": vert_front_porch,
+        "vert_sync_pulse": vert_sync_pulse,
+        "vert_border": vert_border,
     }
 
 if len(sys.argv) != 2:
