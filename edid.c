@@ -321,9 +321,12 @@ parse_established_timings_i_ii(struct di_edid *edid,
 
 static bool
 parse_standard_timing(struct di_edid *edid,
-		      const uint8_t data[static EDID_STANDARD_TIMING_SIZE])
+		      const uint8_t data[static EDID_STANDARD_TIMING_SIZE],
+		      struct di_edid_standard_timing **out)
 {
 	struct di_edid_standard_timing *t;
+
+	*out = NULL;
 
 	if (data[0] == 0x01 && data[1] == 0x01) {
 		/* Unused */
@@ -345,7 +348,7 @@ parse_standard_timing(struct di_edid *edid,
 	t->aspect_ratio = get_bit_range(data[1], 7, 6);
 	t->refresh_rate_hz = (int32_t) get_bit_range(data[1], 5, 0) + 60;
 
-	edid->standard_timings[edid->standard_timings_len++] = t;
+	*out = t;
 	return true;
 }
 
@@ -737,6 +740,7 @@ _di_edid_parse(const void *data, size_t size, FILE *failure_msg_file)
 	int version, revision;
 	size_t exts_len, i;
 	const uint8_t *standard_timing_data, *byte_desc_data, *ext_data;
+	struct di_edid_standard_timing *standard_timing;
 
 	if (size < EDID_BLOCK_SIZE ||
 	    size > EDID_MAX_BLOCK_COUNT * EDID_BLOCK_SIZE ||
@@ -792,9 +796,13 @@ _di_edid_parse(const void *data, size_t size, FILE *failure_msg_file)
 	for (i = 0; i < EDID_MAX_STANDARD_TIMING_COUNT; i++) {
 		standard_timing_data = (const uint8_t *) data
 				       + 0x26 + i * EDID_STANDARD_TIMING_SIZE;
-		if (!parse_standard_timing(edid, standard_timing_data)) {
+		if (!parse_standard_timing(edid, standard_timing_data,
+					   &standard_timing)) {
 			_di_edid_destroy(edid);
 			return NULL;
+		}
+		if (standard_timing) {
+			edid->standard_timings[edid->standard_timings_len++] = standard_timing;
 		}
 	}
 
