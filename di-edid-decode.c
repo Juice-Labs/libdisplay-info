@@ -174,11 +174,11 @@ detailed_timing_def_sync_serrations(const struct di_edid_detailed_timing_def *de
 {
 	switch (def->signal_type) {
 	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_ANALOG_COMPOSITE:
-		return def->analog_composite.sync_serrations;
+		return def->analog_composite->sync_serrations;
 	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_BIPOLAR_ANALOG_COMPOSITE:
-		return def->bipolar_analog_composite.sync_serrations;
+		return def->bipolar_analog_composite->sync_serrations;
 	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_COMPOSITE:
-		return def->digital_composite.sync_serrations;
+		return def->digital_composite->sync_serrations;
 	default:
 		return false;
 	}
@@ -189,9 +189,9 @@ detailed_timing_def_sync_on_green(const struct di_edid_detailed_timing_def *def)
 {
 	switch (def->signal_type) {
 	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_ANALOG_COMPOSITE:
-		return def->analog_composite.sync_on_green;
+		return def->analog_composite->sync_on_green;
 	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_BIPOLAR_ANALOG_COMPOSITE:
-		return def->bipolar_analog_composite.sync_on_green;
+		return def->bipolar_analog_composite->sync_on_green;
 	default:
 		return false;
 	}
@@ -275,10 +275,10 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def)
 		printf(" Hborder %d", def->horiz_border);
 	}
 	if (def->signal_type == DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_COMPOSITE) {
-		polarity = def->digital_composite.sync_horiz_polarity;
+		polarity = def->digital_composite->sync_horiz_polarity;
 		printf(" Hpol %s", detailed_timing_def_sync_polarity_name(polarity));
 	} else if (def->signal_type == DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_SEPARATE) {
-		polarity = def->digital_separate.sync_horiz_polarity;
+		polarity = def->digital_separate->sync_horiz_polarity;
 		printf(" Hpol %s", detailed_timing_def_sync_polarity_name(polarity));
 	}
 	printf("\n");
@@ -290,7 +290,7 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def)
 		printf(" Vborder %d", def->vert_border);
 	}
 	if (def->signal_type == DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_SEPARATE) {
-		polarity = def->digital_separate.sync_vert_polarity;
+		polarity = def->digital_separate->sync_vert_polarity;
 		printf(" Vpol %s", detailed_timing_def_sync_polarity_name(polarity));
 	}
 	printf("\n");

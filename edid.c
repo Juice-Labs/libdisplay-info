@@ -352,17 +352,24 @@ parse_standard_timing(struct di_edid *edid,
 	return true;
 }
 
-struct di_edid_detailed_timing_def *
+struct di_edid_detailed_timing_def_priv *
 _di_edid_parse_detailed_timing_def(const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
 {
+	struct di_edid_detailed_timing_def_priv *priv;
 	struct di_edid_detailed_timing_def *def;
+	struct di_edid_detailed_timing_analog_composite *analog_composite;
+	struct di_edid_detailed_timing_bipolar_analog_composite *bipolar_analog_composite;
+	struct di_edid_detailed_timing_digital_composite *digital_composite;
+	struct di_edid_detailed_timing_digital_separate *digital_separate;
 	int raw;
 	uint8_t flags, stereo_hi, stereo_lo;
 
-	def = calloc(1, sizeof(*def));
-	if (!def) {
+	priv = calloc(1, sizeof(*priv));
+	if (!priv) {
 		return NULL;
 	}
+
+	def = &priv->base;
 
 	raw = (data[1] << 8) | data[0];
 	def->pixel_clock_hz = raw * 10 * 1000;
@@ -430,24 +437,32 @@ _di_edid_parse_detailed_timing_def(const uint8_t data[static EDID_BYTE_DESCRIPTO
 
 	switch (def->signal_type) {
 	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_ANALOG_COMPOSITE:
-		def->analog_composite.sync_serrations = has_bit(flags, 2);
-		def->analog_composite.sync_on_green = has_bit(flags, 1);
+		analog_composite = &priv->analog_composite;
+		analog_composite->sync_serrations = has_bit(flags, 2);
+		analog_composite->sync_on_green = has_bit(flags, 1);
+		def->analog_composite = analog_composite;
 		break;
 	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_BIPOLAR_ANALOG_COMPOSITE:
-		def->bipolar_analog_composite.sync_serrations = has_bit(flags, 2);
-		def->bipolar_analog_composite.sync_on_green = has_bit(flags, 1);
+		bipolar_analog_composite = &priv->bipolar_analog_composite;
+		bipolar_analog_composite->sync_serrations = has_bit(flags, 2);
+		bipolar_analog_composite->sync_on_green = has_bit(flags, 1);
+		def->bipolar_analog_composite = bipolar_analog_composite;
 		break;
 	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_COMPOSITE:
-		def->digital_composite.sync_serrations = has_bit(flags, 2);
-		def->digital_composite.sync_horiz_polarity = has_bit(flags, 1);
+		digital_composite = &priv->digital_composite;
+		digital_composite->sync_serrations = has_bit(flags, 2);
+		digital_composite->sync_horiz_polarity = has_bit(flags, 1);
+		def->digital_composite = digital_composite;
 		break;
 	case DI_EDID_DETAILED_TIMING_DEF_SIGNAL_DIGITAL_SEPARATE:
-		def->digital_separate.sync_vert_polarity = has_bit(flags, 2);
-		def->digital_separate.sync_horiz_polarity = has_bit(flags, 1);
+		digital_separate = &priv->digital_separate;
+		digital_separate->sync_vert_polarity = has_bit(flags, 2);
+		digital_separate->sync_horiz_polarity = has_bit(flags, 1);
+		def->digital_separate = digital_separate;
 		break;
 	}
 
-	return def;
+	return priv;
 }
 
 static bool
@@ -629,7 +644,7 @@ parse_byte_descriptor(struct di_edid *edid,
 		      const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
 {
 	struct di_edid_display_descriptor *desc;
-	struct di_edid_detailed_timing_def *detailed_timing_def;
+	struct di_edid_detailed_timing_def_priv *detailed_timing_def;
 	uint8_t tag;
 	char *newline;
 

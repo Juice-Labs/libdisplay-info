@@ -29,7 +29,7 @@ struct di_edid_cta {
 	size_t data_blocks_len;
 
 	/* NULL-terminated */
-	struct di_edid_detailed_timing_def *detailed_timing_defs[EDID_CTA_MAX_DETAILED_TIMING_DEFS + 1];
+	struct di_edid_detailed_timing_def_priv *detailed_timing_defs[EDID_CTA_MAX_DETAILED_TIMING_DEFS + 1];
 	size_t detailed_timing_defs_len;
 
 	struct di_logger *logger;

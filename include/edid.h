@@ -36,6 +36,14 @@
  */
 #define EDID_MAX_DESCRIPTOR_STANDARD_TIMING_COUNT 6
 
+struct di_edid_detailed_timing_def_priv {
+	struct di_edid_detailed_timing_def base;
+	struct di_edid_detailed_timing_analog_composite analog_composite;
+	struct di_edid_detailed_timing_bipolar_analog_composite bipolar_analog_composite;
+	struct di_edid_detailed_timing_digital_composite digital_composite;
+	struct di_edid_detailed_timing_digital_separate digital_separate;
+};
+
 struct di_edid {
 	struct di_edid_vendor_product vendor_product;
 	int version, revision;
@@ -58,7 +66,7 @@ struct di_edid {
 	size_t standard_timings_len;
 
 	/* NULL-terminated */
-	struct di_edid_detailed_timing_def *detailed_timing_defs[EDID_BYTE_DESCRIPTOR_COUNT + 1];
+	struct di_edid_detailed_timing_def_priv *detailed_timing_defs[EDID_BYTE_DESCRIPTOR_COUNT + 1];
 	size_t detailed_timing_defs_len;
 
 	/* NULL-terminated */
@@ -109,7 +117,7 @@ _di_edid_destroy(struct di_edid *edid);
 /**
  * Parse an EDID detailed timing definition.
  */
-struct di_edid_detailed_timing_def *
+struct di_edid_detailed_timing_def_priv *
 _di_edid_parse_detailed_timing_def(const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE]);
 
 #endif

@@ -263,7 +263,7 @@ _di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size,
 	uint8_t flags, dtd_start;
 	uint8_t data_block_header, data_block_tag, data_block_size;
 	size_t i;
-	struct di_edid_detailed_timing_def *detailed_timing_def;
+	struct di_edid_detailed_timing_def_priv *detailed_timing_def;
 
 	assert(size == 128);
 	assert(data[0] == 0x02);
