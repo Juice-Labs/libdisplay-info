@@ -22,7 +22,7 @@ follows the [freedesktop.org Contributor Covenant].
 
 libdisplay-info is built using [Meson]. It has no dependencies.
 
-    meson build/
+    meson setup build/
     ninja -C build/
 
 ## Testing
