@@ -18,7 +18,7 @@ foreach tc : test_cases
 	test(
 		tc,
 		test_harness,
-		args: [files('data/' + tc)],
+		args: [files('data/' + tc + '.edid')],
 		env: [
 			'REF_EDID_DECODE=' + ref_edid_decode.full_path(),
 			'DI_EDID_DECODE=' + di_edid_decode.full_path(),
