@@ -15,6 +15,6 @@ for edid in "$@"; do
 	if ! diff -u --label ref "$workdir/ref" --label di "$workdir/di" >"$workdir/diff"; then
 		cp "$workdir/diff" "$edid.diff"
 	else
-		rm "$edid.diff"
+		rm -f "$edid.diff"
 	fi
 done
