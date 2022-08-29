@@ -44,6 +44,47 @@ add_failure_until(struct di_edid_cta *cta, int revision, const char fmt[], ...)
 }
 
 static bool
+parse_video_block(struct di_edid_cta *cta, struct di_cta_video_block *video,
+		  const uint8_t *data, size_t size)
+{
+	size_t i;
+	uint8_t raw;
+	struct di_cta_svd svd, *svd_ptr;
+
+	if (size == 0)
+		add_failure(cta, "Video Data Block: Empty Data Block");
+
+	for (i = 0; i < size; i++) {
+		raw = data[i];
+
+		if (raw == 0 || raw == 128 || raw >= 254) {
+			/* Reserved */
+			add_failure_until(cta, 3,
+					  "Video Data Block: Unknown VIC %" PRIu8 ".",
+					  raw);
+			continue;
+		} else if (raw <= 127 || raw >= 193) {
+			svd = (struct di_cta_svd) {
+				.vic = raw,
+			};
+		} else {
+			svd = (struct di_cta_svd) {
+				.vic = get_bit_range(raw, 6, 0),
+				.native = true,
+			};
+		}
+
+		svd_ptr = calloc(1, sizeof(*svd_ptr));
+		if (!svd_ptr)
+			return false;
+		*svd_ptr = svd;
+		video->svds[video->svds_len++] = svd_ptr;
+	}
+
+	return true;
+}
+
+static bool
 parse_colorimetry_block(struct di_edid_cta *cta,
 			struct di_cta_colorimetry_block *colorimetry,
 			const uint8_t *data, size_t size)
@@ -133,6 +174,25 @@ parse_hdr_static_metadata_block(struct di_edid_cta *cta,
 	return true;
 }
 
+static void
+destroy_data_block(struct di_cta_data_block *data_block)
+{
+	size_t i;
+	struct di_cta_video_block *video;
+
+	switch (data_block->tag) {
+	case DI_CTA_DATA_BLOCK_VIDEO:
+		video = &data_block->video;
+		for (i = 0; i < video->svds_len; i++)
+			free(video->svds[i]);
+		break;
+	default:
+		break; /* Nothing to do */
+	}
+
+	free(data_block);
+}
+
 static bool
 parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, size_t size)
 {
@@ -151,6 +211,8 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 		break;
 	case 2:
 		tag = DI_CTA_DATA_BLOCK_VIDEO;
+		if (!parse_video_block(cta, &data_block->video, data, size))
+			goto error;
 		break;
 	case 3:
 		/* Vendor-Specific Data Block */
@@ -257,6 +319,10 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 skip:
 	free(data_block);
 	return true;
+
+error:
+	destroy_data_block(data_block);
+	return false;
 }
 
 bool
@@ -352,7 +418,7 @@ _di_edid_cta_finish(struct di_edid_cta *cta)
 	size_t i;
 
 	for (i = 0; i < cta->data_blocks_len; i++) {
-		free(cta->data_blocks[i]);
+		destroy_data_block(cta->data_blocks[i]);
 	}
 
 	for (i = 0; i < cta->detailed_timing_defs_len; i++) {
@@ -382,6 +448,15 @@ enum di_cta_data_block_tag
 di_cta_data_block_get_tag(const struct di_cta_data_block *block)
 {
 	return block->tag;
+}
+
+const struct di_cta_svd *const *
+di_cta_data_block_get_svds(const struct di_cta_data_block *block)
+{
+	if (block->tag != DI_CTA_DATA_BLOCK_VIDEO) {
+		return NULL;
+	}
+	return (const struct di_cta_svd *const *) block->video.svds;
 }
 
 const struct di_cta_colorimetry_block *

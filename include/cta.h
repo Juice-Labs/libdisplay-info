@@ -19,6 +19,13 @@
  * 18 bytes.
  */
 #define EDID_CTA_MAX_DETAILED_TIMING_DEFS 6
+/**
+ * The maximum number of SVD entries in a video data block.
+ *
+ * Each data block has its size described in a 5-bit field, so its maximum size
+ * is 63 bytes, and each SVD uses 1 byte.
+ */
+#define EDID_CTA_MAX_VIDEO_BLOCK_ENTRIES 63
 
 struct di_edid_cta {
 	int revision;
@@ -41,9 +48,17 @@ struct di_cta_hdr_static_metadata_block_priv {
 	struct di_cta_hdr_static_metadata_block_descriptors descriptors;
 };
 
+struct di_cta_video_block {
+	/* NULL-terminated */
+	struct di_cta_svd *svds[EDID_CTA_MAX_VIDEO_BLOCK_ENTRIES + 1];
+	size_t svds_len;
+};
+
 struct di_cta_data_block {
 	enum di_cta_data_block_tag tag;
 
+	/* Used for DI_CTA_DATA_BLOCK_VIDEO */
+	struct di_cta_video_block video;
 	/* Used for DI_CTA_DATA_BLOCK_COLORIMETRY */
 	struct di_cta_colorimetry_block colorimetry;
 	/* Used for DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA */

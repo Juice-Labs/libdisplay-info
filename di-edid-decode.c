@@ -474,6 +474,24 @@ display_color_type_name(enum di_edid_display_color_type type)
 	abort();
 }
 
+static void
+printf_cta_svds(const struct di_cta_svd *const *svds)
+{
+	size_t i;
+	const struct di_cta_svd *svd;
+
+	for (i = 0; svds[i] != NULL; i++) {
+		svd = svds[i];
+
+		printf("    VIC %3" PRIu8, svd->vic);
+		if (svd->native)
+			printf(" (native)");
+		printf("\n");
+
+		// TODO: print detailed mode info
+	}
+}
+
 static uint8_t
 encode_max_luminance(float max)
 {
@@ -580,6 +598,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_data_block *const *data_blocks;
 	const struct di_cta_data_block *data_block;
 	enum di_cta_data_block_tag data_block_tag;
+	const struct di_cta_svd *const *svds;
 	const struct di_cta_colorimetry_block *colorimetry;
 	const struct di_cta_hdr_static_metadata_block *hdr_static_metadata;
 	size_t i;
@@ -610,6 +629,10 @@ print_cta(const struct di_edid_cta *cta)
 		printf("  %s:\n", cta_data_block_tag_name(data_block_tag));
 
 		switch (data_block_tag) {
+		case DI_CTA_DATA_BLOCK_VIDEO:
+			svds = di_cta_data_block_get_svds(data_block);
+			printf_cta_svds(svds);
+			break;
 		case DI_CTA_DATA_BLOCK_COLORIMETRY:
 			colorimetry = di_cta_data_block_get_colorimetry(data_block);
 			if (colorimetry->xvycc_601)

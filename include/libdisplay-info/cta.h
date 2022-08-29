@@ -200,6 +200,26 @@ const struct di_cta_hdr_static_metadata_block *
 di_cta_data_block_get_hdr_static_metadata(const struct di_cta_data_block *block);
 
 /**
+ * A Short Video Descriptor (SVD).
+ */
+struct di_cta_svd {
+	/* Video Identification Code (VIC) */
+	uint8_t vic;
+	/* Whether this is a native video format */
+	bool native;
+};
+
+/**
+ * Get an array of short video descriptors from a CTA data block.
+ *
+ * Returns NULL if the data block tag is not DI_CTA_DATA_BLOCK_VIDEO.
+ *
+ * The returned array is NULL-terminated.
+ */
+const struct di_cta_svd *const *
+di_cta_data_block_get_svds(const struct di_cta_data_block *block);
+
+/**
  * Get a list of EDID detailed timing definitions.
  *
  * The returned array is NULL-terminated.
