@@ -14,6 +14,7 @@ test_cases = [
 	'panasonic-mei96a2-dp',
 	'samsung-s27a950d-dp',
 	'sun-gh19ps-dvi',
+	'viewsonic-vp2768-dp',
 ]
 
 foreach tc : test_cases
