@@ -493,23 +493,18 @@ encode_min_luminance(float min, float max)
 static void
 print_cta_hdr_static_metadata(const struct di_cta_hdr_static_metadata_block *metadata)
 {
-	const struct di_cta_hdr_static_metadata_block_eotfs *eotfs;
-	const struct di_cta_hdr_static_metadata_block_descriptors *descriptors;
-
 	printf("    Electro optical transfer functions:\n");
-	eotfs = di_cta_hdr_static_metadata_block_get_eofts(metadata);
-	if (eotfs->traditional_sdr)
+	if (metadata->eotfs->traditional_sdr)
 		printf("      Traditional gamma - SDR luminance range\n");
-	if (eotfs->traditional_hdr)
+	if (metadata->eotfs->traditional_hdr)
 		printf("      Traditional gamma - HDR luminance range\n");
-	if (eotfs->pq)
+	if (metadata->eotfs->pq)
 		printf("      SMPTE ST2084\n");
-	if (eotfs->hlg)
+	if (metadata->eotfs->hlg)
 		printf("      Hybrid Log-Gamma\n");
 
 	printf("    Supported static metadata descriptors:\n");
-	descriptors = di_cta_hdr_static_metadata_block_get_descriptors(metadata);
-	if (descriptors->type1)
+	if (metadata->descriptors->type1)
 		printf("      Static metadata type 1\n");
 
 	/* TODO: figure out a way to print raw values? */

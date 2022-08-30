@@ -102,6 +102,9 @@ parse_hdr_static_metadata_block(struct di_edid_cta *cta,
 		return false;
 	}
 
+	metadata->base.eotfs = &metadata->eotfs;
+	metadata->base.descriptors = &metadata->descriptors;
+
 	eotfs = data[0];
 	metadata->eotfs.traditional_sdr = has_bit(eotfs, 0);
 	metadata->eotfs.traditional_hdr = has_bit(eotfs, 1);
@@ -397,30 +400,6 @@ di_cta_data_block_get_hdr_static_metadata(const struct di_cta_data_block *block)
 		return NULL;
 	}
 	return &block->hdr_static_metadata.base;
-}
-
-static const struct di_cta_hdr_static_metadata_block_priv *
-get_hdr_static_metadata_block_priv(const struct di_cta_hdr_static_metadata_block *block)
-{
-	return (const struct di_cta_hdr_static_metadata_block_priv *) block;
-}
-
-const struct di_cta_hdr_static_metadata_block_eotfs *
-di_cta_hdr_static_metadata_block_get_eofts(const struct di_cta_hdr_static_metadata_block *block)
-{
-	const struct di_cta_hdr_static_metadata_block_priv *priv;
-
-	priv = get_hdr_static_metadata_block_priv(block);
-	return &priv->eotfs;
-}
-
-const struct di_cta_hdr_static_metadata_block_descriptors *
-di_cta_hdr_static_metadata_block_get_descriptors(const struct di_cta_hdr_static_metadata_block *block)
-{
-	const struct di_cta_hdr_static_metadata_block_priv *priv;
-
-	priv = get_hdr_static_metadata_block_priv(block);
-	return &priv->descriptors;
 }
 
 const struct di_edid_detailed_timing_def *const *

@@ -152,27 +152,6 @@ const struct di_cta_colorimetry_block *
 di_cta_data_block_get_colorimetry(const struct di_cta_data_block *block);
 
 /**
- * CTA HDR static metadata block, defined in section 7.5.13.
- */
-struct di_cta_hdr_static_metadata_block {
-	/* Desired content max luminance (cd/m²), zero if unset */
-	float desired_content_max_luminance;
-	/* Desired content max frame-average luminance (cd/m²), zero if unset */
-	float desired_content_max_frame_avg_luminance;
-	/* Desired content min luminance (cd/m²), zero if unset */
-	float desired_content_min_luminance;
-};
-
-/**
- * Get the HDR static metadata from a CTA data block.
- *
- * Returns NULL if the data block tag is not
- * DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA.
- */
-const struct di_cta_hdr_static_metadata_block *
-di_cta_data_block_get_hdr_static_metadata(const struct di_cta_data_block *block);
-
-/**
  * Supported Electro-Optical Transfer Functions for a CTA HDR static metadata
  * block.
  */
@@ -188,12 +167,6 @@ struct di_cta_hdr_static_metadata_block_eotfs {
 };
 
 /**
- * Get supported EOFTs.
- */
-const struct di_cta_hdr_static_metadata_block_eotfs *
-di_cta_hdr_static_metadata_block_get_eofts(const struct di_cta_hdr_static_metadata_block *block);
-
-/**
  * Supported static metadata descriptors for a CTA HDR static metadata block.
  */
 struct di_cta_hdr_static_metadata_block_descriptors {
@@ -202,10 +175,29 @@ struct di_cta_hdr_static_metadata_block_descriptors {
 };
 
 /**
- * Get supported descriptors.
+ * CTA HDR static metadata block, defined in section 7.5.13.
  */
-const struct di_cta_hdr_static_metadata_block_descriptors *
-di_cta_hdr_static_metadata_block_get_descriptors(const struct di_cta_hdr_static_metadata_block *block);
+struct di_cta_hdr_static_metadata_block {
+	/* Desired content max luminance (cd/m²), zero if unset */
+	float desired_content_max_luminance;
+	/* Desired content max frame-average luminance (cd/m²), zero if unset */
+	float desired_content_max_frame_avg_luminance;
+	/* Desired content min luminance (cd/m²), zero if unset */
+	float desired_content_min_luminance;
+	/* Supported EOFTs */
+	const struct di_cta_hdr_static_metadata_block_eotfs *eotfs;
+	/* Supported descriptors */
+	const struct di_cta_hdr_static_metadata_block_descriptors *descriptors;
+};
+
+/**
+ * Get the HDR static metadata from a CTA data block.
+ *
+ * Returns NULL if the data block tag is not
+ * DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA.
+ */
+const struct di_cta_hdr_static_metadata_block *
+di_cta_data_block_get_hdr_static_metadata(const struct di_cta_data_block *block);
 
 /**
  * Get a list of EDID detailed timing definitions.
