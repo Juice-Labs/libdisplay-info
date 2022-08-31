@@ -764,6 +764,21 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 	case DI_EDID_EXT_VENDOR:
 		/* Supported */
 		break;
+	case DI_EDID_EXT_DISPLAYID:
+		snprintf(section_name, sizeof(section_name),
+			 "Block %zu, DisplayID Extension Block",
+			 edid->exts_len + 1);
+		logger = (struct di_logger) {
+			.f = edid->logger->f,
+			.section = section_name,
+		};
+
+		if (!_di_displayid_parse(&ext->displayid, &data[1],
+					 EDID_BLOCK_SIZE - 2, &logger)) {
+			free(ext);
+			return false;
+		}
+		break;
 	default:
 		/* Unsupported */
 		free(ext);
@@ -1114,4 +1129,13 @@ di_edid_ext_get_cta(const struct di_edid_ext *ext)
 		return NULL;
 	}
 	return &ext->cta;
+}
+
+const struct di_displayid *
+di_edid_ext_get_displayid(const struct di_edid_ext *ext)
+{
+	if (ext->tag != DI_EDID_EXT_DISPLAYID) {
+		return NULL;
+	}
+	return &ext->displayid;
 }

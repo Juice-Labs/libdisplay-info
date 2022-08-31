@@ -614,6 +614,9 @@ enum di_edid_ext_tag {
 	DI_EDID_EXT_BLOCK_MAP = 0xF0,
 	/* Extension defined by the display manufacturer */
 	DI_EDID_EXT_VENDOR = 0xFF,
+
+	/* DisplayID Extension */
+	DI_EDID_EXT_DISPLAYID = 0x70,
 };
 
 /**
@@ -637,5 +640,16 @@ struct di_edid_cta;
  */
 const struct di_edid_cta *
 di_edid_ext_get_cta(const struct di_edid_ext *ext);
+
+/* See <libdisplay-info/displayid.h> */
+struct di_displayid;
+
+/**
+ * Get a DisplayID extension block.
+ *
+ * Returns NULL if the extension block tag is not DI_EDID_EXT_DISPLAYID.
+ */
+const struct di_displayid *
+di_edid_ext_get_displayid(const struct di_edid_ext *ext);
 
 #endif

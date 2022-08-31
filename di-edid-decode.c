@@ -7,6 +7,7 @@
 
 #include <libdisplay-info/cta.h>
 #include <libdisplay-info/edid.h>
+#include <libdisplay-info/displayid.h>
 #include <libdisplay-info/info.h>
 
 static size_t num_detailed_timing_defs = 0;
@@ -418,6 +419,8 @@ ext_tag_name(enum di_edid_ext_tag tag)
 		return "Block Map Extension Block";
 	case DI_EDID_EXT_VENDOR:
 		return "Manufacturer-Specific Extension Block";
+	case DI_EDID_EXT_DISPLAYID:
+		return "DisplayID Extension Block";
 	}
 	abort();
 }
@@ -675,6 +678,13 @@ print_cta(const struct di_edid_cta *cta)
 }
 
 static void
+print_displayid(const struct di_displayid *displayid)
+{
+	printf("  Version: %d.%d\n", di_displayid_get_version(displayid),
+	       di_displayid_get_revision(displayid));
+}
+
+static void
 print_ext(const struct di_edid_ext *ext, size_t ext_index)
 {
 	const char *tag_name;
@@ -686,6 +696,9 @@ print_ext(const struct di_edid_ext *ext, size_t ext_index)
 	switch (di_edid_ext_get_tag(ext)) {
 	case DI_EDID_EXT_CEA:
 		print_cta(di_edid_ext_get_cta(ext));
+		break;
+	case DI_EDID_EXT_DISPLAYID:
+		print_displayid(di_edid_ext_get_displayid(ext));
 		break;
 	default:
 		break; /* Ignore */

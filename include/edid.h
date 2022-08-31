@@ -12,6 +12,7 @@
 #include <libdisplay-info/edid.h>
 
 #include "cta.h"
+#include "displayid.h"
 
 /**
  * The maximum number of EDID blocks (including the base block), defined in
@@ -96,6 +97,8 @@ struct di_edid_ext {
 	enum di_edid_ext_tag tag;
 	/* Used for DI_EDID_EXT_CEA */
 	struct di_edid_cta cta;
+	/* Used for DI_EDID_EXT_DISPLAYID */
+	struct di_displayid displayid;
 };
 
 /**

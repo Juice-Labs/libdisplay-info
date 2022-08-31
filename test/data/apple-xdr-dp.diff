@@ -1,15 +1,6 @@
 --- ref
 +++ di
-@@ -31,7 +31,7 @@
-                  Hfront    8 Hsync  32 Hback   40 Hpol P
-                  Vfront   43 Vsync   8 Vback    6 Vpol N
-     Display Product Name: 'ProDisplayXDR'
--  Extension blocks: 6
-+  Extension blocks: 1
- Checksum: 0xeb
- 
- ----------------
-@@ -62,171 +62,16 @@
+@@ -62,171 +62,38 @@
      DTD 6:  3840x2160   47.951737 Hz  16:9    134.696 kHz    528.010000 MHz (699 mm x 393 mm)
                   Hfront    8 Hsync  32 Hback   40 Hpol P
                   Vfront   59 Vsync   8 Vback  582 Vpol N
@@ -18,8 +9,8 @@
  
  ----------------
  
--Block 2, DisplayID Extension Block:
--  Version: 1.2
+ Block 2, DisplayID Extension Block:
+   Version: 1.2
 -  Extension Count: 0
 -  Display Product Type: Extension Section
 -  ContainerID Data Block:
@@ -60,12 +51,12 @@
 -               Hfront    8 Hsync  32 Hback   28 Hpol P
 -               Vfront  118 Vsync   8 Vback    6 Vpol N
 -  Checksum: 0x8c
--Checksum: 0x90
--
------------------
--
--Block 3, DisplayID Extension Block:
--  Version: 1.2
+ Checksum: 0x90
+ 
+ ----------------
+ 
+ Block 3, DisplayID Extension Block:
+   Version: 1.2
 -  Extension Count: 0
 -  Video Timing Modes Type 1 - Detailed Timings Data Block:
 -    DTD:  2560x2880   59.999451 Hz   0:0    179.578 kHz    481.270000 MHz (aspect undefined, no 3D stereo)
@@ -84,12 +75,12 @@
 -               Hfront    8 Hsync  32 Hback   80 Hpol P
 -               Vfront  850 Vsync   8 Vback    6 Vpol N
 -  Checksum: 0x93
--Checksum: 0x90
--
------------------
--
--Block 4, DisplayID Extension Block:
--  Version: 1.2
+ Checksum: 0x90
+ 
+ ----------------
+ 
+ Block 4, DisplayID Extension Block:
+   Version: 1.2
 -  Extension Count: 0
 -  Video Timing Modes Type 1 - Detailed Timings Data Block:
 -    DTD:  3008x3384   59.999726 Hz   0:0    210.959 kHz    648.910000 MHz (aspect undefined, no 3D stereo)
@@ -108,12 +99,12 @@
 -               Hfront    8 Hsync  32 Hback   28 Hpol P
 -               Vfront 1001 Vsync   8 Vback    6 Vpol N
 -  Checksum: 0x7e
--Checksum: 0x90
--
------------------
--
--Block 5, DisplayID Extension Block:
--  Version: 1.2
+ Checksum: 0x90
+ 
+ ----------------
+ 
+ Block 5, DisplayID Extension Block:
+   Version: 1.2
 -  Extension Count: 0
 -  Video Timing Modes Type 1 - Detailed Timings Data Block:
 -    DTD:  5120x2880   59.999614 Hz  16:9    179.579 kHz    933.810000 MHz (aspect 16:9, no 3D stereo)
@@ -132,12 +123,12 @@
 -               Hfront    8 Hsync  32 Hback   40 Hpol P
 -               Vfront  850 Vsync   8 Vback    6 Vpol N
 -  Checksum: 0x0a
--Checksum: 0x90
--
------------------
--
--Block 6, DisplayID Extension Block:
--  Version: 1.2
+ Checksum: 0x90
+ 
+ ----------------
+ 
+ Block 6, DisplayID Extension Block:
+   Version: 1.2
 -  Extension Count: 0
 -  Video Timing Modes Type 1 - Detailed Timings Data Block:
 -    DTD:  6016x3384   59.999899 Hz  16:9    210.960 kHz   1286.010000 MHz (aspect 16:9, no 3D stereo, preferred)
@@ -156,10 +147,10 @@
 -               Hfront    8 Hsync  32 Hback   40 Hpol P
 -               Vfront 1001 Vsync   8 Vback    6 Vpol N
 -  Checksum: 0xb4
--Checksum: 0x90
--
------------------
--
+ Checksum: 0x90
+ 
+ ----------------
+ 
 -Warnings:
 -
 -Block 1, CTA-861 Extension Block:
@@ -167,8 +158,8 @@
 -Block 2, DisplayID Extension Block:
 -  Vendor-Specific Data Block (0x7f) (Apple), OUI 00-10-FA: Expected PNP ID but found OUI.
 -
- Failures:
- 
+-Failures:
+-
 -Block 1, CTA-861 Extension Block:
 -  Required 640x480p60 timings are missing in the established timings and the SVD list (VIC 1).
 -  Missing VCDB, needed for Set Selectable RGB Quantization to avoid interop issues.
@@ -181,10 +172,5 @@
 -EDID:
 -  DisplayID: Missing DisplayID Product Identification Data Block.
 -
-+Block 0, Base EDID:
-+  Unknown Extension Block.
-+  Unknown Extension Block.
-+  Unknown Extension Block.
-+  Unknown Extension Block.
-+  Unknown Extension Block.
- EDID conformity: FAIL
+-EDID conformity: FAIL
++EDID conformity: PASS
