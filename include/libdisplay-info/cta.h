@@ -30,7 +30,7 @@ di_edid_cta_get_revision(const struct di_edid_cta *cta);
  */
 struct di_edid_cta_flags {
 	/* Sink underscans IT Video Formats by default */
-	bool underscan;
+	bool it_underscan;
 	/* Sink supports Basic Audio */
 	bool basic_audio;
 	/* Sink supports YCbCr 4:4:4 in addition to RGB */

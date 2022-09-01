@@ -610,7 +610,7 @@ print_cta(const struct di_edid_cta *cta)
 	printf("  Revision: %d\n", di_edid_cta_get_revision(cta));
 
 	cta_flags = di_edid_cta_get_flags(cta);
-	if (cta_flags->underscan) {
+	if (cta_flags->it_underscan) {
 		printf("  Underscans IT Video Formats by default\n");
 	}
 	if (cta_flags->basic_audio) {

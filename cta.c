@@ -344,7 +344,7 @@ _di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size,
 
 	flags = data[3];
 	if (cta->revision >= 2) {
-		cta->flags.underscan = has_bit(flags, 7);
+		cta->flags.it_underscan = has_bit(flags, 7);
 		cta->flags.basic_audio = has_bit(flags, 6);
 		cta->flags.ycc444 = has_bit(flags, 5);
 		cta->flags.ycc422 = has_bit(flags, 4);
