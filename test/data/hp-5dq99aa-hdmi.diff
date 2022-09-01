@@ -23,7 +23,7 @@
    Detailed Timing Descriptors:
      DTD 1:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (597 mm x 339 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
-@@ -51,32 +51,16 @@
+@@ -51,32 +51,21 @@
    Supports YCbCr 4:2:2
    Native detailed modes: 1
    Video Data Block:
@@ -52,11 +52,11 @@
 +    VIC  17
 +    VIC   1
    Video Capability Data Block:
--    YCbCr quantization: No Data
--    RGB quantization: No Data
--    PT scan behavior: Always Underscanned
--    IT scan behavior: Always Underscanned
--    CE scan behavior: Supports both over- and underscan
+     YCbCr quantization: No Data
+     RGB quantization: No Data
+     PT scan behavior: Always Underscanned
+     IT scan behavior: Always Underscanned
+     CE scan behavior: Supports both over- and underscan
 -  Vendor-Specific Data Block (AMD), OUI 00-00-1A:
 -    Version: 1.1
 -    Minimum Refresh Rate: 46 Hz
@@ -65,7 +65,7 @@
    Colorimetry Data Block:
      BT2020cYCC
      BT2020YCC
-@@ -104,20 +88,8 @@
+@@ -104,20 +93,12 @@
      DTD 5:  1920x1080   74.972503 Hz  16:9     83.894 kHz    174.500000 MHz (597 mm x 339 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
                   Vfront    3 Vsync   5 Vback   31 Vpol N
@@ -81,10 +81,9 @@
 -  Colorimetry Data Block: Set the sRGB colorimetry bit to avoid interop issues.
 -  Display Product Serial Number is set, so the Serial Number in the Base EDID should be 0.
 -
--Failures:
+ Failures:
+ 
+ Block 1, CTA-861 Extension Block:
+   Video Capability Data Block: Set Selectable RGB Quantization to avoid interop issues.
 -
--Block 1, CTA-861 Extension Block:
--  Video Capability Data Block: Set Selectable RGB Quantization to avoid interop issues.
--
--EDID conformity: FAIL
-+EDID conformity: PASS
+ EDID conformity: FAIL

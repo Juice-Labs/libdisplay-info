@@ -59,6 +59,8 @@ struct di_cta_data_block {
 
 	/* Used for DI_CTA_DATA_BLOCK_VIDEO */
 	struct di_cta_video_block video;
+	/* Used for DI_CTA_DATA_BLOCK_VIDEO_CAP */
+	struct di_cta_video_cap_block video_cap;
 	/* Used for DI_CTA_DATA_BLOCK_COLORIMETRY */
 	struct di_cta_colorimetry_block colorimetry;
 	/* Used for DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA */

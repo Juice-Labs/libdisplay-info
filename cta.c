@@ -85,6 +85,45 @@ parse_video_block(struct di_edid_cta *cta, struct di_cta_video_block *video,
 }
 
 static bool
+parse_video_cap_block(struct di_edid_cta *cta,
+		      struct di_cta_video_cap_block *video_cap,
+		      const uint8_t *data, size_t size)
+{
+	if (size < 1) {
+		add_failure(cta,
+			    "Video Capability Data Block: Empty Data Block with length %u.",
+			    size);
+		return false;
+	}
+
+	video_cap->selectable_ycc_quantization_range = has_bit(data[0], 7);
+	video_cap->selectable_rgb_quantization_range = has_bit(data[0], 6);
+	video_cap->pt_over_underscan = get_bit_range(data[0], 5, 4);
+	video_cap->it_over_underscan = get_bit_range(data[0], 3, 2);
+	video_cap->ce_over_underscan = get_bit_range(data[0], 1, 0);
+
+	if (!video_cap->selectable_rgb_quantization_range && cta->revision >= 3)
+		add_failure(cta,
+			    "Video Capability Data Block: Set Selectable RGB Quantization to avoid interop issues.");
+	/* TODO: add failure if selectable_ycc_quantization_range is unset,
+	 * the sink supports YCbCr formats and the revision is 3+ */
+
+	switch (video_cap->it_over_underscan) {
+	case DI_CTA_VIDEO_CAP_ALWAYS_OVERSCAN:
+		if (cta->flags.it_underscan)
+			add_failure(cta, "Video Capability Data Block: IT video formats are always overscanned, but bit 7 of Byte 3 of the CTA-861 Extension header is set to underscanned.");
+		break;
+	case DI_CTA_VIDEO_CAP_ALWAYS_UNDERSCAN:
+		if (!cta->flags.it_underscan)
+			add_failure(cta, "Video Capability Data Block: IT video formats are always underscanned, but bit 7 of Byte 3 of the CTA-861 Extension header is set to overscanned.");
+	default:
+		break;
+	}
+
+	return true;
+}
+
+static bool
 parse_colorimetry_block(struct di_edid_cta *cta,
 			struct di_cta_colorimetry_block *colorimetry,
 			const uint8_t *data, size_t size)
@@ -237,6 +276,9 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 		switch (extended_tag) {
 		case 0:
 			tag = DI_CTA_DATA_BLOCK_VIDEO_CAP;
+			if (!parse_video_cap_block(cta, &data_block->video_cap,
+						   data, size))
+				goto skip;
 			break;
 		case 2:
 			tag = DI_CTA_DATA_BLOCK_VESA_DISPLAY_DEVICE;
@@ -475,6 +517,15 @@ di_cta_data_block_get_hdr_static_metadata(const struct di_cta_data_block *block)
 		return NULL;
 	}
 	return &block->hdr_static_metadata.base;
+}
+
+const struct di_cta_video_cap_block *
+di_cta_data_block_get_video_cap(const struct di_cta_data_block *block)
+{
+	if (block->tag != DI_CTA_DATA_BLOCK_VIDEO_CAP) {
+		return NULL;
+	}
+	return &block->video_cap;
 }
 
 const struct di_edid_detailed_timing_def *const *

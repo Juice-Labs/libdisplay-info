@@ -118,6 +118,45 @@ enum di_cta_data_block_tag
 di_cta_data_block_get_tag(const struct di_cta_data_block *block);
 
 /**
+ * Over- and underscan capability.
+ */
+enum di_cta_video_cap_over_underscan {
+	/* No data */
+	DI_CTA_VIDEO_CAP_UNKNOWN_OVER_UNDERSCAN = 0x00,
+	/* Always overscanned */
+	DI_CTA_VIDEO_CAP_ALWAYS_OVERSCAN = 0x01,
+	/* Always underscanned */
+	DI_CTA_VIDEO_CAP_ALWAYS_UNDERSCAN = 0x02,
+	/* Supports both over- and underscan */
+	DI_CTA_VIDEO_CAP_BOTH_OVER_UNDERSCAN = 0x03,
+};
+
+/**
+ * Video capability data block (VCDB), defined in section 7.5.6.
+ */
+struct di_cta_video_cap_block {
+	/* If set to true, YCC quantization range is selectable (via AVI YQ). */
+	bool selectable_ycc_quantization_range;
+	/* If set to true, RGB quantization range is selectable (via AVI Q). */
+	bool selectable_rgb_quantization_range;
+	/* Overscan/underscan behavior for PT video formats (if set to unknown,
+	 * use the IT/CE behavior) */
+	enum di_cta_video_cap_over_underscan pt_over_underscan;
+	/* Overscan/underscan behavior for IT video formats */
+	enum di_cta_video_cap_over_underscan it_over_underscan;
+	/* Overscan/underscan behavior for CE video formats */
+	enum di_cta_video_cap_over_underscan ce_over_underscan;
+};
+
+/**
+ * Get the video capabilities from a CTA data block.
+ *
+ * Returns NULL if the data block tag is not DI_CTA_DATA_BLOCK_VIDEO_CAP.
+ */
+const struct di_cta_video_cap_block *
+di_cta_data_block_get_video_cap(const struct di_cta_data_block *block);
+
+/**
  * CTA colorimetry data block, defined in section 7.5.5.
  */
 struct di_cta_colorimetry_block {

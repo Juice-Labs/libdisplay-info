@@ -594,6 +594,23 @@ cta_data_block_tag_name(enum di_cta_data_block_tag tag)
 	return "Unknown CTA-861 Data Block";
 }
 
+static const char *
+video_cap_over_underscan_name(enum di_cta_video_cap_over_underscan over_underscan,
+			      const char *unknown)
+{
+	switch (over_underscan) {
+	case DI_CTA_VIDEO_CAP_UNKNOWN_OVER_UNDERSCAN:
+		return unknown;
+	case DI_CTA_VIDEO_CAP_ALWAYS_OVERSCAN:
+		return "Always Overscanned";
+	case DI_CTA_VIDEO_CAP_ALWAYS_UNDERSCAN:
+		return "Always Underscanned";
+	case DI_CTA_VIDEO_CAP_BOTH_OVER_UNDERSCAN:
+		return "Supports both over- and underscan";
+	}
+	abort();
+}
+
 static void
 print_cta(const struct di_edid_cta *cta)
 {
@@ -602,6 +619,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_data_block *data_block;
 	enum di_cta_data_block_tag data_block_tag;
 	const struct di_cta_svd *const *svds;
+	const struct di_cta_video_cap_block *video_cap;
 	const struct di_cta_colorimetry_block *colorimetry;
 	const struct di_cta_hdr_static_metadata_block *hdr_static_metadata;
 	size_t i;
@@ -635,6 +653,24 @@ print_cta(const struct di_edid_cta *cta)
 		case DI_CTA_DATA_BLOCK_VIDEO:
 			svds = di_cta_data_block_get_svds(data_block);
 			printf_cta_svds(svds);
+			break;
+		case DI_CTA_DATA_BLOCK_VIDEO_CAP:
+			video_cap = di_cta_data_block_get_video_cap(data_block);
+			printf("    YCbCr quantization: %s\n",
+			       video_cap->selectable_ycc_quantization_range ?
+			       "Selectable (via AVI YQ)" : "No Data");
+			printf("    RGB quantization: %s\n",
+			       video_cap->selectable_ycc_quantization_range ?
+			       "Selectable (via AVI Q)" : "No Data");
+			printf("    PT scan behavior: %s\n",
+			       video_cap_over_underscan_name(video_cap->pt_over_underscan,
+							     "No Data"));
+			printf("    IT scan behavior: %s\n",
+			       video_cap_over_underscan_name(video_cap->it_over_underscan,
+							     "IT video formats not supported"));
+			printf("    CE scan behavior: %s\n",
+			       video_cap_over_underscan_name(video_cap->ce_over_underscan,
+							     "CE video formats not supported"));
 			break;
 		case DI_CTA_DATA_BLOCK_COLORIMETRY:
 			colorimetry = di_cta_data_block_get_colorimetry(data_block);
