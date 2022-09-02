@@ -12,6 +12,16 @@
  */
 #define DISPLAYID_MAX_SIZE 256
 
+static void
+add_failure(struct di_displayid *displayid, const char fmt[], ...)
+{
+	va_list args;
+
+	va_start(args, fmt);
+	_di_logger_va_add_failure(displayid->logger, fmt, args);
+	va_end(args);
+}
+
 static bool
 validate_checksum(const uint8_t *data, size_t size)
 {
@@ -36,6 +46,8 @@ _di_displayid_parse(struct di_displayid *displayid, const uint8_t *data,
 		errno = EINVAL;
 		return false;
 	}
+
+	displayid->logger = logger;
 
 	displayid->version = get_bit_range(data[0x00], 7, 4);
 	displayid->revision = get_bit_range(data[0x00], 3, 0);
@@ -71,6 +83,7 @@ _di_displayid_parse(struct di_displayid *displayid, const uint8_t *data,
 		return false;
 	}
 
+	displayid->logger = NULL;
 	return true;
 }
 
