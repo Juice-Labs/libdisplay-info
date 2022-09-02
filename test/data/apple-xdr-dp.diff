@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -62,171 +62,38 @@
+@@ -62,171 +62,39 @@
      DTD 6:  3840x2160   47.951737 Hz  16:9    134.696 kHz    528.010000 MHz (699 mm x 393 mm)
                   Hfront    8 Hsync  32 Hback   40 Hpol P
                   Vfront   59 Vsync   8 Vback  582 Vpol N
@@ -12,7 +12,7 @@
  Block 2, DisplayID Extension Block:
    Version: 1.2
 -  Extension Count: 0
--  Display Product Type: Extension Section
+   Display Product Type: Extension Section
 -  ContainerID Data Block:
 -    Container ID: dfde542f-1339-444b-ad7d-7071d131bff8
 -  Display Parameters Data Block (0x01):

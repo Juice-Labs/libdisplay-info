@@ -17,6 +17,7 @@ static struct {
 } contains_uncommon_feature;
 
 static size_t num_detailed_timing_defs = 0;
+static bool is_displayid_base_block = true;
 
 static const struct option long_options[] = {
 	{ "help", no_argument, 0, 'h' },
@@ -871,11 +872,38 @@ print_cta(const struct di_edid_cta *cta)
 	}
 }
 
+static const char *
+displayid_product_type_name(enum di_displayid_product_type type)
+{
+	switch (type) {
+	case DI_DISPLAYID_PRODUCT_TYPE_EXTENSION:
+		return "Extension Section";
+	case DI_DISPLAYID_PRODUCT_TYPE_TEST:
+		return "Test Structure; test equipment only";
+	case DI_DISPLAYID_PRODUCT_TYPE_DISPLAY_PANEL:
+		return "Display panel or other transducer, LCD or PDP module, etc.";
+	case DI_DISPLAYID_PRODUCT_TYPE_STANDALONE_DISPLAY:
+		return "Standalone display device";
+	case DI_DISPLAYID_PRODUCT_TYPE_TV_RECEIVER:
+		return "Television receiver";
+	case DI_DISPLAYID_PRODUCT_TYPE_REPEATER:
+		return "Repeater/translator";
+	case DI_DISPLAYID_PRODUCT_TYPE_DIRECT_DRIVE:
+		return "DIRECT DRIVE monitor";
+	}
+	abort();
+}
+
 static void
 print_displayid(const struct di_displayid *displayid)
 {
 	printf("  Version: %d.%d\n", di_displayid_get_version(displayid),
 	       di_displayid_get_revision(displayid));
+
+	if (is_displayid_base_block)
+		printf("  Display Product Type: %s\n",
+		       displayid_product_type_name(di_displayid_get_product_type(displayid)));
+	is_displayid_base_block = false;
 }
 
 static void

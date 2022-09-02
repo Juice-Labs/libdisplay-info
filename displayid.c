@@ -17,6 +17,7 @@ _di_displayid_parse(struct di_displayid *displayid, const uint8_t *data,
 		    size_t size, struct di_logger *logger)
 {
 	size_t section_size;
+	uint8_t product_type;
 
 	if (size < 5) {
 		errno = EINVAL;
@@ -36,6 +37,22 @@ _di_displayid_parse(struct di_displayid *displayid, const uint8_t *data,
 		return false;
 	}
 
+	product_type = data[0x02];
+	switch (product_type) {
+	case DI_DISPLAYID_PRODUCT_TYPE_EXTENSION:
+	case DI_DISPLAYID_PRODUCT_TYPE_TEST:
+	case DI_DISPLAYID_PRODUCT_TYPE_DISPLAY_PANEL:
+	case DI_DISPLAYID_PRODUCT_TYPE_STANDALONE_DISPLAY:
+	case DI_DISPLAYID_PRODUCT_TYPE_TV_RECEIVER:
+	case DI_DISPLAYID_PRODUCT_TYPE_REPEATER:
+	case DI_DISPLAYID_PRODUCT_TYPE_DIRECT_DRIVE:
+		displayid->product_type = product_type;
+		break;
+	default:
+		errno = EINVAL;
+		return false;
+	}
+
 	return true;
 }
 
@@ -49,4 +66,10 @@ int
 di_displayid_get_revision(const struct di_displayid *displayid)
 {
 	return displayid->revision;
+}
+
+enum di_displayid_product_type
+di_displayid_get_product_type(const struct di_displayid *displayid)
+{
+	return displayid->product_type;
 }

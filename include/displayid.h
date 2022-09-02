@@ -15,6 +15,7 @@
 
 struct di_displayid {
 	int version, revision;
+	enum di_displayid_product_type product_type;
 };
 
 bool
