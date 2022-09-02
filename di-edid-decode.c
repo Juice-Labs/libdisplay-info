@@ -894,9 +894,60 @@ displayid_product_type_name(enum di_displayid_product_type type)
 	abort();
 }
 
+static const char *
+displayid_data_block_tag_name(enum di_displayid_data_block_tag tag)
+{
+	switch (tag) {
+	case DI_DISPLAYID_DATA_BLOCK_PRODUCT_ID:
+		return "Product Identification Data Block (0x00)";
+	case DI_DISPLAYID_DATA_BLOCK_DISPLAY_PARAMS:
+		return "Display Parameters Data Block (0x01)";
+	case DI_DISPLAYID_DATA_BLOCK_COLOR_CHARACT:
+		return "Color Characteristics Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_TYPE_I_TIMING:
+		return "Video Timing Modes Type 1 - Detailed Timings Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_TYPE_II_TIMING:
+		return "Video Timing Modes Type 2 - Detailed Timings Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_TYPE_III_TIMING:
+		return "Video Timing Modes Type 3 - Short Timings Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_TYPE_IV_TIMING:
+		return "Video Timing Modes Type 4 - DMT Timings Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_VESA_TIMING:
+		return "Supported Timing Modes Type 1 - VESA DMT Timings Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_CEA_TIMING:
+		return "Supported Timing Modes Type 2 - CTA-861 Timings Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_TIMING_RANGE_LIMITS:
+		return "Video Timing Range Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_PRODUCT_SERIAL:
+		return "Product Serial Number Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_ASCII_STRING:
+		return "GP ASCII String Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_DISPLAY_DEVICE_DATA:
+		return "Display Device Data Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_INTERFACE_POWER_SEQ:
+		return "Interface Power Sequencing Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_TRANSFER_CHARACT:
+		return "Transfer Characteristics Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_DISPLAY_INTERFACE:
+		return "Display Interface Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_STEREO_DISPLAY_INTERFACE:
+		return "Stereo Display Interface Data Block (0x10)";
+	case DI_DISPLAYID_DATA_BLOCK_TYPE_V_TIMING:
+		return "Video Timing Modes Type 5 - Short Timings Data Block";
+	case DI_DISPLAYID_DATA_BLOCK_TILED_DISPLAY_TOPO:
+		return "Tiled Display Topology Data Block (0x12)";
+	case DI_DISPLAYID_DATA_BLOCK_TYPE_VI_TIMING:
+		return "Video Timing Modes Type 6 - Detailed Timings Data Block";
+	}
+	abort();
+}
+
 static void
 print_displayid(const struct di_displayid *displayid)
 {
+	const struct di_displayid_data_block *const *data_blocks;
+	size_t i;
+
 	printf("  Version: %d.%d\n", di_displayid_get_version(displayid),
 	       di_displayid_get_revision(displayid));
 
@@ -904,6 +955,12 @@ print_displayid(const struct di_displayid *displayid)
 		printf("  Display Product Type: %s\n",
 		       displayid_product_type_name(di_displayid_get_product_type(displayid)));
 	is_displayid_base_block = false;
+
+	data_blocks = di_displayid_get_data_blocks(displayid);
+	for (i = 0; data_blocks[i] != NULL; i++) {
+		printf("  %s:\n",
+		       displayid_data_block_tag_name(di_displayid_data_block_get_tag(data_blocks[i])));
+	}
 }
 
 static void

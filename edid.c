@@ -1216,6 +1216,9 @@ _di_edid_destroy(struct di_edid *edid)
 		case DI_EDID_EXT_CEA:
 			_di_edid_cta_finish(&ext->cta);
 			break;
+		case DI_EDID_EXT_DISPLAYID:
+			_di_displayid_finish(&ext->displayid);
+			break;
 		default:
 			break; /* Nothing to do */
 		}

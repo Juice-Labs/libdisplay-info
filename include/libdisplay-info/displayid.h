@@ -52,4 +52,69 @@ enum di_displayid_product_type {
 enum di_displayid_product_type
 di_displayid_get_product_type(const struct di_displayid *displayid);
 
+/**
+ * DisplayID data block tag.
+ */
+enum di_displayid_data_block_tag {
+	/*Product Identification Data Block */
+	DI_DISPLAYID_DATA_BLOCK_PRODUCT_ID = 0x00,
+	/* Display Parameters Data Block */
+	DI_DISPLAYID_DATA_BLOCK_DISPLAY_PARAMS = 0x01,
+	/* Color Characteristics Data Block */
+	DI_DISPLAYID_DATA_BLOCK_COLOR_CHARACT = 0x02,
+	/* Video Timing Modes Type I - Detailed Timings Data Block */
+	DI_DISPLAYID_DATA_BLOCK_TYPE_I_TIMING = 0x03,
+	/* Video Timing Modes Type II - Detailed Timings Data Block */
+	DI_DISPLAYID_DATA_BLOCK_TYPE_II_TIMING = 0x04,
+	/* Video Timing Modes Type III - Short Timings Data Block */
+	DI_DISPLAYID_DATA_BLOCK_TYPE_III_TIMING = 0x05,
+	/* Video Timing Modes Type IV - DMT Timings Data Block */
+	DI_DISPLAYID_DATA_BLOCK_TYPE_IV_TIMING = 0x06,
+	/* Supported Timing Modes - VESA DMT Timings Data Block */
+	DI_DISPLAYID_DATA_BLOCK_VESA_TIMING = 0x07,
+	/* Supported Timing Modes - CTA-861 Timings Data Block */
+	DI_DISPLAYID_DATA_BLOCK_CEA_TIMING = 0x08,
+	/* Video Timing Range Data Block */
+	DI_DISPLAYID_DATA_BLOCK_TIMING_RANGE_LIMITS = 0x09,
+	/* Product Serial Number Data Block */
+	DI_DISPLAYID_DATA_BLOCK_PRODUCT_SERIAL = 0x0A,
+	/* General-purpose ASCII String Data Block */
+	DI_DISPLAYID_DATA_BLOCK_ASCII_STRING = 0x0B,
+	/* Display Device Data Data Block */
+	DI_DISPLAYID_DATA_BLOCK_DISPLAY_DEVICE_DATA = 0x0C,
+	/* Interface Power Sequencing Data Block */
+	DI_DISPLAYID_DATA_BLOCK_INTERFACE_POWER_SEQ = 0x0D,
+	/* Transfer Characteristics Data Block */
+	DI_DISPLAYID_DATA_BLOCK_TRANSFER_CHARACT = 0x0E,
+	/* Display Interface Data Block */
+	DI_DISPLAYID_DATA_BLOCK_DISPLAY_INTERFACE = 0x0F,
+	/* Stereo Display Interface Data Block */
+	DI_DISPLAYID_DATA_BLOCK_STEREO_DISPLAY_INTERFACE = 0x10,
+	/* Video Timing Modes Type V - Short Timings Data Block */
+	DI_DISPLAYID_DATA_BLOCK_TYPE_V_TIMING = 0x11,
+	/* Tiled Display Topology Data Block */
+	DI_DISPLAYID_DATA_BLOCK_TILED_DISPLAY_TOPO = 0x12,
+	/* Video Timing Modes Type VI - Detailed Timings Data Block */
+	DI_DISPLAYID_DATA_BLOCK_TYPE_VI_TIMING = 0x13,
+};
+
+/**
+ * A DisplayID data block.
+ */
+struct di_displayid_data_block;
+
+/**
+ * Get a DisplayID data block tag.
+ */
+enum di_displayid_data_block_tag
+di_displayid_data_block_get_tag(const struct di_displayid_data_block *data_block);
+
+/**
+ * Get DisplayID data blocks.
+ *
+ * The returned array is NULL-terminated.
+ */
+const struct di_displayid_data_block *const *
+di_displayid_get_data_blocks(const struct di_displayid *displayid);
+
 #endif

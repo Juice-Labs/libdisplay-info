@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -62,171 +62,39 @@
+@@ -62,171 +62,51 @@
      DTD 6:  3840x2160   47.951737 Hz  16:9    134.696 kHz    528.010000 MHz (699 mm x 393 mm)
                   Hfront    8 Hsync  32 Hback   40 Hpol P
                   Vfront   59 Vsync   8 Vback  582 Vpol N
@@ -15,7 +15,7 @@
    Display Product Type: Extension Section
 -  ContainerID Data Block:
 -    Container ID: dfde542f-1339-444b-ad7d-7071d131bff8
--  Display Parameters Data Block (0x01):
+   Display Parameters Data Block (0x01):
 -    Image size: 699.4 mm x 393.4 mm
 -    Display native pixel format: 6016x3384
 -    Feature support flags:
@@ -27,7 +27,7 @@
 -  Vendor-Specific Data Block (0x7f) (Apple), OUI 00-10-FA:
 -    Type: 4, Version: 1
 -    00 00                                           '..'
--  Tiled Display Topology Data Block (0x12):
+   Tiled Display Topology Data Block (0x12):
 -    Capabilities:
 -      Behavior if it is the only tile: Image is scaled to fit the entire tiled display
 -      Behavior if more than one tile and fewer than total number of tiles: Undefined
@@ -43,7 +43,7 @@
 -    Default Colorspace and EOTF Handling: Native as specified in the Display Parameters DB
 -    Number of Pixels in Hor Pix Cnt Overlapping an Adjacent Panel: 0
 -    Multi-SST Operation: Not Supported
--  Video Timing Modes Type 1 - Detailed Timings Data Block:
+   Video Timing Modes Type 1 - Detailed Timings Data Block:
 -    DTD:  3840x2160   59.999545 Hz  16:9    134.699 kHz    528.020000 MHz (aspect 16:9, no 3D stereo)
 -               Hfront    8 Hsync  32 Hback   40 Hpol P
 -               Vfront   71 Vsync   8 Vback    6 Vpol N
@@ -58,7 +58,7 @@
  Block 3, DisplayID Extension Block:
    Version: 1.2
 -  Extension Count: 0
--  Video Timing Modes Type 1 - Detailed Timings Data Block:
+   Video Timing Modes Type 1 - Detailed Timings Data Block:
 -    DTD:  2560x2880   59.999451 Hz   0:0    179.578 kHz    481.270000 MHz (aspect undefined, no 3D stereo)
 -               Hfront    8 Hsync  32 Hback   80 Hpol P
 -               Vfront   99 Vsync   8 Vback    6 Vpol N
@@ -82,7 +82,7 @@
  Block 4, DisplayID Extension Block:
    Version: 1.2
 -  Extension Count: 0
--  Video Timing Modes Type 1 - Detailed Timings Data Block:
+   Video Timing Modes Type 1 - Detailed Timings Data Block:
 -    DTD:  3008x3384   59.999726 Hz   0:0    210.959 kHz    648.910000 MHz (aspect undefined, no 3D stereo)
 -               Hfront    8 Hsync  32 Hback   28 Hpol P
 -               Vfront  118 Vsync   8 Vback    6 Vpol N
@@ -106,7 +106,7 @@
  Block 5, DisplayID Extension Block:
    Version: 1.2
 -  Extension Count: 0
--  Video Timing Modes Type 1 - Detailed Timings Data Block:
+   Video Timing Modes Type 1 - Detailed Timings Data Block:
 -    DTD:  5120x2880   59.999614 Hz  16:9    179.579 kHz    933.810000 MHz (aspect 16:9, no 3D stereo)
 -               Hfront    8 Hsync  32 Hback   40 Hpol P
 -               Vfront   99 Vsync   8 Vback    6 Vpol N
@@ -130,7 +130,7 @@
  Block 6, DisplayID Extension Block:
    Version: 1.2
 -  Extension Count: 0
--  Video Timing Modes Type 1 - Detailed Timings Data Block:
+   Video Timing Modes Type 1 - Detailed Timings Data Block:
 -    DTD:  6016x3384   59.999899 Hz  16:9    210.960 kHz   1286.010000 MHz (aspect 16:9, no 3D stereo, preferred)
 -               Hfront    8 Hsync  32 Hback   40 Hpol P
 -               Vfront  118 Vsync   8 Vback    6 Vpol N
@@ -158,12 +158,12 @@
 -Block 2, DisplayID Extension Block:
 -  Vendor-Specific Data Block (0x7f) (Apple), OUI 00-10-FA: Expected PNP ID but found OUI.
 -
--Failures:
--
+ Failures:
+ 
 -Block 1, CTA-861 Extension Block:
 -  Required 640x480p60 timings are missing in the established timings and the SVD list (VIC 1).
 -  Missing VCDB, needed for Set Selectable RGB Quantization to avoid interop issues.
--Block 2, DisplayID Extension Block:
+ Block 2, DisplayID Extension Block:
 -  DisplayID Base Block has no product type.
 -  Expected 0 DisplayID Extension Block, but got 4.
 -  ContainerID Data Block: Use of DisplayID v2.0 tag for DisplayID v1.2.
@@ -172,5 +172,6 @@
 -EDID:
 -  DisplayID: Missing DisplayID Product Identification Data Block.
 -
--EDID conformity: FAIL
-+EDID conformity: PASS
++  Unknown DisplayID Data Block (0x29, length 16)
++  Unknown DisplayID Data Block (0x7e, length 5)
+ EDID conformity: FAIL
