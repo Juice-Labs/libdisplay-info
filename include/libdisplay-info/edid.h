@@ -636,6 +636,32 @@ const struct di_edid_standard_timing *const *
 di_edid_display_descriptor_get_standard_timings(const struct di_edid_display_descriptor *desc);
 
 /**
+ * EDID Color Points, defined in section 3.10.3.5.
+ */
+struct di_edid_color_point {
+	/* White point index number */
+	int index;
+	/* The white chromaticity values, accurate to the thousandth place */
+	float white_x, white_y;
+	/* Gamma, zero if unset (ie, stored in an extension block) */
+	float gamma;
+};
+
+/**
+ * Get a color point list from an EDID display descriptor.
+ *
+ * The returned array is NULL-terminated.
+ *
+ * Returns NULL if the display descriptor tag isn't
+ * DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT.
+ *
+ * Upstream is not aware of any EDID blob containing Color Point Descriptors.
+ * If such a blob is found, please share it with upstream!
+ */
+const struct di_edid_color_point *const *
+di_edid_display_descriptor_get_color_points(const struct di_edid_display_descriptor *desc);
+
+/**
  * Get a list of EDID extensions.
  *
  * The returned array is NULL-terminated.

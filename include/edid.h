@@ -36,6 +36,11 @@
  * in section 3.10.3.6.
  */
 #define EDID_MAX_DESCRIPTOR_STANDARD_TIMING_COUNT 6
+/**
+ * The maximum number of color points in an EDID color point descriptor, defined
+ * in section 3.10.3.5.
+ */
+#define EDID_MAX_DESCRIPTOR_COLOR_POINT_COUNT 2
 
 struct di_edid_detailed_timing_def_priv {
 	struct di_edid_detailed_timing_def base;
@@ -97,6 +102,9 @@ struct di_edid_display_descriptor {
 	/* Used for STD_TIMING_IDS, NULL-terminated */
 	struct di_edid_standard_timing *standard_timings[EDID_MAX_DESCRIPTOR_STANDARD_TIMING_COUNT + 1];
 	size_t standard_timings_len;
+	/* Used for COLOR_POINT, NULL-terminated */
+	struct di_edid_color_point *color_points[EDID_MAX_DESCRIPTOR_COLOR_POINT_COUNT + 1];
+	size_t color_points_len;
 };
 
 struct di_edid_ext {

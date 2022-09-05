@@ -10,6 +10,10 @@
 #include <libdisplay-info/displayid.h>
 #include <libdisplay-info/info.h>
 
+static struct {
+	bool color_point_descriptor;
+} contains_uncommon_feature;
+
 static size_t num_detailed_timing_defs = 0;
 
 static const struct option long_options[] = {
@@ -359,6 +363,27 @@ cvt_aspect_ratio_name(enum di_edid_cvt_aspect_ratio aspect_ratio)
 	abort();
 }
 
+static float
+truncate_chromaticity_coord(float coord)
+{
+	return floorf(coord * 10000) / 10000;
+}
+
+static void
+print_color_point(const struct di_edid_color_point *c)
+{
+	printf("Index: %u White: %.4f, %.4f ",
+	       c->index,
+	       truncate_chromaticity_coord(c->white_x),
+	       truncate_chromaticity_coord(c->white_y));
+
+	if (c->gamma != 0) {
+		printf("Gamma: %.2f\n", c->gamma);
+	} else {
+		printf("Gamma: is defined in an extension block\n");
+	}
+}
+
 static void
 print_display_desc(const struct di_edid *edid,
 		   const struct di_edid_display_descriptor *desc)
@@ -368,6 +393,7 @@ print_display_desc(const struct di_edid *edid,
 	const struct di_edid_display_range_limits *range_limits;
 	enum di_edid_display_range_limits_type range_limits_type;
 	const struct di_edid_standard_timing *const *standard_timings;
+	const struct di_edid_color_point *const *color_points;
 	size_t i;
 
 	tag = di_edid_display_descriptor_get_tag(desc);
@@ -472,6 +498,16 @@ print_display_desc(const struct di_edid *edid,
 			printf("  ");
 			print_standard_timing(standard_timings[i]);
 		}
+		break;
+	case DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT:
+		color_points = di_edid_display_descriptor_get_color_points(desc);
+
+		for (i = 0; color_points[i] != NULL; i++) {
+			printf("      ");
+			print_color_point(color_points[i]);
+		}
+
+		contains_uncommon_feature.color_point_descriptor = true;
 		break;
 	default:
 		printf("\n");
@@ -826,12 +862,6 @@ edid_checksum_index(size_t block_index)
 	return 128 * (block_index + 1) - 1;
 }
 
-static float
-truncate_chromaticity_coord(float coord)
-{
-	return floorf(coord * 10000) / 10000;
-}
-
 int
 main(int argc, char *argv[])
 {
@@ -1142,6 +1172,12 @@ main(int argc, char *argv[])
 		printf("EDID conformity: FAIL\n");
 	} else {
 		printf("EDID conformity: PASS\n");
+	}
+
+	if (contains_uncommon_feature.color_point_descriptor) {
+		fprintf(stderr, "The EDID blob contains an uncommon Color "
+				"Point Descriptor. Please share the EDID blob "
+				"with upstream!\n");
 	}
 
 	di_info_destroy(info);

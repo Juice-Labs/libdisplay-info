@@ -739,6 +739,52 @@ parse_standard_timings_descriptor(struct di_edid *edid,
 }
 
 static bool
+parse_color_point_descriptor(struct di_edid *edid,
+			     const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
+			     struct di_edid_display_descriptor *desc)
+{
+	struct di_edid_color_point *c;
+
+	if (data[5] == 0) {
+		add_failure(edid, "White Point Index Number set to reserved value 0");
+	}
+
+	c = calloc(1, sizeof(*c));
+	if (!c) {
+		return false;
+	}
+
+	c->index = data[5];
+	c->white_x = decode_chromaticity_coord(data[7], get_bit_range(data[6], 3, 2));
+	c->white_y = decode_chromaticity_coord(data[8], get_bit_range(data[6], 1, 0));
+
+	if (data[9] != 0xFF) {
+		c->gamma = ((float) data[9] + 100) / 100;
+	}
+
+	desc->color_points[desc->color_points_len++] = c;
+	if (data[10] == 0)  {
+		return true;
+	}
+
+	c = calloc(1, sizeof(*c));
+	if (!c) {
+		return false;
+	}
+
+	c->index = data[10];
+	c->white_x = decode_chromaticity_coord(data[12], get_bit_range(data[11], 3, 2));
+	c->white_y = decode_chromaticity_coord(data[13], get_bit_range(data[11], 1, 0));
+
+	if (data[14] != 0xFF) {
+		c->gamma = ((float) data[14] + 100) / 100;
+	}
+
+	desc->color_points[desc->color_points_len++] = c;
+	return true;
+}
+
+static bool
 parse_byte_descriptor(struct di_edid *edid,
 		      const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
 {
@@ -802,6 +848,11 @@ parse_byte_descriptor(struct di_edid *edid,
 		}
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT:
+		if (!parse_color_point_descriptor(edid, data, desc)) {
+			free(desc);
+			return false;
+		}
+		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA:
 	case DI_EDID_DISPLAY_DESCRIPTOR_CVT_TIMING_CODES:
 	case DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III:
@@ -1211,6 +1262,15 @@ di_edid_display_descriptor_get_standard_timings(const struct di_edid_display_des
 		return NULL;
 	}
 	return (const struct di_edid_standard_timing *const *) desc->standard_timings;
+}
+
+const struct di_edid_color_point *const *
+di_edid_display_descriptor_get_color_points(const struct di_edid_display_descriptor *desc)
+{
+	if (desc->tag != DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT) {
+		return NULL;
+	}
+	return (const struct di_edid_color_point *const *) desc->color_points;
 }
 
 const struct di_edid_ext *const *
