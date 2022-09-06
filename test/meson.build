@@ -10,6 +10,7 @@ test_cases = [
 	'apple-xdr-dp',
 	'dell-2408wfp-dp',
 	'hp-5dq99aa-hdmi',
+	'msi-mag321curv-dp',
 	'panasonic-mei96a2-dp',
 	'samsung-s27a950d-dp',
 	'sun-gh19ps-dvi',
