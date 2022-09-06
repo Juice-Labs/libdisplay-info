@@ -78,6 +78,7 @@ parse_video_block(struct di_edid_cta *cta, struct di_cta_video_block *video,
 		if (!svd_ptr)
 			return false;
 		*svd_ptr = svd;
+		assert(video->svds_len < EDID_CTA_MAX_VIDEO_BLOCK_ENTRIES);
 		video->svds[video->svds_len++] = svd_ptr;
 	}
 
@@ -355,6 +356,7 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 	}
 
 	data_block->tag = tag;
+	assert(cta->data_blocks_len < EDID_CTA_MAX_DATA_BLOCKS);
 	cta->data_blocks[cta->data_blocks_len++] = data_block;
 	return true;
 
@@ -438,6 +440,7 @@ _di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size,
 			_di_edid_cta_finish(cta);
 			return false;
 		}
+		assert(cta->detailed_timing_defs_len < EDID_CTA_MAX_DETAILED_TIMING_DEFS);
 		cta->detailed_timing_defs[cta->detailed_timing_defs_len++] = detailed_timing_def;
 	}
 

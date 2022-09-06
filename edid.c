@@ -725,8 +725,10 @@ parse_standard_timings_descriptor(struct di_edid *edid,
 		timing_data = &data[5 + i * EDID_STANDARD_TIMING_SIZE];
 		if (!parse_standard_timing(edid, timing_data, &t))
 			return false;
-		if (t)
+		if (t) {
+			assert(desc->standard_timings_len < EDID_MAX_STANDARD_TIMING_COUNT);
 			desc->standard_timings[desc->standard_timings_len++] = t;
+		}
 	}
 
 	if (data[17] != 0x0A)
@@ -757,6 +759,7 @@ parse_byte_descriptor(struct di_edid *edid,
 			return false;
 		}
 
+		assert(edid->detailed_timing_defs_len < EDID_BYTE_DESCRIPTOR_COUNT);
 		edid->detailed_timing_defs[edid->detailed_timing_defs_len++] = detailed_timing_def;
 		return true;
 	}
@@ -815,6 +818,7 @@ parse_byte_descriptor(struct di_edid *edid,
 	}
 
 	desc->tag = tag;
+	assert(edid->display_descriptors_len < EDID_BYTE_DESCRIPTOR_COUNT);
 	edid->display_descriptors[edid->display_descriptors_len++] = desc;
 	return true;
 }
@@ -884,6 +888,7 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 	}
 
 	ext->tag = tag;
+	assert(edid->exts_len < EDID_MAX_BLOCK_COUNT - 1);
 	edid->exts[edid->exts_len++] = ext;
 	return true;
 }
@@ -958,6 +963,7 @@ _di_edid_parse(const void *data, size_t size, FILE *failure_msg_file)
 			return NULL;
 		}
 		if (standard_timing) {
+			assert(edid->standard_timings_len < EDID_MAX_STANDARD_TIMING_COUNT);
 			edid->standard_timings[edid->standard_timings_len++] = standard_timing;
 		}
 	}
