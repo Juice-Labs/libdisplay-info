@@ -10,6 +10,7 @@ test_cases = [
 	'acer-p1276',
 	'apple-xdr-dp',
 	'dell-2408wfp-dp',
+	'goldstar-ite6604-hdmi',
 	'hp-5dq99aa-hdmi',
 	'msi-mag321curv-dp',
 	'panasonic-mei96a2-dp',

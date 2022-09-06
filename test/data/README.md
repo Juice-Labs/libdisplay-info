@@ -5,6 +5,7 @@ licensed under the [Creative Commons Attribution 4.0 International][CC-BY-4.0]
 license:
 
 - acer-p1276
+- goldstar-ite6604-hdmi
 - msi-mag321curv-dp
 - panasonic-mei96a2-dp
 - samsung-s27a950d-dp
