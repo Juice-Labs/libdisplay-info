@@ -12,6 +12,13 @@
 #include <libdisplay-info/cta.h>
 
 /**
+ * The maximum number of data blocks in an EDID CTA block.
+ *
+ * Each data block takes at least 1 byte, the CTA block can hold 128 bytes, and
+ * the mandatory fields take up 5 bytes (4 header bytes + checksum).
+ */
+#define EDID_CTA_MAX_DATA_BLOCKS 123
+/**
  * The maximum number of detailed timing definitions included in an EDID CTA
  * block.
  *
@@ -32,7 +39,7 @@ struct di_edid_cta {
 	struct di_edid_cta_flags flags;
 
 	/* NULL-terminated */
-	struct di_cta_data_block *data_blocks[128];
+	struct di_cta_data_block *data_blocks[EDID_CTA_MAX_DATA_BLOCKS + 1];
 	size_t data_blocks_len;
 
 	/* NULL-terminated */
