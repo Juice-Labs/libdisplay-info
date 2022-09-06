@@ -412,6 +412,7 @@ print_display_desc(const struct di_edid *edid,
 	enum di_edid_display_range_limits_type range_limits_type;
 	const struct di_edid_standard_timing *const *standard_timings;
 	const struct di_edid_color_point *const *color_points;
+	const struct di_dmt_timing *const *established_timings_iii;
 	size_t i;
 
 	tag = di_edid_display_descriptor_get_tag(desc);
@@ -526,6 +527,15 @@ print_display_desc(const struct di_edid *edid,
 		}
 
 		contains_uncommon_feature.color_point_descriptor = true;
+		break;
+	case DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III:
+		established_timings_iii = di_edid_display_descriptor_get_established_timings_iii(desc);
+
+		printf("\n");
+		for (i = 0; established_timings_iii[i] != NULL; i++) {
+			printf("      DMT 0x%02x\n",
+			       established_timings_iii[i]->dmt_id);
+		}
 		break;
 	default:
 		printf("\n");

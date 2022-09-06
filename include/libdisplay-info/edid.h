@@ -663,6 +663,17 @@ const struct di_edid_color_point *const *
 di_edid_display_descriptor_get_color_points(const struct di_edid_display_descriptor *desc);
 
 /**
+ * Get a list of established timings III from an EDID display descriptor.
+ *
+ * The returned array is NULL-terminated.
+ *
+ * Returns NULL if the display descriptor tag isn't
+ * DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III.
+ */
+const struct di_dmt_timing *const *
+di_edid_display_descriptor_get_established_timings_iii(const struct di_edid_display_descriptor *desc);
+
+/**
  * Get a list of EDID extensions.
  *
  * The returned array is NULL-terminated.

@@ -41,6 +41,11 @@
  * in section 3.10.3.5.
  */
 #define EDID_MAX_DESCRIPTOR_COLOR_POINT_COUNT 2
+/**
+ * The maximum number of established timings III in an EDID display descriptor,
+ * defined in section 3.10.3.9.
+ */
+#define EDID_MAX_DESCRIPTOR_ESTABLISHED_TIMING_III_COUNT 44
 
 struct di_edid_detailed_timing_def_priv {
 	struct di_edid_detailed_timing_def base;
@@ -105,6 +110,9 @@ struct di_edid_display_descriptor {
 	/* Used for COLOR_POINT, NULL-terminated */
 	struct di_edid_color_point *color_points[EDID_MAX_DESCRIPTOR_COLOR_POINT_COUNT + 1];
 	size_t color_points_len;
+	/* Used for ESTABLISHED_TIMINGS_III, NULL-terminated */
+	const struct di_dmt_timing *established_timings_iii[EDID_MAX_DESCRIPTOR_ESTABLISHED_TIMING_III_COUNT + 1];
+	size_t established_timings_iii_len;
 };
 
 struct di_edid_ext {

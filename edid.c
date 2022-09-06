@@ -738,6 +738,117 @@ parse_standard_timings_descriptor(struct di_edid *edid,
 	return true;
 }
 
+/**
+ * Mapping table for established timings III.
+ *
+ * Contains one entry per bit, with the value set to the DMT ID.
+ */
+static const uint8_t established_timings_iii[] = {
+	/* 0x06 */
+	0x01, /* 640 x 350 @ 85 Hz */
+	0x02, /* 640 x 400 @ 85 Hz */
+	0x03, /* 720 x 400 @ 85 Hz */
+	0x07, /* 640 x 480 @ 85 Hz */
+	0x0e, /* 848 x 480 @ 60 Hz */
+	0x0c, /* 800 x 600 @ 85 Hz */
+	0x13, /* 1024 x 768 @ 85 Hz */
+	0x15, /* 1152 x 864 @ 75 Hz */
+	/* 0x07 */
+	0x16, /* 1280 x 768 @ 60 Hz (RB) */
+	0x17, /* 1280 x 768 @ 60 Hz */
+	0x18, /* 1280 x 768 @ 75 Hz */
+	0x19, /* 1280 x 768 @ 85 Hz */
+	0x20, /* 1280 x 960 @ 60 Hz */
+	0x21, /* 1280 x 960 @ 85 Hz */
+	0x23, /* 1280 x 1024 @ 60 Hz */
+	0x25, /* 1280 x 1024 @ 85 Hz */
+	/* 0x08 */
+	0x27, /* 1360 x 768 @ 60 Hz */
+	0x2e, /* 1440 x 900 @ 60 Hz (RB) */
+	0x2f, /* 1440 x 900 @ 60 Hz */
+	0x30, /* 1440 x 900 @ 75 Hz */
+	0x31, /* 1440 x 900 @ 85 Hz */
+	0x29, /* 1400 x 1050 @ 60 Hz (RB) */
+	0x2a, /* 1400 x 1050 @ 60 Hz */
+	0x2b, /* 1400 x 1050 @ 75 Hz */
+	/* 0x09 */
+	0x2c, /* 1400 x 1050 @ 85 Hz */
+	0x39, /* 1680 x 1050 @ 60 Hz (RB) */
+	0x3a, /* 1680 x 1050 @ 60 Hz */
+	0x3b, /* 1680 x 1050 @ 75 Hz */
+	0x3c, /* 1680 x 1050 @ 85 Hz */
+	0x33, /* 1600 x 1200 @ 60 Hz */
+	0x34, /* 1600 x 1200 @ 65 Hz */
+	0x35, /* 1600 x 1200 @ 70 Hz */
+	/* 0x0a */
+	0x36, /* 1600 x 1200 @ 75 Hz */
+	0x37, /* 1600 x 1200 @ 85 Hz */
+	0x3e, /* 1792 x 1344 @ 60 Hz */
+	0x3f, /* 1792 x 1344 @ 75 Hz */
+	0x41, /* 1856 x 1392 @ 60 Hz */
+	0x42, /* 1856 x 1392 @ 75 Hz */
+	0x44, /* 1920 x 1200 @ 60 Hz (RB) */
+	0x45, /* 1920 x 1200 @ 60 Hz */
+	/* 0x0b */
+	0x46, /* 1920 x 1200 @ 75 Hz */
+	0x47, /* 1920 x 1200 @ 85 Hz */
+	0x49, /* 1920 x 1440 @ 60 Hz */
+	0x4a, /* 1920 x 1440 @ 75 Hz */
+};
+static_assert(EDID_MAX_DESCRIPTOR_ESTABLISHED_TIMING_III_COUNT
+	      == sizeof(established_timings_iii) / sizeof(established_timings_iii[0]),
+	      "Invalid number of established timings III in table");
+
+static const struct di_dmt_timing *
+get_dmt_timing(uint8_t dmt_id)
+{
+	size_t i;
+	const struct di_dmt_timing *t;
+
+	for (i = 0; i < _di_dmt_timings_len; i++) {
+		t = &_di_dmt_timings[i];
+		if (t->dmt_id == dmt_id)
+			return t;
+	}
+
+	return NULL;
+}
+
+static void
+parse_established_timings_iii_descriptor(struct di_edid *edid,
+					 const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
+					 struct di_edid_display_descriptor *desc)
+{
+	size_t i, offset, bit;
+	uint8_t dmt_id;
+	const struct di_dmt_timing *t;
+	bool has_zeroes;
+
+	if (edid->revision < 4)
+		add_failure(edid, "Established timings III: Not allowed for EDID < 1.4.");
+
+	for (i = 0; i < EDID_MAX_DESCRIPTOR_ESTABLISHED_TIMING_III_COUNT; i++) {
+		dmt_id = established_timings_iii[i];
+		offset = 0x06 + i / 8;
+		bit = 7 - i % 8;
+		assert(offset < EDID_BYTE_DESCRIPTOR_SIZE);
+		if (has_bit(data[offset], bit)) {
+			t = get_dmt_timing(dmt_id);
+			assert(t != NULL);
+			desc->established_timings_iii[desc->established_timings_iii_len++] = t;
+		}
+	}
+
+	has_zeroes = get_bit_range(data[11], 3, 0) == 0;
+	for (i = 12; i < EDID_BYTE_DESCRIPTOR_SIZE; i++) {
+		has_zeroes = has_zeroes && data[i] == 0;
+	}
+	if (!has_zeroes) {
+		add_failure_until(edid, 4,
+				  "Established timings III: Reserved bits must be set to zero.");
+	}
+}
+
 static bool
 parse_color_point_descriptor(struct di_edid *edid,
 			     const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
@@ -847,6 +958,9 @@ parse_byte_descriptor(struct di_edid *edid,
 			return false;
 		}
 		break;
+	case DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III:
+		parse_established_timings_iii_descriptor(edid, data, desc);
+		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT:
 		if (!parse_color_point_descriptor(edid, data, desc)) {
 			free(desc);
@@ -855,7 +969,6 @@ parse_byte_descriptor(struct di_edid *edid,
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA:
 	case DI_EDID_DISPLAY_DESCRIPTOR_CVT_TIMING_CODES:
-	case DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III:
 	case DI_EDID_DISPLAY_DESCRIPTOR_DUMMY:
 		break; /* Ignore */
 	default:
@@ -1271,6 +1384,15 @@ di_edid_display_descriptor_get_color_points(const struct di_edid_display_descrip
 		return NULL;
 	}
 	return (const struct di_edid_color_point *const *) desc->color_points;
+}
+
+const struct di_dmt_timing *const *
+di_edid_display_descriptor_get_established_timings_iii(const struct di_edid_display_descriptor *desc)
+{
+	if (desc->tag != DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III) {
+		return NULL;
+	}
+	return desc->established_timings_iii;
 }
 
 const struct di_edid_ext *const *
