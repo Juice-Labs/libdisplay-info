@@ -1,12 +1,9 @@
-.templates_sha: &templates_sha 3f37cc0e461f5b0c815409bf6f55759f26a74e9c
-
 include:
   - project: 'freedesktop/ci-templates'
-    ref: *templates_sha
-    file: '/templates/ci-fairy.yml'
-  - project: 'freedesktop/ci-templates'
-    ref: *templates_sha
-    file: '/templates/alpine.yml'
+    ref: 3f37cc0e461f5b0c815409bf6f55759f26a74e9c
+    file:
+      - '/templates/ci-fairy.yml'
+      - '/templates/alpine.yml'
 
 # When updating the prepare-container step, make sure to bump
 # FDO_DISTRIBUTION_TAG, otherwise the container won't get rebuilt.
