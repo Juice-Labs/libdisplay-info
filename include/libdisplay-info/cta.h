@@ -10,6 +10,7 @@
  */
 
 #include <stdbool.h>
+#include <stdint.h>
 
 /**
  * EDID CTA-861 extension block.
