@@ -7,6 +7,7 @@ endif
 test_harness = find_program('./edid-decode-check.sh', native: true)
 
 test_cases = [
+	'acer-p1276',
 	'apple-xdr-dp',
 	'dell-2408wfp-dp',
 	'hp-5dq99aa-hdmi',

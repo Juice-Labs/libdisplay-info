@@ -4,6 +4,7 @@ The following blobs originate from the [linuxhw/EDID] repository and are
 licensed under the [Creative Commons Attribution 4.0 International][CC-BY-4.0]
 license:
 
+- acer-p1276
 - msi-mag321curv-dp
 - panasonic-mei96a2-dp
 - samsung-s27a950d-dp
