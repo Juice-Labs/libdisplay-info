@@ -980,10 +980,10 @@ main(int argc, char *argv[])
 		       analog_signal_level_std_name(video_input_analog->signal_level_std));
 		switch (video_input_analog->video_setup) {
 		case DI_EDID_VIDEO_INPUT_ANALOG_BLANK_LEVEL_EQ_BLACK:
-			printf("    Blank-to-black setup/pedestal\n");
+			printf("    Blank level equals black level\n");
 			break;
 		case DI_EDID_VIDEO_INPUT_ANALOG_BLANK_TO_BLACK_SETUP_PEDESTAL:
-			printf("    Blank level equals black level\n");
+			printf("    Blank-to-black setup/pedestal\n");
 			break;
 		}
 		printf("    Sync:");

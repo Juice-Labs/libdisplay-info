@@ -1,14 +1,5 @@
 --- ref
 +++ di
-@@ -8,7 +8,7 @@
-   Basic Display Parameters & Features:
-     Analog display
-     Signal Level Standard: 0.700 : 0.300 : 1.000 V p-p
--    Blank level equals black level
-+    Blank-to-black setup/pedestal
-     Sync: Separate Composite SyncOnGreen
-     Image size is variable
-     Gamma: 1.00
 @@ -37,9 +37,9 @@
      DMT 0x24:  1280x1024   75.024675 Hz   5:4     79.976 kHz    135.000000 MHz
      Apple   :  1152x870    75.061550 Hz 192:145   68.681 kHz    100.000000 MHz
