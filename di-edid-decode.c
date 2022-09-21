@@ -13,6 +13,7 @@
 
 static struct {
 	bool color_point_descriptor;
+	bool color_management_data;
 } contains_uncommon_feature;
 
 static size_t num_detailed_timing_defs = 0;
@@ -413,6 +414,7 @@ print_display_desc(const struct di_edid *edid,
 	const struct di_edid_standard_timing *const *standard_timings;
 	const struct di_edid_color_point *const *color_points;
 	const struct di_dmt_timing *const *established_timings_iii;
+	const struct di_edid_color_management_data *color_management_data;
 	size_t i;
 
 	tag = di_edid_display_descriptor_get_tag(desc);
@@ -536,6 +538,19 @@ print_display_desc(const struct di_edid *edid,
 			printf("      DMT 0x%02x\n",
 			       established_timings_iii[i]->dmt_id);
 		}
+		break;
+	case DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA:
+		color_management_data = di_edid_display_descriptor_get_color_management_data(desc);
+
+		printf("      Version : %d\n", color_management_data->version);
+		printf("      Red a3  : %.2f\n", color_management_data->red_a3);
+		printf("      Red a2  : %.2f\n", color_management_data->red_a2);
+		printf("      Green a3: %.2f\n", color_management_data->green_a3);
+		printf("      Green a2: %.2f\n", color_management_data->green_a2);
+		printf("      Blue a3 : %.2f\n", color_management_data->blue_a3);
+		printf("      Blue a2 : %.2f\n", color_management_data->blue_a2);
+
+		contains_uncommon_feature.color_management_data = true;
 		break;
 	default:
 		printf("\n");
@@ -1206,6 +1221,11 @@ main(int argc, char *argv[])
 		fprintf(stderr, "The EDID blob contains an uncommon Color "
 				"Point Descriptor. Please share the EDID blob "
 				"with upstream!\n");
+	}
+	if (contains_uncommon_feature.color_management_data) {
+		fprintf(stderr, "The EDID blob contains an uncommon Color "
+				"Management Data Descriptor. Please share the "
+				"EDID blob with upstream!\n");
 	}
 
 	di_info_destroy(info);

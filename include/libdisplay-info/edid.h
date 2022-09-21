@@ -674,6 +674,43 @@ const struct di_dmt_timing *const *
 di_edid_display_descriptor_get_established_timings_iii(const struct di_edid_display_descriptor *desc);
 
 /**
+ * EDID display Color Management Data, defined in section 3.10.3.7
+ *
+ * Contains the coefficients for the function `L = a₃ × v³ + a₂ × v²`
+ * describing the luminance response L to some voltage v [0, 0.7] for each color
+ * channel.
+ *
+ * For more information see VESA DCM Standard, Version 1; January 6, 2003
+ */
+struct di_edid_color_management_data {
+	int version;
+	/* red polynomial coefficient a3 */
+	float red_a3;
+	/* red polynomial coefficient a2 */
+	float red_a2;
+	/* green polynomial coefficient a3 */
+	float green_a3;
+	/* green polynomial coefficient a2 */
+	float green_a2;
+	/* blue polynomial coefficient a3 */
+	float blue_a3;
+	/* blue polynomial coefficient a2 */
+	float blue_a2;
+};
+
+/**
+ * Get the contents of a Display Color Management (DCM) Data descriptor.
+ *
+ * Returns NULL if the display descriptor tag isn't
+ * DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA.
+ *
+ * Upstream is not aware of any EDID blob containing DCM Data descriptors.
+ * If such a blob is found, please share it with upstream!
+ */
+const struct di_edid_color_management_data *
+di_edid_display_descriptor_get_color_management_data(const struct di_edid_display_descriptor *desc);
+
+/**
  * Get a list of EDID extensions.
  *
  * The returned array is NULL-terminated.

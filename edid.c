@@ -895,6 +895,26 @@ parse_color_point_descriptor(struct di_edid *edid,
 	return true;
 }
 
+static void
+parse_color_management_data_descriptor(struct di_edid *edid,
+				       const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
+				       struct di_edid_display_descriptor *desc)
+{
+	desc->dcm_data.version = data[5];
+
+	desc->dcm_data.red_a3 = (uint16_t)(data[6] | (data[7] << 8)) / 100.0f;
+	desc->dcm_data.red_a2 = (uint16_t)(data[8] | (data[9] << 8)) / 100.0f;
+	desc->dcm_data.green_a3 = (uint16_t)(data[10] | (data[11] << 8)) / 100.0f;
+	desc->dcm_data.green_a2 = (uint16_t)(data[12] | (data[13] << 8)) / 100.0f;
+	desc->dcm_data.blue_a3 = (uint16_t)(data[14] | (data[15] << 8)) / 100.0f;
+	desc->dcm_data.blue_a2 = (uint16_t)(data[16] | (data[17] << 8)) / 100.0f;
+
+	if (desc->dcm_data.version != 3) {
+		add_failure_until(edid, 4,
+				  "Color Management Data version must be 3");
+	}
+}
+
 static bool
 parse_byte_descriptor(struct di_edid *edid,
 		      const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
@@ -968,6 +988,8 @@ parse_byte_descriptor(struct di_edid *edid,
 		}
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA:
+		parse_color_management_data_descriptor(edid, data, desc);
+		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_CVT_TIMING_CODES:
 	case DI_EDID_DISPLAY_DESCRIPTOR_DUMMY:
 		break; /* Ignore */
@@ -1393,6 +1415,15 @@ di_edid_display_descriptor_get_established_timings_iii(const struct di_edid_disp
 		return NULL;
 	}
 	return desc->established_timings_iii;
+}
+
+const struct di_edid_color_management_data *
+di_edid_display_descriptor_get_color_management_data(const struct di_edid_display_descriptor *desc)
+{
+	if (desc->tag != DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA) {
+		return NULL;
+	}
+	return &desc->dcm_data;
 }
 
 const struct di_edid_ext *const *
