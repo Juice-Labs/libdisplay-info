@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -24,12 +24,12 @@
+@@ -24,7 +24,7 @@
      DMT 0x09:   800x600    60.316541 Hz   4:3     37.879 kHz     40.000000 MHz
      DMT 0x10:  1024x768    60.003840 Hz   4:3     48.363 kHz     65.000000 MHz
    Standard Timings:
@@ -9,12 +9,6 @@
      DMT 0x09:   800x600    60.316541 Hz   4:3     37.879 kHz     40.000000 MHz
      DMT 0x10:  1024x768    60.003840 Hz   4:3     48.363 kHz     65.000000 MHz
      DMT 0x23:  1280x1024   60.019740 Hz   5:4     63.981 kHz    108.000000 MHz
-     DMT 0x55:  1280x720    60.000000 Hz  16:9     45.000 kHz     74.250000 MHz
--    GTF     :  1368x769    60.000000 Hz  16:9     47.760 kHz     85.968000 MHz
-+    DMT 0x00:  1368x769     0.000000 Hz  16:9      0.000 kHz      0.000000 MHz
-     DMT 0x52:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz
-   Detailed Timing Descriptors:
-     DTD 1:  1920x1080   59.933878 Hz  16:9     66.587 kHz    138.500000 MHz (1000 mm x 550 mm)
 @@ -40,14 +40,14 @@
                   Vfront    3 Vsync   5 Vback   22 Vpol P
      Display Product Name: 'ITE6604'

@@ -39,6 +39,7 @@ di_lib = library(
 		'displayid.c',
 		'dmt-table.c',
 		'edid.c',
+		'gtf.c',
 		'info.c',
 		'log.c',
 	],

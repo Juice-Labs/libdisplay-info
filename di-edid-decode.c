@@ -6,9 +6,10 @@
 #include <getopt.h>
 
 #include <libdisplay-info/cta.h>
+#include <libdisplay-info/displayid.h>
 #include <libdisplay-info/dmt.h>
 #include <libdisplay-info/edid.h>
-#include <libdisplay-info/displayid.h>
+#include <libdisplay-info/gtf.h>
 #include <libdisplay-info/info.h>
 
 static struct {
@@ -57,11 +58,14 @@ print_standard_timing(const struct di_edid_standard_timing *t)
 	int32_t vert_video;
 	const struct di_dmt_timing *dmt;
 	int hbl, vbl, horiz_total, vert_total;
-	double refresh, horiz_freq_hz, pixel_clock_mhz;
+	double refresh, horiz_freq_hz, pixel_clock_mhz, pixel_clock_khz;
+	struct di_gtf_options gtf_options;
+	struct di_gtf_timing gtf;
 
 	vert_video = di_edid_standard_timing_get_vert_video(t);
 	dmt = di_edid_standard_timing_get_dmt(t);
 
+	printf("    ");
 	if (dmt) {
 		hbl = dmt->horiz_blank - 2 * dmt->horiz_border;
 		vbl = dmt->vert_blank - 2 * dmt->vert_border;
@@ -70,15 +74,37 @@ print_standard_timing(const struct di_edid_standard_timing *t)
 		refresh = (double) dmt->pixel_clock_hz / (horiz_total * vert_total);
 		horiz_freq_hz = (double) dmt->pixel_clock_hz / horiz_total;
 		pixel_clock_mhz = (double) dmt->pixel_clock_hz / (1000 * 1000);
+
+		printf("DMT 0x%02x", dmt ? dmt->dmt_id : 0);
 	} else {
-		/* TODO: GTF and CVT timings */
-		refresh = 0;
-		horiz_freq_hz = 0;
-		pixel_clock_mhz = 0;
+		/* TODO: CVT timings */
+
+		gtf_options = (struct di_gtf_options) {
+			.h_pixels = t->horiz_video,
+			.v_lines = vert_video,
+			.ip_param = DI_GTF_IP_PARAM_V_FRAME_RATE,
+			.ip_freq_rqd = t->refresh_rate_hz,
+			.m = DI_GTF_DEFAULT_M,
+			.c = DI_GTF_DEFAULT_C,
+			.k = DI_GTF_DEFAULT_K,
+			.j = DI_GTF_DEFAULT_J,
+		};
+		di_gtf_compute(&gtf, &gtf_options);
+
+		hbl = gtf.h_front_porch + gtf.h_sync + gtf.h_back_porch + 2 * gtf.h_border;
+		vbl = gtf.v_front_porch + gtf.v_sync + gtf.v_back_porch + 2 * gtf.v_border;
+		horiz_total = gtf.h_pixels + hbl;
+		vert_total = gtf.v_lines + vbl;
+		/* Upstream edid-decode rounds the pixel clock to kHz... */
+		pixel_clock_khz = round(gtf.pixel_freq_mhz * 1000);
+		refresh = (pixel_clock_khz * 1000) / (horiz_total * vert_total);
+		horiz_freq_hz = (pixel_clock_khz * 1000) / horiz_total;
+		pixel_clock_mhz = pixel_clock_khz / 1000;
+
+		printf("GTF     ");
 	}
 
-	printf("    ");
-	printf("DMT 0x%02x:", dmt ? dmt->dmt_id : 0);
+	printf(":");
 	printf(" %5dx%-5d", t->horiz_video, vert_video);
 	printf(" %10.6f Hz", refresh);
 	printf("  %s ", standard_timing_aspect_ratio_name(t->aspect_ratio));

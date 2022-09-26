@@ -1,16 +1,5 @@
 --- ref
 +++ di
-@@ -35,8 +35,8 @@
-     DMT 0x24:  1280x1024   75.024675 Hz   5:4     79.976 kHz    135.000000 MHz
-   Standard Timings:
-     DMT 0x23:  1280x1024   60.019740 Hz   5:4     63.981 kHz    108.000000 MHz
--    GTF     :  1280x1024   75.999957 Hz   5:4     81.320 kHz    141.822000 MHz
--    GTF     :  1152x921    66.000114 Hz   5:4     63.162 kHz     97.017000 MHz
-+    DMT 0x00:  1280x1024    0.000000 Hz   5:4      0.000 kHz      0.000000 MHz
-+    DMT 0x00:  1152x921     0.000000 Hz   5:4      0.000 kHz      0.000000 MHz
-     DMT 0x24:  1280x1024   75.024675 Hz   5:4     79.976 kHz    135.000000 MHz
-   Detailed Timing Descriptors:
-     DTD 1:  1280x1024   60.019740 Hz   5:4     63.981 kHz    108.000000 MHz (digital composite, serrate, 380 mm x 300 mm)
 @@ -50,15 +50,4 @@
  
  ----------------
