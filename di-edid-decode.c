@@ -14,6 +14,7 @@
 static struct {
 	bool color_point_descriptor;
 	bool color_management_data;
+	bool cta_transfer_characteristics;
 } contains_uncommon_feature;
 
 static size_t num_detailed_timing_defs = 0;
@@ -703,6 +704,34 @@ print_cta_hdr_static_metadata(const struct di_cta_hdr_static_metadata_block *met
 		       metadata->desired_content_min_luminance);
 }
 
+static void
+print_cta_vesa_transfer_characteristics(const struct di_cta_vesa_transfer_characteristics *tf)
+{
+	size_t i;
+
+	switch (tf->usage) {
+	case DI_CTA_VESA_TRANSFER_CHARACTERISTIC_USAGE_WHITE:
+		printf("    White");
+		break;
+	case DI_CTA_VESA_TRANSFER_CHARACTERISTIC_USAGE_RED:
+		printf("    Red");
+		break;
+	case DI_CTA_VESA_TRANSFER_CHARACTERISTIC_USAGE_GREEN:
+		printf("    Green");
+		break;
+	case DI_CTA_VESA_TRANSFER_CHARACTERISTIC_USAGE_BLUE:
+		printf("    Blue");
+		break;
+	}
+
+	printf(" transfer characteristics:");
+	for (i = 0; i < tf->points_len; i++)
+		printf(" %u", (uint16_t) (tf->points[i] * 1023.0f));
+	printf("\n");
+
+	contains_uncommon_feature.cta_transfer_characteristics = true;
+}
+
 static const char *
 cta_data_block_tag_name(enum di_cta_data_block_tag tag)
 {
@@ -781,6 +810,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_video_cap_block *video_cap;
 	const struct di_cta_colorimetry_block *colorimetry;
 	const struct di_cta_hdr_static_metadata_block *hdr_static_metadata;
+	const struct di_cta_vesa_transfer_characteristics *transfer_characteristics;
 	size_t i;
 	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;
 
@@ -857,6 +887,10 @@ print_cta(const struct di_edid_cta *cta)
 		case DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA:
 			hdr_static_metadata = di_cta_data_block_get_hdr_static_metadata(data_block);
 			print_cta_hdr_static_metadata(hdr_static_metadata);
+			break;
+		case DI_CTA_DATA_BLOCK_VESA_DISPLAY_TRANSFER_CHARACTERISTIC:
+			transfer_characteristics = di_cta_data_block_get_vesa_transfer_characteristics(data_block);
+			print_cta_vesa_transfer_characteristics(transfer_characteristics);
 			break;
 		default:
 			break; /* Ignore */
@@ -1311,6 +1345,11 @@ main(int argc, char *argv[])
 		fprintf(stderr, "The EDID blob contains an uncommon Color "
 				"Management Data Descriptor. Please share the "
 				"EDID blob with upstream!\n");
+	}
+	if (contains_uncommon_feature.cta_transfer_characteristics) {
+		fprintf(stderr, "The EDID blob contains an uncommon CTA VESA "
+				"Display Transfer Characteristic data block. "
+				"Please share the EDID blob with upstream!\n");
 	}
 
 	di_info_destroy(info);

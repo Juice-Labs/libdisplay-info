@@ -259,6 +259,44 @@ struct di_cta_svd {
 const struct di_cta_svd *const *
 di_cta_data_block_get_svds(const struct di_cta_data_block *block);
 
+enum di_cta_vesa_transfer_characteristics_usage {
+	/* White transfer characteristic */
+	DI_CTA_VESA_TRANSFER_CHARACTERISTIC_USAGE_WHITE = 0,
+	/* Red transfer characteristic */
+	DI_CTA_VESA_TRANSFER_CHARACTERISTIC_USAGE_RED = 1,
+	/* Green transfer characteristic */
+	DI_CTA_VESA_TRANSFER_CHARACTERISTIC_USAGE_GREEN = 2,
+	/* Blue transfer characteristic */
+	DI_CTA_VESA_TRANSFER_CHARACTERISTIC_USAGE_BLUE = 3,
+};
+
+/**
+ * VESA Display Transfer Characteristic Data Block, defined in VESA Display
+ * Transfer Characteristics Data Block Standard Version 1.0
+ *
+ * Contains 8, 16 or 32 evenly distributed points on the input axis describing
+ * the normalized relative luminance at that input. The first value includes the
+ * relative black level luminance.
+ */
+struct di_cta_vesa_transfer_characteristics {
+	enum di_cta_vesa_transfer_characteristics_usage usage;
+	uint8_t points_len;
+	float points[32];
+};
+
+/**
+ * Get the Display Transfer Characteristic from a CTA data block.
+ *
+ * Returns NULL if the data block tag is not
+ * DI_CTA_DATA_BLOCK_VESA_DISPLAY_TRANSFER_CHARACTERISTIC.
+ *
+ * Upstream is not aware of any EDID blob containing a Display Transfer
+ * Characteristic data block.
+ * If such a blob is found, please share it with upstream!
+ */
+const struct di_cta_vesa_transfer_characteristics *
+di_cta_data_block_get_vesa_transfer_characteristics(const struct di_cta_data_block *block);
+
 /**
  * Get a list of EDID detailed timing definitions.
  *

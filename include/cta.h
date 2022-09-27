@@ -72,6 +72,8 @@ struct di_cta_data_block {
 	struct di_cta_colorimetry_block colorimetry;
 	/* Used for DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA */
 	struct di_cta_hdr_static_metadata_block_priv hdr_static_metadata;
+	/* Used for DI_CTA_DATA_BLOCK_VESA_DISPLAY_TRANSFER_CHARACTERISTIC */
+	struct di_cta_vesa_transfer_characteristics vesa_transfer_characteristics;
 };
 
 bool

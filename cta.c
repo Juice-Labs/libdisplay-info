@@ -214,6 +214,29 @@ parse_hdr_static_metadata_block(struct di_edid_cta *cta,
 	return true;
 }
 
+static bool
+parse_vesa_transfer_characteristics_block(struct di_edid_cta *cta,
+					  struct di_cta_vesa_transfer_characteristics *tf,
+					  const uint8_t *data, size_t size)
+{
+	size_t i;
+
+	if (size != 7 && size != 15 && size != 31) {
+		add_failure(cta, "Invalid length %u.", size);
+		return false;
+	}
+
+	tf->points_len = (uint8_t) size + 1;
+	tf->usage = get_bit_range(data[0], 7, 6);
+
+	tf->points[0] = get_bit_range(data[0], 5, 0) / 1023.0f;
+	for (i = 1; i < size; i++)
+		tf->points[i] = tf->points[i - 1] + data[i] / 1023.0f;
+	tf->points[i] = 1.0f;
+
+	return true;
+}
+
 static void
 destroy_data_block(struct di_cta_data_block *data_block)
 {
@@ -262,6 +285,10 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 		break;
 	case 5:
 		tag = DI_CTA_DATA_BLOCK_VESA_DISPLAY_TRANSFER_CHARACTERISTIC;
+		if (!parse_vesa_transfer_characteristics_block(cta,
+							       &data_block->vesa_transfer_characteristics,
+							       data, size))
+			goto error;
 		break;
 	case 7:
 		/* Use Extended Tag */
@@ -535,4 +562,13 @@ const struct di_edid_detailed_timing_def *const *
 di_edid_cta_get_detailed_timing_defs(const struct di_edid_cta *cta)
 {
 	return (const struct di_edid_detailed_timing_def *const *) cta->detailed_timing_defs;
+}
+
+const struct di_cta_vesa_transfer_characteristics *
+di_cta_data_block_get_vesa_transfer_characteristics(const struct di_cta_data_block *block)
+{
+	if (block->tag != DI_CTA_DATA_BLOCK_VESA_DISPLAY_TRANSFER_CHARACTERISTIC) {
+		return NULL;
+	}
+	return &block->vesa_transfer_characteristics;
 }
