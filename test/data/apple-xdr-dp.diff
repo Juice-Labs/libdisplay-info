@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -62,171 +62,51 @@
+@@ -62,44 +62,15 @@
      DTD 6:  3840x2160   47.951737 Hz  16:9    134.696 kHz    528.010000 MHz (699 mm x 393 mm)
                   Hfront    8 Hsync  32 Hback   40 Hpol P
                   Vfront   59 Vsync   8 Vback  582 Vpol N
@@ -44,12 +44,12 @@
 -    Number of Pixels in Hor Pix Cnt Overlapping an Adjacent Panel: 0
 -    Multi-SST Operation: Not Supported
    Video Timing Modes Type 1 - Detailed Timings Data Block:
--    DTD:  3840x2160   59.999545 Hz  16:9    134.699 kHz    528.020000 MHz (aspect 16:9, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   40 Hpol P
--               Vfront   71 Vsync   8 Vback    6 Vpol N
--    DTD:  3008x3384   59.999726 Hz   0:0    210.959 kHz    648.910000 MHz (aspect undefined, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   28 Hpol P
--               Vfront  118 Vsync   8 Vback    6 Vpol N
+     DTD:  3840x2160   59.999545 Hz  16:9    134.699 kHz    528.020000 MHz (aspect 16:9, no 3D stereo)
+                Hfront    8 Hsync  32 Hback   40 Hpol P
+@@ -107,14 +78,12 @@
+     DTD:  3008x3384   59.999726 Hz   0:0    210.959 kHz    648.910000 MHz (aspect undefined, no 3D stereo)
+                Hfront    8 Hsync  32 Hback   28 Hpol P
+                Vfront  118 Vsync   8 Vback    6 Vpol N
 -  Checksum: 0x8c
  Checksum: 0x90
  
@@ -59,21 +59,12 @@
    Version: 1.2
 -  Extension Count: 0
    Video Timing Modes Type 1 - Detailed Timings Data Block:
--    DTD:  2560x2880   59.999451 Hz   0:0    179.578 kHz    481.270000 MHz (aspect undefined, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   80 Hpol P
--               Vfront   99 Vsync   8 Vback    6 Vpol N
--    DTD:  2560x2880   59.939451 Hz   0:0    179.519 kHz    481.110000 MHz (aspect undefined, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   80 Hpol P
--               Vfront  101 Vsync   8 Vback    6 Vpol N
--    DTD:  2560x2880   49.999584 Hz   0:0    179.549 kHz    481.190000 MHz (aspect undefined, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   80 Hpol P
--               Vfront  697 Vsync   8 Vback    6 Vpol N
--    DTD:  2560x2880   47.999777 Hz   0:0    179.567 kHz    481.240000 MHz (aspect undefined, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   80 Hpol P
--               Vfront  847 Vsync   8 Vback    6 Vpol N
--    DTD:  2560x2880   47.951349 Hz   0:0    179.530 kHz    481.140000 MHz (aspect undefined, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   80 Hpol P
--               Vfront  850 Vsync   8 Vback    6 Vpol N
+     DTD:  2560x2880   59.999451 Hz   0:0    179.578 kHz    481.270000 MHz (aspect undefined, no 3D stereo)
+                Hfront    8 Hsync  32 Hback   80 Hpol P
+@@ -131,14 +100,12 @@
+     DTD:  2560x2880   47.951349 Hz   0:0    179.530 kHz    481.140000 MHz (aspect undefined, no 3D stereo)
+                Hfront    8 Hsync  32 Hback   80 Hpol P
+                Vfront  850 Vsync   8 Vback    6 Vpol N
 -  Checksum: 0x93
  Checksum: 0x90
  
@@ -83,21 +74,12 @@
    Version: 1.2
 -  Extension Count: 0
    Video Timing Modes Type 1 - Detailed Timings Data Block:
--    DTD:  3008x3384   59.999726 Hz   0:0    210.959 kHz    648.910000 MHz (aspect undefined, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   28 Hpol P
--               Vfront  118 Vsync   8 Vback    6 Vpol N
--    DTD:  3008x3384   59.939337 Hz   0:0    210.927 kHz    648.810000 MHz (aspect undefined, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   28 Hpol P
--               Vfront  121 Vsync   8 Vback    6 Vpol N
--    DTD:  3008x3384   49.999830 Hz   0:0    210.949 kHz    648.880000 MHz (aspect undefined, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   28 Hpol P
--               Vfront  821 Vsync   8 Vback    6 Vpol N
--    DTD:  3008x3384   47.999781 Hz   0:0    210.959 kHz    648.910000 MHz (aspect undefined, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   28 Hpol P
--               Vfront  997 Vsync   8 Vback    6 Vpol N
--    DTD:  3008x3384   47.951701 Hz   0:0    210.940 kHz    648.850000 MHz (aspect undefined, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   28 Hpol P
--               Vfront 1001 Vsync   8 Vback    6 Vpol N
+     DTD:  3008x3384   59.999726 Hz   0:0    210.959 kHz    648.910000 MHz (aspect undefined, no 3D stereo)
+                Hfront    8 Hsync  32 Hback   28 Hpol P
+@@ -155,14 +122,12 @@
+     DTD:  3008x3384   47.951701 Hz   0:0    210.940 kHz    648.850000 MHz (aspect undefined, no 3D stereo)
+                Hfront    8 Hsync  32 Hback   28 Hpol P
+                Vfront 1001 Vsync   8 Vback    6 Vpol N
 -  Checksum: 0x7e
  Checksum: 0x90
  
@@ -107,21 +89,12 @@
    Version: 1.2
 -  Extension Count: 0
    Video Timing Modes Type 1 - Detailed Timings Data Block:
--    DTD:  5120x2880   59.999614 Hz  16:9    179.579 kHz    933.810000 MHz (aspect 16:9, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   40 Hpol P
--               Vfront   99 Vsync   8 Vback    6 Vpol N
--    DTD:  5120x2880   59.939643 Hz  16:9    179.519 kHz    933.500000 MHz (aspect 16:9, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   40 Hpol P
--               Vfront  101 Vsync   8 Vback    6 Vpol N
--    DTD:  5120x2880   50.000000 Hz  16:9    179.550 kHz    933.660000 MHz (aspect 16:9, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   40 Hpol P
--               Vfront  697 Vsync   8 Vback    6 Vpol N
--    DTD:  5120x2880   47.999815 Hz  16:9    179.567 kHz    933.750000 MHz (aspect 16:9, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   40 Hpol P
--               Vfront  847 Vsync   8 Vback    6 Vpol N
--    DTD:  5120x2880   47.951594 Hz  16:9    179.531 kHz    933.560000 MHz (aspect 16:9, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   40 Hpol P
--               Vfront  850 Vsync   8 Vback    6 Vpol N
+     DTD:  5120x2880   59.999614 Hz  16:9    179.579 kHz    933.810000 MHz (aspect 16:9, no 3D stereo)
+                Hfront    8 Hsync  32 Hback   40 Hpol P
+@@ -179,16 +144,14 @@
+     DTD:  5120x2880   47.951594 Hz  16:9    179.531 kHz    933.560000 MHz (aspect 16:9, no 3D stereo)
+                Hfront    8 Hsync  32 Hback   40 Hpol P
+                Vfront  850 Vsync   8 Vback    6 Vpol N
 -  Checksum: 0x0a
  Checksum: 0x90
  
@@ -132,20 +105,14 @@
 -  Extension Count: 0
    Video Timing Modes Type 1 - Detailed Timings Data Block:
 -    DTD:  6016x3384   59.999899 Hz  16:9    210.960 kHz   1286.010000 MHz (aspect 16:9, no 3D stereo, preferred)
--               Hfront    8 Hsync  32 Hback   40 Hpol P
--               Vfront  118 Vsync   8 Vback    6 Vpol N
--    DTD:  6016x3384   59.939891 Hz  16:9    210.928 kHz   1285.820000 MHz (aspect 16:9, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   40 Hpol P
--               Vfront  121 Vsync   8 Vback    6 Vpol N
--    DTD:  6016x3384   49.999953 Hz  16:9    210.950 kHz   1285.950000 MHz (aspect 16:9, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   40 Hpol P
--               Vfront  821 Vsync   8 Vback    6 Vpol N
--    DTD:  6016x3384   47.999919 Hz  16:9    210.960 kHz   1286.010000 MHz (aspect 16:9, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   40 Hpol P
--               Vfront  997 Vsync   8 Vback    6 Vpol N
--    DTD:  6016x3384   47.951798 Hz  16:9    210.940 kHz   1285.890000 MHz (aspect 16:9, no 3D stereo)
--               Hfront    8 Hsync  32 Hback   40 Hpol P
--               Vfront 1001 Vsync   8 Vback    6 Vpol N
++    DTD:  6016x3384   59.999899 Hz  16:9    210.960 kHz   1286.010000 MHz (aspect 16:9, no 3D stereo)
+                Hfront    8 Hsync  32 Hback   40 Hpol P
+                Vfront  118 Vsync   8 Vback    6 Vpol N
+     DTD:  6016x3384   59.939891 Hz  16:9    210.928 kHz   1285.820000 MHz (aspect 16:9, no 3D stereo)
+@@ -203,30 +166,13 @@
+     DTD:  6016x3384   47.951798 Hz  16:9    210.940 kHz   1285.890000 MHz (aspect 16:9, no 3D stereo)
+                Hfront    8 Hsync  32 Hback   40 Hpol P
+                Vfront 1001 Vsync   8 Vback    6 Vpol N
 -  Checksum: 0xb4
  Checksum: 0x90
  

@@ -20,6 +20,13 @@
  * a minimum size of 3 bytes.
  */
 #define DISPLAYID_MAX_DATA_BLOCKS 83
+/**
+ * The maximum number of type I timings in a data block.
+ *
+ * A DisplayID data block has a maximum payload size of 248 bytes, and each type
+ * I timing takes up 20 bytes.
+ */
+#define DISPLAYID_MAX_TYPE_I_TIMINGS 12
 
 struct di_displayid {
 	int version, revision;
@@ -33,6 +40,10 @@ struct di_displayid {
 
 struct di_displayid_data_block {
 	enum di_displayid_data_block_tag tag;
+
+	/* Used for TYPE_I_TIMING, NULL-terminated */
+	struct di_displayid_type_i_timing *type_i_timings[DISPLAYID_MAX_TYPE_I_TIMINGS + 1];
+	size_t type_i_timings_len;
 };
 
 bool
