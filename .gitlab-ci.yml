@@ -11,7 +11,7 @@ include:
 # $ git push -f -o ci.variable="FDO_FORCE_REBUILD=1"
 variables:
   FDO_UPSTREAM_REPO: 'emersion/libdisplay-info'
-  FDO_DISTRIBUTION_TAG: '2022-08-15.0'
+  FDO_DISTRIBUTION_TAG: '2022-09-28.0'
 
 stages:
   - "Contribution checks"
@@ -34,7 +34,7 @@ prepare-container:
   stage: "Prepare container"
   variables:
     FDO_DISTRIBUTION_PACKAGES: |
-      build-base clang compiler-rt meson make git gcovr py3-pygments
+      build-base clang compiler-rt meson make git gcovr py3-pygments go
     FDO_DISTRIBUTION_EXEC: |
       git clone git://linuxtv.org/edid-decode.git
       cd edid-decode
@@ -43,6 +43,10 @@ prepare-container:
       make install
       cd ..
       rm -rf edid-decode
+
+      go install git.sr.ht/~emersion/gyosu@latest
+      mv ~/go/bin/gyosu /usr/bin/
+      rm -rf ~/go
   rules:
     - when: on_success
 
@@ -81,3 +85,18 @@ build-clang:
       junit: build/meson-logs/testlog.junit.xml
   rules:
     - when: on_success
+
+pages:
+  extends: .fdo.distribution-image@alpine
+  stage: "Build and test"
+  script:
+    - gyosu -I$PWD/include/ -fexported-symbols='di_*'
+      -ffile-prefix-map=$PWD/include/= -fsite-name=libdisplay-info
+      -o public $PWD/include/libdisplay-info/
+  artifacts:
+    paths:
+      - public/
+  rules:
+    - if: '$CI_PROJECT_PATH == "emersion/libdisplay-info" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: on_success
+    - when: never
