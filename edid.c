@@ -726,7 +726,7 @@ parse_standard_timings_descriptor(struct di_edid *edid,
 		if (!parse_standard_timing(edid, timing_data, &t))
 			return false;
 		if (t) {
-			assert(desc->standard_timings_len < EDID_MAX_STANDARD_TIMING_COUNT);
+			assert(desc->standard_timings_len < EDID_MAX_DESCRIPTOR_STANDARD_TIMING_COUNT);
 			desc->standard_timings[desc->standard_timings_len++] = t;
 		}
 	}
