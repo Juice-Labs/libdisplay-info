@@ -38,12 +38,20 @@ struct di_displayid {
 	struct di_logger *logger;
 };
 
+struct di_displayid_display_params_priv {
+	struct di_displayid_display_params base;
+	struct di_displayid_display_params_features features;
+};
+
 struct di_displayid_data_block {
 	enum di_displayid_data_block_tag tag;
 
 	/* Used for TYPE_I_TIMING, NULL-terminated */
 	struct di_displayid_type_i_timing *type_i_timings[DISPLAYID_MAX_TYPE_I_TIMINGS + 1];
 	size_t type_i_timings_len;
+
+	/* Used for DISPLAY_PARAMS */
+	struct di_displayid_display_params_priv display_params;
 };
 
 bool

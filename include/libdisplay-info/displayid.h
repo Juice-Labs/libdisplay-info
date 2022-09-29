@@ -109,6 +109,57 @@ struct di_displayid_data_block;
 enum di_displayid_data_block_tag
 di_displayid_data_block_get_tag(const struct di_displayid_data_block *data_block);
 
+/**
+ * Display parameters feature support flags, defined in section 4.2.3.
+ */
+struct di_displayid_display_params_features {
+	/* Audio support on video interface */
+	bool audio;
+	/* Audio inputs are provided separately from the video interface */
+	bool separate_audio_inputs;
+	/* Audio information received via the video interface will automatically
+	 * override any other audio input channels provided */
+	bool audio_input_override;
+	/* Display supports the VESA Display Power Management (DPM) standard */
+	bool power_management;
+	/* Display is capable of only a single fixed timing */
+	bool fixed_timing;
+	/* Display is capable of supporting timings at only a single fixed pixel
+	 * format */
+	bool fixed_pixel_format;
+	/* Display supports ACP, ISRC1 or ISRC2 packets */
+	bool ai;
+	/* Display by default will de-interlace any interlaced video input */
+	bool deinterlacing;
+};
+
+/**
+ * Display parameters data block, defined in section 4.2.
+ */
+struct di_displayid_display_params {
+	/* Image size in millimeters accurate to the thenths place, zero if unset */
+	float horiz_image_mm, vert_image_mm;
+	/* Native format size in pixels, zero if unset */
+	int32_t horiz_pixels, vert_pixels;
+	/* Feature flags */
+	const struct di_displayid_display_params_features *features;
+	/* Transfer characteristic gamma, zero if unset */
+	float gamma;
+	/* Aspect ratio (long axis divided by short axis) */
+	float aspect_ratio;
+	/* Color bit depth (dynamic range) */
+	int32_t bits_per_color_overall, bits_per_color_native;
+};
+
+/**
+ * Get display parameters from a DisplayID data block.
+ *
+ * Returns NULL if the data block tag isn't
+ * DI_DISPLAYID_DATA_BLOCK_DISPLAY_PARAMS.
+ */
+const struct di_displayid_display_params *
+di_displayid_data_block_get_display_params(const struct di_displayid_data_block *data_block);
+
 enum di_displayid_type_i_timing_stereo_3d {
 	/* This timing is always displayed monoscopic (no stereo) */
 	DI_DISPLAYID_TYPE_I_TIMING_STEREO_3D_NEVER = 0x00,

@@ -933,6 +933,39 @@ print_cta(const struct di_edid_cta *cta)
 }
 
 static void
+print_displayid_display_params(const struct di_displayid_display_params *params)
+{
+	printf("    Image size: %.1f mm x %.1f mm\n",
+	       params->horiz_image_mm, params->vert_image_mm);
+	printf("    Display native pixel format: %dx%d\n",
+	       params->horiz_pixels, params->vert_pixels);
+
+	printf("    Feature support flags:\n");
+	if (params->features->audio)
+		printf("      Audio support on video interface\n");
+	if (params->features->separate_audio_inputs)
+		printf("      Separate audio inputs provided\n");
+	if (params->features->audio_input_override)
+		printf("      Audio input override\n");
+	if (params->features->power_management)
+		printf("      Power management (DPM)\n");
+	if (params->features->fixed_timing)
+		printf("      Fixed timing\n");
+	if (params->features->fixed_pixel_format)
+		printf("      Fixed pixel format\n");
+	if (params->features->ai)
+		printf("      Support ACP, ISRC1, or ISRC2packets\n");
+	if (params->features->deinterlacing)
+		printf("      De-interlacing\n");
+
+	if (params->gamma != 0)
+		printf("    Gamma: %.2f\n", params->gamma);
+	printf("    Aspect ratio: %.2f\n", params->aspect_ratio);
+	printf("    Dynamic bpc native: %d\n", params->bits_per_color_native);
+	printf("    Dynamic bpc overall: %d\n", params->bits_per_color_overall);
+}
+
+static void
 get_displayid_type_i_timing_aspect_ratio(enum di_displayid_type_i_timing_aspect_ratio ratio,
 					 int *horiz, int *vert)
 {
@@ -1135,6 +1168,7 @@ print_displayid(const struct di_displayid *displayid)
 	const struct di_displayid_data_block *data_block;
 	enum di_displayid_data_block_tag tag;
 	size_t i;
+	const struct di_displayid_display_params *display_params;
 
 	printf("  Version: %d.%d\n", di_displayid_get_version(displayid),
 	       di_displayid_get_revision(displayid));
@@ -1150,6 +1184,10 @@ print_displayid(const struct di_displayid *displayid)
 		tag = di_displayid_data_block_get_tag(data_block);
 		printf("  %s:\n", displayid_data_block_tag_name(tag));
 		switch (tag) {
+		case DI_DISPLAYID_DATA_BLOCK_DISPLAY_PARAMS:
+			display_params = di_displayid_data_block_get_display_params(data_block);
+			print_displayid_display_params(display_params);
+			break;
 		case DI_DISPLAYID_DATA_BLOCK_TYPE_I_TIMING:
 			print_displayid_type_i_timing_block(data_block);
 			break;

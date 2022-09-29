@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -62,44 +62,15 @@
+@@ -62,16 +62,13 @@
      DTD 6:  3840x2160   47.951737 Hz  16:9    134.696 kHz    528.010000 MHz (699 mm x 393 mm)
                   Hfront    8 Hsync  32 Hback   40 Hpol P
                   Vfront   59 Vsync   8 Vback  582 Vpol N
@@ -16,14 +16,12 @@
 -  ContainerID Data Block:
 -    Container ID: dfde542f-1339-444b-ad7d-7071d131bff8
    Display Parameters Data Block (0x01):
--    Image size: 699.4 mm x 393.4 mm
--    Display native pixel format: 6016x3384
--    Feature support flags:
--      Power management (DPM)
--    Gamma: 2.20
--    Aspect ratio: 1.78
--    Dynamic bpc native: 12
--    Dynamic bpc overall: 12
+     Image size: 699.4 mm x 393.4 mm
+     Display native pixel format: 6016x3384
+@@ -81,25 +78,7 @@
+     Aspect ratio: 1.78
+     Dynamic bpc native: 12
+     Dynamic bpc overall: 12
 -  Vendor-Specific Data Block (0x7f) (Apple), OUI 00-10-FA:
 -    Type: 4, Version: 1
 -    00 00                                           '..'
@@ -46,7 +44,7 @@
    Video Timing Modes Type 1 - Detailed Timings Data Block:
      DTD:  3840x2160   59.999545 Hz  16:9    134.699 kHz    528.020000 MHz (aspect 16:9, no 3D stereo)
                 Hfront    8 Hsync  32 Hback   40 Hpol P
-@@ -107,14 +78,12 @@
+@@ -107,14 +86,12 @@
      DTD:  3008x3384   59.999726 Hz   0:0    210.959 kHz    648.910000 MHz (aspect undefined, no 3D stereo)
                 Hfront    8 Hsync  32 Hback   28 Hpol P
                 Vfront  118 Vsync   8 Vback    6 Vpol N
@@ -61,7 +59,7 @@
    Video Timing Modes Type 1 - Detailed Timings Data Block:
      DTD:  2560x2880   59.999451 Hz   0:0    179.578 kHz    481.270000 MHz (aspect undefined, no 3D stereo)
                 Hfront    8 Hsync  32 Hback   80 Hpol P
-@@ -131,14 +100,12 @@
+@@ -131,14 +108,12 @@
      DTD:  2560x2880   47.951349 Hz   0:0    179.530 kHz    481.140000 MHz (aspect undefined, no 3D stereo)
                 Hfront    8 Hsync  32 Hback   80 Hpol P
                 Vfront  850 Vsync   8 Vback    6 Vpol N
@@ -76,7 +74,7 @@
    Video Timing Modes Type 1 - Detailed Timings Data Block:
      DTD:  3008x3384   59.999726 Hz   0:0    210.959 kHz    648.910000 MHz (aspect undefined, no 3D stereo)
                 Hfront    8 Hsync  32 Hback   28 Hpol P
-@@ -155,14 +122,12 @@
+@@ -155,14 +130,12 @@
      DTD:  3008x3384   47.951701 Hz   0:0    210.940 kHz    648.850000 MHz (aspect undefined, no 3D stereo)
                 Hfront    8 Hsync  32 Hback   28 Hpol P
                 Vfront 1001 Vsync   8 Vback    6 Vpol N
@@ -91,7 +89,7 @@
    Video Timing Modes Type 1 - Detailed Timings Data Block:
      DTD:  5120x2880   59.999614 Hz  16:9    179.579 kHz    933.810000 MHz (aspect 16:9, no 3D stereo)
                 Hfront    8 Hsync  32 Hback   40 Hpol P
-@@ -179,16 +144,14 @@
+@@ -179,16 +152,14 @@
      DTD:  5120x2880   47.951594 Hz  16:9    179.531 kHz    933.560000 MHz (aspect 16:9, no 3D stereo)
                 Hfront    8 Hsync  32 Hback   40 Hpol P
                 Vfront  850 Vsync   8 Vback    6 Vpol N
@@ -109,7 +107,7 @@
                 Hfront    8 Hsync  32 Hback   40 Hpol P
                 Vfront  118 Vsync   8 Vback    6 Vpol N
      DTD:  6016x3384   59.939891 Hz  16:9    210.928 kHz   1285.820000 MHz (aspect 16:9, no 3D stereo)
-@@ -203,30 +166,13 @@
+@@ -203,30 +174,13 @@
      DTD:  6016x3384   47.951798 Hz  16:9    210.940 kHz   1285.890000 MHz (aspect 16:9, no 3D stereo)
                 Hfront    8 Hsync  32 Hback   40 Hpol P
                 Vfront 1001 Vsync   8 Vback    6 Vpol N

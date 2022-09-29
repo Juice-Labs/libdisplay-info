@@ -54,6 +54,49 @@ check_data_block_revision(struct di_displayid *displayid,
 }
 
 static bool
+parse_display_params_block(struct di_displayid *displayid,
+			   struct di_displayid_display_params_priv *priv,
+			   const uint8_t *data, size_t size)
+{
+	struct di_displayid_display_params *params = &priv->base;
+	uint8_t raw_features;
+
+	check_data_block_revision(displayid, data,
+				  "Display Parameters Data Block",
+				  0);
+
+	if (size != 0x0F) {
+		add_failure(displayid, "Display Parameters Data Block: DisplayID payload length is different than expected (%zu != %zu)", size, 0x0F);
+		return false;
+	}
+
+	params->horiz_image_mm = 0.1f * (float)(data[0x03] | (data[0x04] << 8));
+	params->vert_image_mm = 0.1f * (float)(data[0x05] | (data[0x06] << 8));
+
+	params->horiz_pixels = data[0x07] | (data[0x08] << 8);
+	params->vert_pixels = data[0x09] | (data[0x0A] << 8);
+
+	raw_features = data[0x0B];
+	params->features = &priv->features;
+	priv->features.audio = has_bit(raw_features, 7);
+	priv->features.separate_audio_inputs = has_bit(raw_features, 6);
+	priv->features.audio_input_override = has_bit(raw_features, 5);
+	priv->features.power_management = has_bit(raw_features, 4);
+	priv->features.fixed_timing = has_bit(raw_features, 3);
+	priv->features.fixed_pixel_format = has_bit(raw_features, 2);
+	priv->features.ai = has_bit(raw_features, 1);
+	priv->features.deinterlacing = has_bit(raw_features, 0);
+
+	if (data[0x0C] != 0xFF)
+		params->gamma = (float)data[0x0C] / 100 + 1;
+	params->aspect_ratio = (float)data[0x0D] / 100 + 1;
+	params->bits_per_color_overall = get_bit_range(data[0x0E], 7, 4) + 1;
+	params->bits_per_color_native = get_bit_range(data[0x0E], 3, 0) + 1;
+
+	return true;
+}
+
+static bool
 parse_type_i_timing(struct di_displayid *displayid,
 		    struct di_displayid_data_block *data_block,
 		    const uint8_t data[static DISPLAYID_TYPE_I_TIMING_SIZE])
@@ -174,12 +217,17 @@ parse_data_block(struct di_displayid *displayid, const uint8_t *data,
 		goto error;
 
 	switch (tag) {
+	case DI_DISPLAYID_DATA_BLOCK_DISPLAY_PARAMS:
+		if (!parse_display_params_block(displayid,
+						&data_block->display_params,
+						data, data_block_size))
+			goto error;
+		break;
 	case DI_DISPLAYID_DATA_BLOCK_TYPE_I_TIMING:
 		if (!parse_type_i_timing_block(displayid, data_block, data, data_block_size))
 			goto error;
 		break;
 	case DI_DISPLAYID_DATA_BLOCK_PRODUCT_ID:
-	case DI_DISPLAYID_DATA_BLOCK_DISPLAY_PARAMS:
 	case DI_DISPLAYID_DATA_BLOCK_COLOR_CHARACT:
 	case DI_DISPLAYID_DATA_BLOCK_TYPE_II_TIMING:
 	case DI_DISPLAYID_DATA_BLOCK_TYPE_III_TIMING:
@@ -379,6 +427,15 @@ enum di_displayid_data_block_tag
 di_displayid_data_block_get_tag(const struct di_displayid_data_block *data_block)
 {
 	return data_block->tag;
+}
+
+const struct di_displayid_display_params *
+di_displayid_data_block_get_display_params(const struct di_displayid_data_block *data_block)
+{
+	if (data_block->tag != DI_DISPLAYID_DATA_BLOCK_DISPLAY_PARAMS) {
+		return NULL;
+	}
+	return &data_block->display_params.base;
 }
 
 const struct di_displayid_type_i_timing *const *
