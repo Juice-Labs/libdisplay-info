@@ -1065,7 +1065,10 @@ print_displayid_type_i_timing(const struct di_displayid_type_i_timing *t)
 		printf("undefined");
 	else
 		printf("%d:%d", horiz_ratio, vert_ratio);
-	printf(", %s)\n", displayid_type_i_timing_stereo_3d_name(t->stereo_3d));
+	printf(", %s", displayid_type_i_timing_stereo_3d_name(t->stereo_3d));
+	if (t->preferred)
+		printf(", preferred");
+	printf(")\n");
 
 	horiz_back_porch = t->horiz_blank - t->horiz_sync_width - t->horiz_offset;
 	printf("               Hfront %4d Hsync %3d Hback %4d Hpol %s",
