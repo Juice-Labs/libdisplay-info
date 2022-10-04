@@ -9,6 +9,8 @@ Goals:
 - Simplicity and correctness over performance and resource usage.
 - Well-tested and fuzzed.
 
+Documentation is available on the [website].
+
 ## Contributing
 
 Open issues and merge requests on the [GitLab project].
@@ -41,6 +43,7 @@ To fuzz libdisplay-info with [AFL], the library needs to be instrumented:
     ninja -C build/
     afl-fuzz -i test/data/ -o afl/ build/di-edid-decode
 
+[website]: https://emersion.pages.freedesktop.org/libdisplay-info/
 [GitLab project]: https://gitlab.freedesktop.org/emersion/libdisplay-info
 [Wayland contribution guidelines]: https://gitlab.freedesktop.org/wayland/wayland/-/blob/main/CONTRIBUTING.md
 [Developer Certificate of Origin 1.1]: https://developercertificate.org/
