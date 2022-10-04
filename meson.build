@@ -68,7 +68,12 @@ di_dep = declare_dependency(
 
 di_edid_decode = executable(
 	'di-edid-decode',
-	'di-edid-decode.c',
+	[
+		'di-edid-decode/cta.c',
+		'di-edid-decode/displayid.c',
+		'di-edid-decode/edid.c',
+		'di-edid-decode/main.c',
+	],
 	dependencies: [di_dep, math],
 	install: true,
 )
