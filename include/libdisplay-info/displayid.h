@@ -9,6 +9,9 @@
  * https://vesa.org/vesa-standards/
  */
 
+#include <stdbool.h>
+#include <stdint.h>
+
 /**
  * DisplayID data structure.
  */
