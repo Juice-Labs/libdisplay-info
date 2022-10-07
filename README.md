@@ -35,6 +35,8 @@ contains a small collection of EDID blobs and diffs between upstream
 up-to-date. A patch should never make the diffs grow larger. To add a new EDID
 blob or update a diff, use `test/edid-decode-diff.sh test/data/<edid>`.
 
+The latest code coverage report is available on [GitLab CI][coverage].
+
 ## Fuzzing
 
 To fuzz libdisplay-info with [AFL], the library needs to be instrumented:
@@ -49,5 +51,6 @@ To fuzz libdisplay-info with [AFL], the library needs to be instrumented:
 [Developer Certificate of Origin 1.1]: https://developercertificate.org/
 [freedesktop.org Contributor Covenant]: https://www.freedesktop.org/wiki/CodeOfConduct/
 [Meson]: https://mesonbuild.com/
+[coverage]: https://gitlab.freedesktop.org/emersion/libdisplay-info/-/jobs/artifacts/main/file/build/meson-logs/coveragereport/index.html?job=build-gcc
 [edid-decode]: https://git.linuxtv.org/edid-decode.git/
 [AFL]: https://lcamtuf.coredump.cx/afl/
