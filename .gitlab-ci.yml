@@ -11,7 +11,7 @@ include:
 # $ git push -f -o ci.variable="FDO_FORCE_REBUILD=1"
 variables:
   FDO_UPSTREAM_REPO: 'emersion/libdisplay-info'
-  FDO_DISTRIBUTION_TAG: '2022-09-28.0'
+  FDO_DISTRIBUTION_TAG: '2022-10-07.0'
 
 stages:
   - "Contribution checks"
@@ -38,7 +38,7 @@ prepare-container:
     FDO_DISTRIBUTION_EXEC: |
       git clone git://linuxtv.org/edid-decode.git
       cd edid-decode
-      git checkout 6816e6a691f40e6fbb64e6d40f012d7727c6315f
+      git checkout f63a945936ae6ecf91349aa0984facfbc96173bf
       make
       make install
       cd ..
