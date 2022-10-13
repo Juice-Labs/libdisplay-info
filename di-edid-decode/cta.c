@@ -96,7 +96,7 @@ print_cta_vesa_transfer_characteristics(const struct di_cta_vesa_transfer_charac
 
 	printf(" transfer characteristics:");
 	for (i = 0; i < tf->points_len; i++)
-		printf(" %u", (uint16_t) (tf->points[i] * 1023.0f));
+		printf(" %u", (uint16_t) roundf(tf->points[i] * 1023.0f));
 	printf("\n");
 
 	uncommon_features.cta_transfer_characteristics = true;

@@ -14,12 +14,9 @@
    Video Capability Data Block:
      YCbCr quantization: Selectable (via AVI YQ)
      RGB quantization: Selectable (via AVI Q)
-@@ -71,56 +67,14 @@
-     IT scan behavior: Always Underscanned
-     CE scan behavior: Always Underscanned
+@@ -73,54 +69,12 @@
    VESA Display Transfer Characteristics Data Block:
--    White transfer characteristics: 6 33 77 129 192 252 348 415 490 598 666 796 873 932 998 1023
-+    White transfer characteristics: 6 33 77 129 192 252 348 415 490 598 666 796 872 931 997 1023
+     White transfer characteristics: 6 33 77 129 192 252 348 415 490 598 666 796 873 932 998 1023
    VESA Video Display Device Data Block:
 -    Interface Type: DisplayPort 2 channels
 -    Interface Standard Version: 1.1
