@@ -113,11 +113,11 @@ cta_data_block_tag_name(enum di_cta_data_block_tag tag)
 	case DI_CTA_DATA_BLOCK_SPEAKER_ALLOC:
 		return "Speaker Allocation Data Block";
 	case DI_CTA_DATA_BLOCK_VESA_DISPLAY_TRANSFER_CHARACTERISTIC:
-		return "VESA Display Transfer Characteristic Data Block";
+		return "VESA Display Transfer Characteristics Data Block";
 	case DI_CTA_DATA_BLOCK_VIDEO_CAP:
 		return "Video Capability Data Block";
 	case DI_CTA_DATA_BLOCK_VESA_DISPLAY_DEVICE:
-		return "VESA Display Device Data Block";
+		return "VESA Video Display Device Data Block";
 	case DI_CTA_DATA_BLOCK_COLORIMETRY:
 		return "Colorimetry Data Block";
 	case DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA:

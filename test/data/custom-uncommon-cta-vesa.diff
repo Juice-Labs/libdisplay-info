@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -58,69 +58,23 @@
+@@ -58,12 +58,8 @@
    Supports YCbCr 4:2:2
    Native detailed modes: 0
    Video Data Block:
@@ -14,12 +14,13 @@
    Video Capability Data Block:
      YCbCr quantization: Selectable (via AVI YQ)
      RGB quantization: Selectable (via AVI Q)
-     PT scan behavior: Always Underscanned
+@@ -71,56 +67,14 @@
      IT scan behavior: Always Underscanned
      CE scan behavior: Always Underscanned
--  VESA Display Transfer Characteristics Data Block:
+   VESA Display Transfer Characteristics Data Block:
 -    White transfer characteristics: 6 33 77 129 192 252 348 415 490 598 666 796 873 932 998 1023
--  VESA Video Display Device Data Block:
++    White transfer characteristics: 6 33 77 129 192 252 348 415 490 598 666 796 872 931 997 1023
+   VESA Video Display Device Data Block:
 -    Interface Type: DisplayPort 2 channels
 -    Interface Standard Version: 1.1
 -    Content Protection Support: DPCP
@@ -49,9 +50,6 @@
 -      Primary 5:   0.4921, 0.4658
 -    Response Time White -> Black: 12 ms
 -    Overscan: 5% x 7%
-+  VESA Display Transfer Characteristic Data Block:
-+    White transfer characteristics: 6 33 77 129 192 252 348 415 490 598 666 796 872 931 997 1023
-+  VESA Display Device Data Block:
    Detailed Timing Descriptors:
      DTD 2:  3840x2160   59.996625 Hz  16:9    133.312 kHz    533.250000 MHz (960 mm x 652 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
