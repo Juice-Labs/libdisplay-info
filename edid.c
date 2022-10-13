@@ -247,7 +247,7 @@ decode_chromaticity_coord(uint8_t hi, uint8_t lo)
 {
 	uint16_t raw; /* only 10 bits are used */
 
-	raw = (uint16_t) (hi << 2) | lo;
+	raw = (uint16_t) ((hi << 2) | lo);
 	return (float) raw / 1024;
 }
 
