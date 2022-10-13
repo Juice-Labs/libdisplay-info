@@ -1,6 +1,8 @@
 #ifndef DI_INFO_H
 #define DI_INFO_H
 
+#include <stddef.h>
+
 /**
  * libdisplay-info's high-level API.
  */
