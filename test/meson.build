@@ -9,6 +9,7 @@ test_harness = find_program('./edid-decode-check.sh', native: true)
 test_cases = [
 	'acer-p1276',
 	'apple-xdr-dp',
+	'custom-uncommon-cta-vesa',
 	'dell-2408wfp-dp',
 	'goldstar-ite6604-hdmi',
 	'hp-5dq99aa-hdmi',
