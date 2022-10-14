@@ -54,4 +54,52 @@ di_info_get_edid(const struct di_info *info);
 const char *
 di_info_get_failure_msg(const struct di_info *info);
 
+/**
+ * Get the make of the display device.
+ *
+ * This is the manufacturer name, either company name or PNP ID.
+ * This string is informational and not meant to be used in programmatic
+ * decisions, configuration keys, etc.
+ *
+ * The string is in UTF-8 and may contain any characters except ASCII control
+ * codes.
+ *
+ * The caller is responsible for free'ing the returned string.
+ * NULL is returned if the information is not available.
+ */
+char *
+di_info_get_make(const struct di_info *info);
+
+/**
+ * Get the model of the display device.
+ *
+ * This is the product name/model string or product number.
+ * This string is informational and not meant to be used in programmatic
+ * decisions, configuration keys, etc.
+ *
+ * The string is in UTF-8 and may contain any characters except ASCII control
+ * codes.
+ *
+ * The caller is responsible for free'ing the returned string.
+ * NULL is returned if the information is not available.
+ */
+char *
+di_info_get_model(const struct di_info *info);
+
+/**
+ * Get the serial of the display device.
+ *
+ * This is the product serial string or the serial number.
+ * This string is informational and not meant to be used in programmatic
+ * decisions, configuration keys, etc.
+ *
+ * The string is in UTF-8 and may contain any characters except ASCII control
+ * codes.
+ *
+ * The caller is responsible for free'ing the returned string.
+ * NULL is returned if the information is not available.
+ */
+char *
+di_info_get_serial(const struct di_info *info);
+
 #endif
