@@ -35,6 +35,10 @@ contains a small collection of EDID blobs and diffs between upstream
 up-to-date. A patch should never make the diffs grow larger. To add a new EDID
 blob or update a diff, use `test/edid-decode-diff.sh test/data/<edid>`.
 
+To run the test suite locally, you need to use [edid-decode] of the git
+revision mentioned in `.gitlab-ci.yml`. Otherwise you may experience false
+failures.
+
 The latest code coverage report is available on [GitLab CI][coverage].
 
 ## Fuzzing
