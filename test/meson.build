@@ -6,6 +6,15 @@ endif
 
 test_harness = find_program('./edid-decode-check.sh', native: true)
 
+di_edid_print = executable(
+	'di-edid-print',
+	'di-edid-print.c',
+	dependencies: di_dep,
+	install: false,
+)
+
+print_harness = find_program('./edid-print-check.sh', native: true)
+
 test_cases = [
 	'acer-p1276',
 	'apple-xdr-dp',
@@ -22,7 +31,7 @@ test_cases = [
 
 foreach tc : test_cases
 	test(
-		tc,
+		'decode-' + tc,
 		test_harness,
 		args: [files('data/' + tc + '.edid')],
 		env: [
@@ -30,5 +39,14 @@ foreach tc : test_cases
 			'DI_EDID_DECODE=' + di_edid_decode.full_path(),
 		],
 		depends: [di_edid_decode],
+	)
+	test(
+		'print-' + tc,
+		print_harness,
+		args: [files('data/' + tc + '.edid')],
+		env: [
+			'DI_EDID_PRINT=' + di_edid_print.full_path(),
+		],
+		depends: [di_edid_print],
 	)
 endforeach

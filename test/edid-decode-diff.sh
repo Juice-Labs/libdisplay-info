@@ -2,6 +2,7 @@
 
 REF_EDID_DECODE="${REF_EDID_DECODE:-edid-decode}"
 DI_EDID_DECODE="${DI_EDID_DECODE:-di-edid-decode}"
+DI_EDID_PRINT="${DI_EDID_PRINT:-di-edid-print}"
 
 workdir="$(mktemp -d)"
 cleanup() {
@@ -18,4 +19,6 @@ for edid in "$@"; do
 	else
 		rm -f "$diff"
 	fi
+
+	"$DI_EDID_PRINT" <"$edid" >"${edid%.edid}.print"
 done
