@@ -11,6 +11,19 @@ Goals:
 
 Documentation is available on the [website].
 
+## Using
+
+The public API headers are categorised as either high-level or low-level API
+as per the comments in the header files. Users of libdisplay-info should prefer
+high-level API over low-level API when possible.
+
+If high-level API lacks needed features, please propose additions to the
+high-level API upstream before using low-level API to get what you need.
+If the additions are rejected, you are welcome to use the low-level API.
+
+This policy is aimed to propagate best practises when interpreting EDID
+and DisplayID information which can often be cryptic or even inconsistent.
+
 ## Contributing
 
 Open issues and merge requests on the [GitLab project].
