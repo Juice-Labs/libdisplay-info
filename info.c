@@ -70,20 +70,3 @@ di_info_get_failure_msg(const struct di_info *info)
 {
 	return info->failure_msg;
 }
-
-char *
-di_info_get_product_name(const struct di_info *info)
-{
-	char name[64];
-	const struct di_edid_vendor_product *edid_vendor_product;
-
-	edid_vendor_product = di_edid_get_vendor_product(info->edid);
-
-	/* TODO: use strings from Detailed Timing Descriptors, if any */
-	snprintf(name, sizeof(name), "%.3s 0x%X" PRIu16 " 0x%X" PRIu32,
-		 edid_vendor_product->manufacturer,
-		 edid_vendor_product->product,
-		 edid_vendor_product->serial);
-
-	return strdup(name);
-}

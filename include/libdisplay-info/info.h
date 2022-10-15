@@ -54,14 +54,4 @@ di_info_get_edid(const struct di_info *info);
 const char *
 di_info_get_failure_msg(const struct di_info *info);
 
-/**
- * Get the product name of the display device.
- *
- * The product name typically contains the vendor, model and serial number.
- *
- * The caller is responsible for free'ing the returned string.
- */
-char *
-di_info_get_product_name(const struct di_info *info);
-
 #endif
