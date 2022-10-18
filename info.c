@@ -8,6 +8,10 @@
 #include "info.h"
 #include "log.h"
 
+/* Generated file pnp-id-table.c: */
+const char *
+pnp_id_table(const char *key);
+
 struct di_info *
 di_info_parse_edid(const void *data, size_t size)
 {
@@ -136,6 +140,7 @@ di_info_get_make(const struct di_info *info)
 {
 	const struct di_edid_vendor_product *evp;
 	char pnp_id[(sizeof(evp->manufacturer)) + 1] = { 0, };
+	const char *manuf;
 	struct memory_stream m;
 
 	if (!info->edid)
@@ -147,7 +152,11 @@ di_info_get_make(const struct di_info *info)
 	evp = di_edid_get_vendor_product(info->edid);
 	memcpy(pnp_id, evp->manufacturer, sizeof(evp->manufacturer));
 
-	/* TODO: use pnp.ids to convert to a company name */
+	manuf = pnp_id_table(pnp_id);
+	if (manuf) {
+		encode_ascii_string(m.fp, manuf);
+		return memory_stream_close(&m);
+	}
 
 	fputs("PNP(", m.fp);
 	encode_ascii_string(m.fp, pnp_id);

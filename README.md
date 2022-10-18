@@ -35,7 +35,12 @@ follows the [freedesktop.org Contributor Covenant].
 
 ## Building
 
-libdisplay-info is built using [Meson]. It has no dependencies.
+libdisplay-info has the following dependencies:
+
+- [hwdata](https://github.com/vcrhonek/hwdata) for the PNP ID database
+  used at build-time only.
+
+libdisplay-info is built using [Meson]:
 
     meson setup build/
     ninja -C build/
