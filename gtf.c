@@ -116,9 +116,9 @@ void di_gtf_compute(struct di_gtf_timing *t, const struct di_gtf_options *option
 	*t = (struct di_gtf_timing) {
 		.h_pixels = (int) h_pixels_rnd,
 		.v_lines = options->v_lines,
-		.v_sync = V_SYNC_RQD,
+		.v_sync = (int) V_SYNC_RQD,
 		.h_sync = (int) h_sync,
-		.v_front_porch = MIN_PORCH,
+		.v_front_porch = (int) MIN_PORCH,
 		.v_back_porch = (int) v_back_porch,
 		.h_front_porch = (int) h_front_porch,
 		.h_back_porch = (int) (h_front_porch + h_sync),
