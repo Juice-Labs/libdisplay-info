@@ -145,6 +145,6 @@ _di_edid_destroy(struct di_edid *edid);
  * Parse an EDID detailed timing definition.
  */
 struct di_edid_detailed_timing_def_priv *
-_di_edid_parse_detailed_timing_def(const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE]);
+_di_edid_parse_detailed_timing_def(const uint8_t data[static_array EDID_BYTE_DESCRIPTOR_SIZE]);
 
 #endif

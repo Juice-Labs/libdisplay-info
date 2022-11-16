@@ -48,7 +48,7 @@ add_failure_until(struct di_edid *edid, int revision, const char fmt[], ...)
 }
 
 static void
-parse_version_revision(const uint8_t data[static EDID_BLOCK_SIZE],
+parse_version_revision(const uint8_t data[static_array EDID_BLOCK_SIZE],
 		       int *version, int *revision)
 {
 	*version = (int) data[0x12];
@@ -56,13 +56,13 @@ parse_version_revision(const uint8_t data[static EDID_BLOCK_SIZE],
 }
 
 static size_t
-parse_ext_count(const uint8_t data[static EDID_BLOCK_SIZE])
+parse_ext_count(const uint8_t data[static_array EDID_BLOCK_SIZE])
 {
 	return data[0x7E];
 }
 
 static bool
-validate_block_checksum(const uint8_t data[static EDID_BLOCK_SIZE])
+validate_block_checksum(const uint8_t data[static_array EDID_BLOCK_SIZE])
 {
 	uint8_t sum = 0;
 	size_t i;
@@ -76,7 +76,7 @@ validate_block_checksum(const uint8_t data[static EDID_BLOCK_SIZE])
 
 static void
 parse_vendor_product(struct di_edid *edid,
-		     const uint8_t data[static EDID_BLOCK_SIZE])
+		     const uint8_t data[static_array EDID_BLOCK_SIZE])
 {
 	struct di_edid_vendor_product *out = &edid->vendor_product;
 	uint16_t man, raw_week, raw_year;
@@ -180,7 +180,7 @@ parse_video_input_analog(struct di_edid *edid, uint8_t video_input)
 
 static void
 parse_basic_params_features(struct di_edid *edid,
-			    const uint8_t data[static EDID_BLOCK_SIZE])
+			    const uint8_t data[static_array EDID_BLOCK_SIZE])
 {
 	uint8_t video_input, width, height, features;
 	struct di_edid_screen_size *screen_size = &edid->screen_size;
@@ -253,7 +253,7 @@ decode_chromaticity_coord(uint8_t hi, uint8_t lo)
 
 static void
 parse_chromaticity_coords(struct di_edid *edid,
-			  const uint8_t data[static EDID_BLOCK_SIZE])
+			  const uint8_t data[static_array EDID_BLOCK_SIZE])
 {
 	uint8_t lo;
 	bool all_set, any_set;
@@ -292,7 +292,7 @@ parse_chromaticity_coords(struct di_edid *edid,
 
 static void
 parse_established_timings_i_ii(struct di_edid *edid,
-			       const uint8_t data[static EDID_BLOCK_SIZE])
+			       const uint8_t data[static_array EDID_BLOCK_SIZE])
 {
 	struct di_edid_established_timings_i_ii *timings = &edid->established_timings_i_ii;
 
@@ -321,7 +321,7 @@ parse_established_timings_i_ii(struct di_edid *edid,
 
 static bool
 parse_standard_timing(struct di_edid *edid,
-		      const uint8_t data[static EDID_STANDARD_TIMING_SIZE],
+		      const uint8_t data[static_array EDID_STANDARD_TIMING_SIZE],
 		      struct di_edid_standard_timing **out)
 {
 	struct di_edid_standard_timing *t;
@@ -353,7 +353,7 @@ parse_standard_timing(struct di_edid *edid,
 }
 
 struct di_edid_detailed_timing_def_priv *
-_di_edid_parse_detailed_timing_def(const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
+_di_edid_parse_detailed_timing_def(const uint8_t data[static_array EDID_BYTE_DESCRIPTOR_SIZE])
 {
 	struct di_edid_detailed_timing_def_priv *priv;
 	struct di_edid_detailed_timing_def *def;
@@ -492,7 +492,7 @@ decode_display_range_limits_offset(struct di_edid *edid, uint8_t flags,
 
 static bool
 parse_display_range_limits(struct di_edid *edid,
-			   const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
+			   const uint8_t data[static_array EDID_BYTE_DESCRIPTOR_SIZE],
 			   struct di_edid_display_range_limits_priv *priv)
 {
 	uint8_t offset_flags, vert_offset_flags, horiz_offset_flags;
@@ -714,7 +714,7 @@ parse_display_range_limits(struct di_edid *edid,
 
 static bool
 parse_standard_timings_descriptor(struct di_edid *edid,
-				  const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
+				  const uint8_t data[static_array EDID_BYTE_DESCRIPTOR_SIZE],
 				  struct di_edid_display_descriptor *desc)
 {
 	struct di_edid_standard_timing *t;
@@ -816,7 +816,7 @@ get_dmt_timing(uint8_t dmt_id)
 
 static void
 parse_established_timings_iii_descriptor(struct di_edid *edid,
-					 const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
+					 const uint8_t data[static_array EDID_BYTE_DESCRIPTOR_SIZE],
 					 struct di_edid_display_descriptor *desc)
 {
 	size_t i, offset, bit;
@@ -851,7 +851,7 @@ parse_established_timings_iii_descriptor(struct di_edid *edid,
 
 static bool
 parse_color_point_descriptor(struct di_edid *edid,
-			     const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
+			     const uint8_t data[static_array EDID_BYTE_DESCRIPTOR_SIZE],
 			     struct di_edid_display_descriptor *desc)
 {
 	struct di_edid_color_point *c;
@@ -897,7 +897,7 @@ parse_color_point_descriptor(struct di_edid *edid,
 
 static void
 parse_color_management_data_descriptor(struct di_edid *edid,
-				       const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
+				       const uint8_t data[static_array EDID_BYTE_DESCRIPTOR_SIZE],
 				       struct di_edid_display_descriptor *desc)
 {
 	desc->dcm_data.version = data[5];
@@ -917,7 +917,7 @@ parse_color_management_data_descriptor(struct di_edid *edid,
 
 static bool
 parse_byte_descriptor(struct di_edid *edid,
-		      const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE])
+		      const uint8_t data[static_array EDID_BYTE_DESCRIPTOR_SIZE])
 {
 	struct di_edid_display_descriptor *desc;
 	struct di_edid_detailed_timing_def_priv *detailed_timing_def;
@@ -1010,7 +1010,7 @@ parse_byte_descriptor(struct di_edid *edid,
 }
 
 static bool
-parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
+parse_ext(struct di_edid *edid, const uint8_t data[static_array EDID_BLOCK_SIZE])
 {
 	struct di_edid_ext *ext;
 	uint8_t tag;
