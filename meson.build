@@ -34,6 +34,7 @@ if cc.get_id() != 'msvc'
 	add_project_arguments(['-Dstatic_array=static'], language: 'c')
 else
 	add_project_arguments(['-Dstatic_array='], language: 'c')
+	add_project_arguments(['-Dssize_t=intptr_t'], language: 'c')
 endif
 
 add_project_arguments(cc.get_supported_arguments([
