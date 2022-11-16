@@ -18,16 +18,12 @@ di_info_parse_edid(const void *data, size_t size)
 {
 	struct di_edid *edid;
 	struct di_info *info;
-	char *failure_msg = NULL;
-	size_t failure_msg_size;
-	FILE *failure_msg_file;
+	struct memory_stream failure_msg;
 
-	failure_msg_file = open_memstream(&failure_msg,
-					  &failure_msg_size);
-	if (!failure_msg_file)
+	if (!memory_stream_open(&failure_msg))
 		return NULL;
 
-	edid = _di_edid_parse(data, size, failure_msg_file);
+	edid = _di_edid_parse(data, size, failure_msg.fp);
 	if (!edid)
 		goto err_failure_msg_file;
 
@@ -37,13 +33,10 @@ di_info_parse_edid(const void *data, size_t size)
 
 	info->edid = edid;
 
-	if (fflush(failure_msg_file) != 0)
+	if (fflush(failure_msg.fp) != 0)
 		goto err_info;
-	fclose(failure_msg_file);
-	if (failure_msg && failure_msg[0] != '\0')
-		info->failure_msg = failure_msg;
-	else
-		free(failure_msg);
+
+	info->failure_msg = memory_stream_close(&failure_msg);
 
 	return info;
 
@@ -52,8 +45,7 @@ err_info:
 err_edid:
 	_di_edid_destroy(edid);
 err_failure_msg_file:
-	fclose(failure_msg_file);
-	free(failure_msg);
+	memory_stream_close(&failure_msg);
 	return NULL;
 }
 
