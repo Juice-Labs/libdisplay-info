@@ -43,7 +43,7 @@ ident = sys.argv[3]
 
 records = {}
 
-with open(infile, 'r') as f:
+with open(infile, mode='r', encoding='utf-8') as f:
     for line in f:
         [pnpid, name] = line.split(maxsplit=1)
 
