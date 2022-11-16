@@ -29,7 +29,12 @@ cc = meson.get_compiler('c')
 
 math = cc.find_library('m', required: false)
 
-add_project_arguments(['-D_POSIX_C_SOURCE=200809L'], language: 'c')
+if cc.get_id() != 'msvc'
+	add_project_arguments(['-D_POSIX_C_SOURCE=200809L'], language: 'c')
+	add_project_arguments(['-Dstatic_array=static'], language: 'c')
+else
+	add_project_arguments(['-Dstatic_array='], language: 'c')
+endif
 
 add_project_arguments(cc.get_supported_arguments([
 	'-Wundef',
