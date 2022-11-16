@@ -7,6 +7,7 @@
 #include "edid.h"
 #include "info.h"
 #include "log.h"
+#include "memory-stream.h"
 
 /* Generated file pnp-id-table.c: */
 const char *
@@ -74,39 +75,6 @@ const char *
 di_info_get_failure_msg(const struct di_info *info)
 {
 	return info->failure_msg;
-}
-
-struct memory_stream {
-	FILE *fp;
-	char *str;
-	size_t str_len;
-};
-
-static bool
-memory_stream_open(struct memory_stream *m)
-{
-	*m = (struct memory_stream){ 0 };
-	m->fp = open_memstream(&m->str, &m->str_len);
-
-	return m->fp != NULL;
-}
-
-static char *
-memory_stream_close(struct memory_stream *m)
-{
-	char *str;
-	int ret;
-
-	ret = fclose(m->fp);
-	str = m->str;
-	*m = (struct memory_stream){ 0 };
-
-	if (ret != 0) {
-		free(str);
-		str = NULL;
-	}
-
-	return str;
 }
 
 static void

@@ -57,6 +57,7 @@ di_lib = library(
 		'gtf.c',
 		'info.c',
 		'log.c',
+		'memory-stream.c',
 		pnp_id_table,
 	],
 	include_directories: include_directories('include'),
