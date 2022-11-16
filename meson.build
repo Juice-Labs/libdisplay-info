@@ -53,7 +53,7 @@ add_project_arguments(cc.get_supported_arguments([
 symbols_file = 'libdisplay-info.map'
 symbols_flag = '-Wl,--version-script,@0@'.format(meson.current_source_dir() / symbols_file)
 
-di_lib = library(
+di_lib = static_library(
 	'display-info',
 	[
 		'cta.c',
@@ -89,16 +89,16 @@ di_dep = declare_dependency(
 	include_directories: include_directories('include'),
 )
 
-di_edid_decode = executable(
-	'di-edid-decode',
-	[
-		'di-edid-decode/cta.c',
-		'di-edid-decode/displayid.c',
-		'di-edid-decode/edid.c',
-		'di-edid-decode/main.c',
-	],
-	dependencies: [di_dep, math],
-	install: true,
-)
-
-subdir('test')
+#di_edid_decode = executable(
+#	'di-edid-decode',
+#	[
+#		'di-edid-decode/cta.c',
+#		'di-edid-decode/displayid.c',
+#		'di-edid-decode/edid.c',
+#		'di-edid-decode/main.c',
+#	],
+#	dependencies: [di_dep, math],
+#	install: true,
+#)
+#
+#subdir('test')

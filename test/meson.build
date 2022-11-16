@@ -1,3 +1,12 @@
+di_edid_print = executable(
+	'di-edid-print',
+	'di-edid-print.c',
+	dependencies: di_dep,
+	install: false,
+)
+
+subdir_done()
+
 ref_edid_decode = find_program('edid-decode', native: true, required: false)
 if not ref_edid_decode.found()
 	test('edid-decode-not-found', find_program('false'))
@@ -5,13 +14,6 @@ if not ref_edid_decode.found()
 endif
 
 test_harness = find_program('./edid-decode-check.sh', native: true)
-
-di_edid_print = executable(
-	'di-edid-print',
-	'di-edid-print.c',
-	dependencies: di_dep,
-	install: false,
-)
 
 print_harness = find_program('./edid-print-check.sh', native: true)
 
