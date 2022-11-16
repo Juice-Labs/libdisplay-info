@@ -35,7 +35,7 @@ add_failure(struct di_displayid *displayid, const char fmt[], ...)
 
 static void
 check_data_block_revision(struct di_displayid *displayid,
-			  const uint8_t data[static DISPLAYID_DATA_BLOCK_HEADER_SIZE],
+			  const uint8_t data[static_array DISPLAYID_DATA_BLOCK_HEADER_SIZE],
 			  const char *block_name, uint8_t max_revision)
 {
 	uint8_t revision, flags;
@@ -99,7 +99,7 @@ parse_display_params_block(struct di_displayid *displayid,
 static bool
 parse_type_i_timing(struct di_displayid *displayid,
 		    struct di_displayid_data_block *data_block,
-		    const uint8_t data[static DISPLAYID_TYPE_I_TIMING_SIZE])
+		    const uint8_t data[static_array DISPLAYID_TYPE_I_TIMING_SIZE])
 {
 	int raw_pixel_clock;
 	uint8_t stereo_3d, aspect_ratio;
