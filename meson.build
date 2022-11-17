@@ -64,18 +64,7 @@ di_lib = static_library(
 	dependencies: [math],
 	link_args: symbols_flag,
 	link_depends: symbols_file,
-	install: true,
-)
-
-install_subdir(
-	'include/libdisplay-info',
-	install_dir: get_option('includedir'),
-)
-
-pkgconfig = import('pkgconfig')
-pkgconfig.generate(
-	di_lib,
-	description: 'EDID and DisplayID library',
+	install: false,
 )
 
 di_dep = declare_dependency(
