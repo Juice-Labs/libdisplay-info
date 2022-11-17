@@ -10,13 +10,7 @@ project(
 	],
 )
 
-dep_hwdata = dependency('hwdata', required: false, native: true)
-if dep_hwdata.found()
-	hwdata_dir = dep_hwdata.get_variable(pkgconfig: 'pkgdatadir')
-	pnp_ids = files(hwdata_dir / 'pnp.ids')
-else
-	pnp_ids = files('/usr/share/hwdata/pnp.ids')
-endif
+pnp_ids = files('pnp.ids')
 
 gen_search_table = find_program('tool/gen-search-table.py')
 pnp_id_table = custom_target(
