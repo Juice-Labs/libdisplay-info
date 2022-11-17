@@ -38,8 +38,8 @@
 void di_gtf_compute(struct di_gtf_timing *t, const struct di_gtf_options *options)
 {
 	double c_prime, m_prime, h_pixels_rnd, v_lines_rnd, h_margin,
-	       v_margin, interlace, total_active_pixels, pixel_freq,
-	       h_blank_pixels, total_pixels, v_sync_bp, v_field_rate_rqd,
+	       v_margin, interlace, total_active_pixels, pixel_freq = 0.0,
+	       h_blank_pixels = 0.0, total_pixels = 0.0, v_sync_bp = 0.0, v_field_rate_rqd,
 	       h_period_est, total_v_lines, v_field_rate_est, h_period,
 	       ideal_duty_cycle, h_freq, ideal_h_period, v_back_porch, h_sync,
 	       h_front_porch;
