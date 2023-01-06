@@ -15,7 +15,7 @@ struct memory_stream {
 	size_t str_len;
 
 #ifdef _WIN32
-	char temp[PATH_MAX];
+	char temp[MAX_PATH];
 #endif
 };
 
