@@ -9,13 +9,17 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#ifdef _WIN32
+#define MEMSTREAM_MAX_PATH 260
+#endif
+
 struct memory_stream {
 	FILE *fp;
 	char *str;
 	size_t str_len;
 
 #ifdef _WIN32
-	char temp[MAX_PATH];
+	char temp[MEMSTREAM_MAX_PATH];
 #endif
 };
 
