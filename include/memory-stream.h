@@ -13,6 +13,10 @@ struct memory_stream {
 	FILE *fp;
 	char *str;
 	size_t str_len;
+
+#ifdef _WIN32
+	char temp[PATH_MAX];
+#endif
 };
 
 bool

@@ -33,13 +33,30 @@ memory_stream_close(struct memory_stream *m)
 
 #else
 
+#include <windows.h>
+
 bool
 memory_stream_open(struct memory_stream *m)
 {
-	*m = (struct memory_stream){ 0 };
-	m->fp = tmpfile();
+	char path[MAX_PATH];
+	DWORD dwResult;
 
-	return m->fp != NULL;
+	*m = (struct memory_stream){ 0 };
+
+	dwResult = GetTempPath(MAX_PATH, path);
+	if ((dwResult > 0) && (dwResult < MAX_PATH)) {
+		char *temp = m->temp;
+		UINT uResult = GetTempFileName(path, "MEMSTREAM", 0, temp);
+		if (uResult != 0) {
+			FILE *f = fopen(temp, "w+b");
+			if (f != NULL) {
+				m->fp = f;
+				return true;
+			}
+		}
+	}
+
+   return false;
 }
 
 char *
@@ -47,28 +64,31 @@ memory_stream_close(struct memory_stream *m)
 {
 	size_t size;
 	char* str;
-	FILE *fp;
 
-	fp = m->fp;
-	*m = (struct memory_stream){ 0 };
-
-	if (fp == NULL) {
+	if (m->fp == NULL) {
+		*m = (struct memory_stream){ 0 };
 		return NULL;
 	}
 
-	_fseeki64(fp, 0ll, SEEK_END);
-	size = (size_t)_ftelli64(fp);
-	_fseeki64(fp, 0ll, SEEK_SET);
+	_fseeki64(m->fp, 0ll, SEEK_END);
+	size = (size_t)_ftelli64(m->fp);
+	_fseeki64(m->fp, 0ll, SEEK_SET);
 
 	str  = malloc(size + 1);
 	if (str == NULL) {
-		fclose(fp);
+		fclose(m->fp);
+
+		remove(m->temp);
+		*m = (struct memory_stream){ 0 };
 		return NULL;
 	}
 
-	fread(str, 1, size, fp);
+	fread(str, 1, size, m->fp);
 	str[size] = '\0';
-	fclose(fp);
+	fclose(m->fp);
+
+	remove(m->temp);
+	*m = (struct memory_stream){ 0 };
 
 	return str;
 }
