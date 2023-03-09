@@ -53,7 +53,7 @@ with open(infile, mode='r', encoding='utf-8') as f:
 
         records[pnpid] = escape_for_c(name.strip())
 
-with open(outfile, 'w') as f:
+with open(outfile, mode='w', encoding='utf-8') as f:
     f.write(
 f'''
 #include <string.h>
