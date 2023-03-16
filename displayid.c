@@ -33,6 +33,8 @@ add_failure(struct di_displayid *displayid, const char fmt[], ...)
 	va_end(args);
 }
 
+typedef intptr_t ssize_t;
+
 static void
 check_data_block_revision(struct di_displayid *displayid,
 			  const uint8_t data[static_array DISPLAYID_DATA_BLOCK_HEADER_SIZE],
